@@ -1,3 +1,11 @@
 ^.git$
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^inst/tinytest/_tinyviztest_compare/
+^inst/tinytest/_tinyviztest_current/
+^README.html
+^README.Rmd
+^_tinyviztest
+^_tinyviztest_compare
+^_tinyviztest_current
+^\.github$

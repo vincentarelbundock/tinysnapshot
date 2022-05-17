@@ -34,3 +34,11 @@ vignettes/*.pdf
 # Temporary files created by R markdown
 *.utf8.md
 *.knit.md
+
+/inst/tinytest/_tinyviztest_compare/
+/inst/tinytest/_tinyviztest_current/
+/README.html
+/_tinyviztest/
+/_tinyviztest_compare/
+/_tinyviztest_current/
+

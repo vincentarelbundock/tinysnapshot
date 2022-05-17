@@ -8,6 +8,7 @@ Maintainer: Vincent Arel-Bundock <vincent.arel-bundock@umontreal.ca>
 Description: Visual tests using the `tinytest` framework.
 License: GPL (>= 3)
 Imports:
+    backports,
     gdiff,
     tinytest
 Encoding: UTF-8

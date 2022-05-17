@@ -1,67 +1,120 @@
+#' Test if the current plot matches a target plot
+#'
+#' This expectation can be used with `tinytest` to check if the current plot matches a target plot. When the expectation is checked for the first time, the expectation fails and a target plot is saved in a folder called `_tinyviztest`. If the expectation fails after the first run, the current plot and a comparison object are saved in `tinyviztest_current` and `tinyviztest_compare`.
+#' @param current an object of class `ggplot` or a function which returns a base R plot. See Examples below.
+#' @param name a string to identify the test. Each plot in the test suite must have a unique name.
+#' @param tolerance integer the number of different pixels that are acceptable before triggering a failure.
+#' @param device Graphics device to generate output. See ?[gdiff::gdiffDevice]
+#' @param clean TRUE cleans the test directory. FALSE keeps the current plot and a visual diff file.
+#' @param overwrite `TRUE` if the target plot should be overwritten; `FALSE`
+#' otherwise.
+#' @return A \code{\link{tinytest}} object. A tinytest object is a
+#' \code{logical} with attributes holding information about the test that was
+#' run
+#'
+#' @examples
+#' \dontrun{
+#' library(ggplot2)
+#' library(tinytest)
+#' using(tinyviztest)
+#'
+#' # ggplot2: run once to save a snapshot
+#' expect_vdiff(
+#'   ggplot(mtcars, aes(mpg, hp)) + geom_point(),
+#'   name = "ggplot2 example")
+#'
+#' # ggplot2: run a second time -> PASS
+#' expect_vdiff(
+#'   ggplot(mtcars, aes(mpg, hp)) + geom_point(),
+#'   name = "ggplot2 example")
+#'
+#' # ggplot2: run with the wrong plot -> FAIL
+#' expect_vdiff(
+#'   ggplot(mtcars, aes(mpg, wt)) + geom_point(),
+#'   name = "ggplot2 example")
+#'
+#' # Base R graphics: Function which returns a plot
+#' expect_vdiff(
+#'   function() plot(mtcars$mpg, mtcars$wt),
+#'   name = "base R example")
+#'
+#' expect_vdiff(
+#'   function() plot(mtcars$mpg, mtcars$wt),
+#'   name = "base R example")
+#' }
 #' @export
-write_vdiff <- function(object,
-                        name,
-                        dir = "_tinyviztest_target",
-                        device = gdiff::pngDevice(),
-                        overwrite = FALSE) {
-    dir <- file.path(dir, name)
-    if (!dir.exists(dir)) {
-        void <- dir.create(dir, recursive = TRUE)
-    }
-    if (inherits(object, "ggplot")) {
-        fun <- function() print(object)
-    } else if (is.function(object)) {
-        fun <- object
+expect_vdiff <- function(current,
+                         name,
+                         tolerance = 0,
+                         overwrite = FALSE,
+                         clean = FALSE,
+                         device = gdiff::pngDevice()) {
+
+    # portable test names
+    name <- gsub(" ", "_", name)
+
+    # support both types
+    if (inherits(current, "ggplot")) {
+        fun <- function() print(current)
+    } else if (is.function(current)) {
+        fun <- current
     } else {
         stop("Must be an object of class `ggplot` or a function which prints a plot.")
     }
-    void <- tryCatch(
-        gdiff::gdiffOutput(fun,
-                           name = name,
-                           dir = dir,
-                           device = device,
-                           clean = overwrite),
-        error = function(e) e)
-    if (inherits(void, "error")) {
-        msg <- "Directory already contains 'gdiff' output"
-        if (identical(void$message, msg)) {
-            msg <- sprintf(
-                "The target plot already exists. Use `overwrite=TRUE` to overwrite the files located here: %s",
-                dir)
-            stop(msg, call. = FALSE)
-        } else {
-            stop(msg$error, call. = FALSE)
+
+    tmp <- tempfile()
+    tmp_current <- file.path(tmp, "current")
+    tmp_diff <- file.path(tmp, "diff")
+
+    dir.create("_tinyviztest", showWarnings = FALSE)
+    dir.create(tmp_current, showWarnings = FALSE, recursive = TRUE)
+    dir.create(tmp_diff, showWarnings = FALSE, recursive = TRUE)
+
+    fn_current <- gdiff::gdiffOutput(
+        fun,
+        name = name,
+        dir = tmp_current,
+        device = device,
+        clean = FALSE)
+
+    fn_target <- file.path("_tinyviztest", basename(fn_current))
+
+    if (!file.exists(fn_target) || isTRUE(overwrite)) {
+        void <- file.rename(fn_current, fn_target)
+        msg <- "new plot was saved to: %s"
+        msg <- sprintf(msg, fn_target)
+        flag <- FALSE
+        pixels <- 0
+
+    } else {
+        results <- gdiff::gdiffCompare(
+            controlDir = "_tinyviztest",
+            testDir = tmp_current,
+            compareDir = tmp_diff,
+            clean = FALSE)
+        msg <- "pixels"
+        pixels <- results$diffs[fn_target][1]
+        flag <- isTRUE(pixels <= tolerance)
+
+        if (!isTRUE(clean) && !isTRUE(flag)) {
+            bn <- basename(fn_target)
+            dir.create("_tinyviztest_fail/current", showWarnings = FALSE, recursive = TRUE)
+            dir.create("_tinyviztest_fail/diff", showWarnings = FALSE, recursive = TRUE)
+            void <- file.copy(file.path(tmp, "current", bn), "_tinyviztest_fail/current/", recursive = TRUE)
+            # gdiff renames diff file, doubling the extension
+            fn_diff <- file.path(tmp, "diff", list.files(file.path(tmp, "diff"))[1])
+            void <- file.copy(fn_diff, "_tinyviztest_fail/diff/", recursive = TRUE)
         }
     }
-}
 
+    # if (!isTRUE(flag)) {
+    #     flag <- "The current image does not match the target image."
+    # }
 
-#' @export
-expect_vdiff <- function(x,
-                         name,
-                         dir_current = "_tinyviztest_current",
-                         dir_target = "_tinyviztest_target",
-                         dir_compare = "_tinyviztest_compare",
-                         device = gdiff::pngDevice()) {
-    # deeply nested because gdiffOutput overwrites all files in directory
-    # even if they have different names
-    dir_target <- file.path(dir_target, name)
-    dir_compare <- file.path(dir_compare, name)
-    if (!dir.exists(dir_compare)) dir.create(dir_compare, recursive = TRUE)
-    write_vdiff(
-        x,
-        name = name,
-        dir = dir_current,
-        device = device,
-        overwrite = TRUE)
-    # dir_current is only combined now because `write_vdiff` handled it before
-    dir_current <- file.path(dir_current, name)
-    results <- gdiff::gdiffCompare(dir_target, dir_current, dir_compare)
-    identical_images <- isTRUE(results[["diffs"]][1] == 0)
     tinytest::tinytest(
-        result = identical_images,
+        result = flag,
         call = sys.call(sys.parent(1)),
-        diff = results[["diffs"]][1],
-        info = "pixels")
+        diff = as.character(pixels),
+        info = msg)
 }
 
