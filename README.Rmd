@@ -1,0 +1,64 @@
+---
+output: github_document
+---
+
+# `tinyviztest` offers custom expectations for visual tests in the `tinytest` framework
+
+To begin, load the libraries and change the working directory to `inst/tinytest`:
+
+```{r, message = FALSE}
+library(ggplot2)
+library(tinyviztest)
+setwd("inst/tinytest")
+```
+
+### `ggplot2` example
+
+```{r}
+write_vdiff(
+    ggplot(mtcars, aes(mpg, wt)) + geom_point(),
+    name = "ggplot2")
+
+expect_vdiff(
+    ggplot(mtcars, aes(mpg, wt)) + geom_point(),
+    name = "ggplot2")
+
+expect_vdiff(
+    ggplot(mtcars, aes(mpg, hp)) + geom_point(), 
+    name = "ggplot2")
+```
+
+The target plots are "protected" from overwriting:
+
+```{r, error = TRUE}
+write_vdiff(
+    ggplot(mtcars, aes(mpg, wt)) + geom_point(),
+    name = "ggplot2")
+```
+
+But we can overwrite them with an argument:
+
+```{r}
+write_vdiff(
+    ggplot(mtcars, aes(mpg, wt)) + geom_point(),
+    name = "ggplot2",
+    overwrite = TRUE)
+```
+
+### Base `R` plot example
+
+To test a Base `R` plot, we supply a function which prints the plot:
+
+```{r}
+write_vdiff(
+    function() with(mtcars, plot(hp, wt)),
+    name = "base")
+
+expect_vdiff(
+    function() with(mtcars, plot(hp, wt)),
+    name = "base")
+
+expect_vdiff(
+    function() with(mtcars, plot(hp, mpg)),
+    name = "base")
+```
