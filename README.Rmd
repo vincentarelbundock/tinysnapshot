@@ -28,7 +28,14 @@ library(remotes)
 install_github("vincentarelbundock/tinyviztest")
 ```
 
-## `ggplot2` example
+## How to use `tinyviztest` in an `R` package
+
+The `tinyviztest` repository itself acts as an example for how to setup up visual tests:
+
+* https://github.com/vincentarelbundock/tinyviztest/blob/main/inst/tinytest/test-basic.R
+* https://github.com/vincentarelbundock/tinyviztest/blob/main/tests/tinytest.R
+
+## `ggplot2`
 
 The first time we run `expect_vdiff()`, the test fails, and a target plot is saved in a folder called `_tinyviztest`
 
@@ -63,7 +70,7 @@ expect_vdiff(p2, name = "ggplot2 example", overwrite = TRUE)
 expect_vdiff(p2, name = "ggplot2 example")
 ```
 
-## Base `R` plot example
+## Base `R` graphics
 
 To test a Base `R` plot, we supply a function which prints the plot:
 
@@ -78,10 +85,3 @@ expect_vdiff(p1, name = "base")
 expect_vdiff(p2, name = "base")
 ```
 
-## Using `tinyviztest` in a package.
-
-Place this `library` call at the top of *every* test script in `inst/tinytest` where you need to use visual expectations:
-
-```{r}
-library("tinyviztest")
-```

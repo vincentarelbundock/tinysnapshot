@@ -32,21 +32,15 @@ library(remotes)
 install_github("vincentarelbundock/tinyviztest")
 ```
 
-It is useful to add this `.gitignore`:
+## How to use `tinyviztest` in an `R` package
 
-``` git
-/inst/tinytest/_tinytest_compare
-/inst/tinytest/_tinytest_current
-```
+The `tinyviztest` repository itself acts as an example for how to setup
+up visual tests:
 
-And this to `.Rbuildignore`:
+  - <https://github.com/vincentarelbundock/tinyviztest/blob/main/inst/tinytest/test-basic.R>
+  - <https://github.com/vincentarelbundock/tinyviztest/blob/main/tests/tinytest.R>
 
-``` git
-inst/tinytest/_tinytest_compare
-inst/tinytest/_tinytest_current
-```
-
-### `ggplot2` example
+## `ggplot2`
 
 The first time we run `expect_vdiff()`, the test fails, and a target
 plot is saved in a folder called `_tinyviztest`
@@ -64,8 +58,8 @@ expect_vdiff(p1, name = "ggplot2 example")
 
     ## ----- FAILED[]: <-->
     ##  call| expect_vdiff(p1, name = "ggplot2 example")
-    ##  diff| 33536
-    ##  info| pixels
+    ##  diff| 0
+    ##  info| new plot was saved to: _tinyviztest/ggplot2_example-001.png
 
 The second time we run `expect_vdiff()` the test passes:
 
@@ -73,9 +67,8 @@ The second time we run `expect_vdiff()` the test passes:
 expect_vdiff(p1, name = "ggplot2 example")
 ```
 
-    ## ----- FAILED[]: <-->
+    ## ----- PASSED      : <-->
     ##  call| expect_vdiff(p1, name = "ggplot2 example")
-    ##  diff| 33536
     ##  info| pixels
 
 If we use a different plot, the test fails:
@@ -84,8 +77,9 @@ If we use a different plot, the test fails:
 expect_vdiff(p2, name = "ggplot2 example")
 ```
 
-    ## ----- PASSED      : <-->
+    ## ----- FAILED[]: <-->
     ##  call| expect_vdiff(p2, name = "ggplot2 example")
+    ##  diff| 33536
     ##  info| pixels
 
 We can overwrite the target plot with an argument:
@@ -96,8 +90,8 @@ expect_vdiff(p2, name = "ggplot2 example", overwrite = TRUE)
 
     ## ----- FAILED[]: <-->
     ##  call| expect_vdiff(p2, name = "ggplot2 example", overwrite = TRUE)
-    ## 
-    ##  info| Target missing. A new plot was saved to: _tinyviztest
+    ##  diff| 0
+    ##  info| new plot was saved to: _tinyviztest/ggplot2_example-001.png
 
 ``` r
 expect_vdiff(p2, name = "ggplot2 example")
@@ -107,7 +101,7 @@ expect_vdiff(p2, name = "ggplot2 example")
     ##  call| expect_vdiff(p2, name = "ggplot2 example")
     ##  info| pixels
 
-### Base `R` plot example
+## Base `R` graphics
 
 To test a Base `R` plot, we supply a function which prints the plot:
 
@@ -118,9 +112,10 @@ p2 <- function() plot(mtcars$hp, mtcars$mpg)
 expect_vdiff(p1, name = "base")
 ```
 
-    ## ----- PASSED      : <-->
+    ## ----- FAILED[]: <-->
     ##  call| expect_vdiff(p1, name = "base")
-    ##  info| pixels
+    ##  diff| 0
+    ##  info| new plot was saved to: _tinyviztest/base-001.png
 
 ``` r
 expect_vdiff(p1, name = "base")
