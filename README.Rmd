@@ -4,10 +4,6 @@ output: github_document
 
 # Visual regression testing in the `tinytest` framework for `R`
 
-<!-- badges: start -->
-[![R-CMD-check](https://github.com/vincentarelbundock/tinyviztest/workflows/R-CMD-check/badge.svg)](https://github.com/vincentarelbundock/tinyviztest/actions)
-<!-- badges: end -->
-
 [`tinytest` is a wonderful package for `R`](https://cran.r-project.org/package=tinytest) created by Mark van der Loo. It is a "lightweight, no-dependency, but full-featured package for unit testing in `R`."
 
 `tinyviztest` extends `tinytest` with an expectation function called `expect_vdiff()`. This function can be used to:
@@ -18,6 +14,12 @@ output: github_document
 `tinyviztest` supports both `ggplot2` and base `R` plots.
 
 Under the hood, `tinyviztest` uses [the `gdiff` package by Paul Murrell](https://cran.r-project.org/package=gdiff) to compare plots.
+
+During the early development phase the tests in this repository will remain intentionally broken to ensure that failures are picked up by `tinytest` and displayed properly on Github Actions. 2 of the 3 tests should fail:
+
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/vincentarelbundock/tinyviztest/workflows/R-CMD-check/badge.svg)](https://github.com/vincentarelbundock/tinyviztest/actions)
+<!-- badges: end -->
 
 ## Installation
 
