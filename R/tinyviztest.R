@@ -80,7 +80,8 @@ expect_vdiff <- function(current,
     fn_target <- file.path("_tinyviztest", basename(fn_current))
 
     if (!file.exists(fn_target) || isTRUE(overwrite)) {
-        void <- file.rename(fn_current, fn_target)
+        # void <- file.rename(fn_current, fn_target)
+        fs::file_move(fn_current, fn_target)
         msg <- "new plot was saved to: %s"
         msg <- sprintf(msg, fn_target)
         flag <- FALSE
