@@ -2,7 +2,7 @@
 % Please edit documentation in R/tinyvizreview.R
 \name{tinyvizreview}
 \alias{tinyvizreview}
-\title{Review the plots rendered by the `tinyviztest` suite}
+\title{Review the plots rendered by the \code{tinyviztest} suite}
 \usage{
 tinyvizreview(
   label = NULL,
@@ -12,9 +12,9 @@ tinyvizreview(
 )
 }
 \arguments{
-\item{label}{a string to identify the test. Each plot in the test suite must have a unique label. When `label` is `NULL`, the function returns a list of images ready for review.}
+\item{label}{a string to identify the test. Each plot in the test suite must have a unique label. When \code{label} is \code{NULL}, the function returns a list of images ready for review.}
 
-\item{path}{Path to the `_tinyviztest_review` folder. This folder is created when expectations fail while using `tinytest`.}
+\item{path}{Path to the \verb{_tinyviztest_review} folder. This folder is created when expectations fail while using \code{tinytest}.}
 
 \item{width}{Width of the graphics device window}
 
@@ -24,5 +24,5 @@ tinyvizreview(
 A plot with 3 panels: old, new, and diff pictures.
 }
 \description{
-Review the plots rendered by the `tinyviztest` suite
+Review the plots rendered by the \code{tinyviztest} suite
 }

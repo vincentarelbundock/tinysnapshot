@@ -15,7 +15,7 @@
 #' @param x an object of class `ggplot` or a function which returns a base R plot. See Examples below.
 #' @param label a string to identify the test. Each plot in the test suite must have a unique label.
 #' @param tolerance integer the number of different pixels that are acceptable before triggering a failure.
-#' @return A \code{\link{tinytest}} object. A tinytest object is a
+#' @return A `tinytest` object. A tinytest object is a
 #' \code{logical} with attributes holding information about the test that was
 #' run
 #'
@@ -52,8 +52,7 @@
 #' @export
 expect_vdiff <- function(x,
                          label,
-                         tolerance = 0,
-                         device = gdiff::pngDevice()) {
+                         tolerance = 0) {
 
     # Graphics device to generate output. See ?[gdiff::gdiffDevice]
     # we could eventually add support for other devices
@@ -109,7 +108,7 @@ compare_plots <- function(x, label, path, tolerance = 0, device = gdiff::pngDevi
 
     if (results$diffs[1] > tolerance) {
         revdir <- file.path("_tinyviztest_review", label)
-        dir.create(revdir, showWarning = FALSE, recursive = TRUE)
+        dir.create(revdir, showWarnings = FALSE, recursive = TRUE)
         file.rename(results$testFiles[1], file.path(revdir, "new.png"))
         file.rename(results$controlFiles[1], file.path(revdir, "old.png"))
         file.rename(results$diffFiles[1], file.path(revdir, "diff.png"))

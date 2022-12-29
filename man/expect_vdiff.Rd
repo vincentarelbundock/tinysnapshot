@@ -4,32 +4,32 @@
 \alias{expect_vdiff}
 \title{Test if the new plot matches a target plot}
 \usage{
-expect_vdiff(x, label, tolerance = 0, device = gdiff::pngDevice())
+expect_vdiff(x, label, tolerance = 0)
 }
 \arguments{
-\item{x}{an object of class `ggplot` or a function which returns a base R plot. See Examples below.}
+\item{x}{an object of class \code{ggplot} or a function which returns a base R plot. See Examples below.}
 
 \item{label}{a string to identify the test. Each plot in the test suite must have a unique label.}
 
 \item{tolerance}{integer the number of different pixels that are acceptable before triggering a failure.}
 }
 \value{
-A \code{\link{tinytest}} object. A tinytest object is a
+A \code{tinytest} object. A tinytest object is a
 \code{logical} with attributes holding information about the test that was
 run
 }
 \description{
-This expectation can be used with `tinytest` to check if the new plot matches
+This expectation can be used with \code{tinytest} to check if the new plot matches
 a target plot.
 }
 \details{
 When the expectation is checked for the first time, the expectation fails and
-a reference plot is saved to the `inst/tinytest/_tinyviztest` folder.
+a reference plot is saved to the \verb{inst/tinytest/_tinyviztest} folder.
 
 When the expectation fails, the reference plot, the new plot, and a diff are
-saved to the `inst/tinytest/label` folder. Call the `review()` function to compare.
+saved to the \code{inst/tinytest/label} folder. Call the \code{review()} function to compare.
 
-To update a snapshot, delete the reference file from the `_tinyviztest`
+To update a snapshot, delete the reference file from the \verb{_tinyviztest}
 folder and run the test suite again.
 }
 \examples{
