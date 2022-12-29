@@ -1,7 +1,7 @@
 Package: tinyviztest
 Type: Package
 Title: Visual tests using the `tinytest` framework
-Version: 0.0.0.9000
+Version: 0.0.0.9001
 Date: 2022-05-17
 Author: Vincent Arel-Bundock
 Maintainer: Vincent Arel-Bundock <vincent.arel-bundock@umontreal.ca>
@@ -9,7 +9,9 @@ Description: Visual tests using the `tinytest` framework.
 License: GPL (>= 3)
 Imports:
     gdiff,
-    fs,
+    png,
     tinytest
+Suggests:
+    ggplot2
 Encoding: UTF-8
 RoxygenNote: 7.2.1

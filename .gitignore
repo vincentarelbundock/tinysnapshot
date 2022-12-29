@@ -35,10 +35,5 @@ vignettes/*.pdf
 *.utf8.md
 *.knit.md
 
-/inst/tinytest/_tinyviztest_compare/
-/inst/tinytest/_tinyviztest_current/
+/inst/tinytest/_tinyviztest_review/
 /README.html
-/_tinyviztest/
-/_tinyviztest_compare/
-/_tinyviztest_current/
-

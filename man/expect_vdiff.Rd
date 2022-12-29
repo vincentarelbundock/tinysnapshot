@@ -2,30 +2,16 @@
 % Please edit documentation in R/tinyviztest.R
 \name{expect_vdiff}
 \alias{expect_vdiff}
-\title{Test if the current plot matches a target plot}
+\title{Test if the new plot matches a target plot}
 \usage{
-expect_vdiff(
-  current,
-  name,
-  tolerance = 0,
-  overwrite = FALSE,
-  clean = FALSE,
-  device = gdiff::pngDevice()
-)
+expect_vdiff(x, label, tolerance = 0, device = gdiff::pngDevice())
 }
 \arguments{
-\item{current}{an object of class `ggplot` or a function which returns a base R plot. See Examples below.}
+\item{x}{an object of class `ggplot` or a function which returns a base R plot. See Examples below.}
 
-\item{name}{a string to identify the test. Each plot in the test suite must have a unique name.}
+\item{label}{a string to identify the test. Each plot in the test suite must have a unique label.}
 
 \item{tolerance}{integer the number of different pixels that are acceptable before triggering a failure.}
-
-\item{overwrite}{`TRUE` if the target plot should be overwritten; `FALSE`
-otherwise.}
-
-\item{clean}{TRUE cleans the test directory. FALSE keeps the current plot and a visual diff file.}
-
-\item{device}{Graphics device to generate output. See ?[gdiff::gdiffDevice]}
 }
 \value{
 A \code{\link{tinytest}} object. A tinytest object is a
@@ -33,7 +19,18 @@ A \code{\link{tinytest}} object. A tinytest object is a
 run
 }
 \description{
-This expectation can be used with `tinytest` to check if the current plot matches a target plot. When the expectation is checked for the first time, the expectation fails and a target plot is saved in a folder called `_tinyviztest`. If the expectation fails after the first run, the current plot and a comparison object are saved in `tinyviztest_current` and `tinyviztest_compare`.
+This expectation can be used with `tinytest` to check if the new plot matches
+a target plot.
+}
+\details{
+When the expectation is checked for the first time, the expectation fails and
+a reference plot is saved to the `inst/tinytest/_tinyviztest` folder.
+
+When the expectation fails, the reference plot, the new plot, and a diff are
+saved to the `inst/tinytest/label` folder. Call the `review()` function to compare.
+
+To update a snapshot, delete the reference file from the `_tinyviztest`
+folder and run the test suite again.
 }
 \examples{
 \dontrun{
@@ -44,25 +41,25 @@ using(tinyviztest)
 # ggplot2: run once to save a snapshot
 expect_vdiff(
   ggplot(mtcars, aes(mpg, hp)) + geom_point(),
-  name = "ggplot2 example")
+  label = "ggplot2 example")
 
 # ggplot2: run a second time -> PASS
 expect_vdiff(
   ggplot(mtcars, aes(mpg, hp)) + geom_point(),
-  name = "ggplot2 example")
+  label = "ggplot2 example")
 
 # ggplot2: run with the wrong plot -> FAIL
 expect_vdiff(
   ggplot(mtcars, aes(mpg, wt)) + geom_point(),
-  name = "ggplot2 example")
+  label = "ggplot2 example")
 
 # Base R graphics: Function which returns a plot
 expect_vdiff(
   function() plot(mtcars$mpg, mtcars$wt),
-  name = "base R example")
+  label = "base R example")
 
 expect_vdiff(
   function() plot(mtcars$mpg, mtcars$wt),
-  name = "base R example")
+  label = "base R example")
 }
 }

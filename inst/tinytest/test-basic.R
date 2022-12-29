@@ -1,14 +1,34 @@
+# 1st run: These tests fail 6 times and generate 3 reference plots
+# 2nd run: These tests fail 3 times
+
 library("tinytest")
 using("tinyviztest")
 
+
+###### base R
 p1 <- function() plot(mtcars$hp, mtcars$mpg)
 p2 <- function() plot(mtcars$hp, mtcars$wt)
 
-# 1st run fails but writes the target to file
-expect_vdiff(p1, "base simple")
+# good plot
+# Run once to create the reference plot
+# Run twice to pass the test
+expect_vdiff(p1, "base")
 
-# 2nd run succeeds
-expect_vdiff(p1, "base simple")
+# bad plot always fails
+expect_vdiff(p2, "base")
 
-# bad plot fails (clean to avoid CI artefacts)
-expect_vdiff(p2, "base simple")
+
+###### ggplot2
+suppressPackageStartupMessages(library("ggplot2"))
+
+p1 <- ggplot(mtcars, aes(mpg, hp)) + geom_point()
+expect_vdiff(p1, "ggplot2_variable")
+
+p2 <- ggplot(mtcars, aes(mpg, wt)) + geom_point()
+expect_vdiff(p2, "ggplot2_variable")
+
+p3 <- ggplot(mtcars, aes(mpg, hp)) + geom_point()
+expect_vdiff(p3, "ggplot2_theme")
+
+p4 <- ggplot(mtcars, aes(mpg, hp)) + geom_point() + theme_minimal()
+expect_vdiff(p4, "ggplot2_theme")
