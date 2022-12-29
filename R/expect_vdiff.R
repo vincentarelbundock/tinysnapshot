@@ -64,12 +64,12 @@ expect_vdiff <- function(x,
     if (!file.exists(fn_ref)) {
         msg <- sprintf("Creating reference file: %s", fn_ref)
         warning(msg, call. = FALSE)
-        render_plot(x, path = fn_ref, device = device)
+        render(x, path = fn_ref, device = device)
         flag <- FALSE
         pixels <- 0
 
     } else {
-        pixels <- compare_plots(
+        pixels <- distance_gdiff(
             x,
             label = label,
             path = fn_ref,
@@ -83,76 +83,4 @@ expect_vdiff <- function(x,
         call = sys.call(sys.parent(1)),
         diff = as.character(pixels),
         info = "pixels")
-}
-
-
-compare_plots <- function(x, label, path, tolerance = 0, device = gdiff::pngDevice()) {
-    # `gdiff` requires a directory structure
-    randdir <- sample(c(0:9, letters), 20, replace = TRUE)
-    randdir <- paste0("tinyviztest_compare_", paste(randdir, collapse = ""))
-    controlDir <- file.path(randdir, "control")
-    testDir <- file.path(randdir, "test")
-    compareDir <- file.path(randdir, "compare")
-    dir.create(controlDir, recursive = TRUE, showWarnings = FALSE)
-    dir.create(testDir, recursive = TRUE, showWarnings = FALSE)
-    dir.create(compareDir, recursive = TRUE, showWarnings = FALSE)
-
-    file.copy(path, controlDir, recursive = TRUE)
-    render_plot(x, file.path(testDir, basename(path)), device = device)
-
-    results <- gdiff::gdiffCompare(
-        controlDir = controlDir,
-        testDir = testDir,
-        compareDir = compareDir,
-        clean = FALSE)
-
-    if (results$diffs[1] > tolerance) {
-        revdir <- file.path("_tinyviztest_review", label)
-        dir.create(revdir, showWarnings = FALSE, recursive = TRUE)
-        file.rename(results$testFiles[1], file.path(revdir, "new.png"))
-        file.rename(results$controlFiles[1], file.path(revdir, "old.png"))
-        file.rename(results$diffFiles[1], file.path(revdir, "diff.png"))
-    }
-
-    # cleanup temp files
-    unlink(randdir, recursive = TRUE, force = TRUE)
-
-    return(results$diffs[1])
-}
-
-
-render_plot <- function(x, path, device =  gdiff::pngDevice()) {
-    if (!identical(tools::file_ext(path), "png")) {
-        msg <- "Plots can only be rendered to files with .png extension."
-        stop(msg, call. = FALSE)
-    }
-
-    # support both types
-    if (inherits(x, "ggplot")) {
-        obj <- function() print(x)
-    } else if (is.function(x)) {
-        obj <- x
-    } else {
-        msg <- "Must be an object of class `ggplot` or a function which prints a plot."
-        stop(msg, call. = FALSE)
-    }
-
-
-    # `gdiff` requires directory structure
-    randdir <- sample(c(0:9, letters), 20, replace = TRUE)
-    randdir <- paste0("tinyviztest_render_", paste(randdir, collapse = ""))
-    unlink(".gdiffSession")
-
-    fn <- suppressWarnings(gdiff::gdiffOutput(
-        obj,
-        dir = randdir,
-        device = device,
-        clean = TRUE))
-
-    pathdir <- dirname(path)
-    dir.create(pathdir, showWarnings = FALSE, recursive = TRUE)
-    file.rename(fn[1], path)
-
-    unlink(".gdiffSession")
-    unlink(randdir, recursive = TRUE, force = TRUE)
 }
