@@ -23,14 +23,28 @@ During the early development phase the tests in this repository will remain inte
 
 ## Installation
 
+This package requires a version of `tinytest` greater than 1.3.1. If this version is not yet available on CRAN, you can install it from Github:
+
+```{r, eval = FALSE}
+remotes::install_github("markvanderloo/tinytest/pkg")
+```
+
 `tinyviztest` is not yet available on CRAN. It can be installed from Github:
 
 ```{r, eval = FALSE}
-library(remotes)
-install_github("vincentarelbundock/tinyviztest")
+remotes::install_github("vincentarelbundock/tinyviztest")
 ```
 
 ## How to use `tinyviztest` in an `R` package
+
+```{r, eval = FALSE}
+library(pkgKitten)
+dir.create("tmp")
+kitten(name = "testpkg", path = "tmp")
+setwd("tmp/testpkg")
+```
+
+
 
 The `tinyviztest` repository itself acts as an example for how to setup up visual tests:
 
