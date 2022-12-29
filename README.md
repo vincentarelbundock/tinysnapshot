@@ -1,13 +1,12 @@
 # Visual regression testing with `R` and `tinytest`
 
-[`tinytest` is a "lightweight, no-dependency, but full-featured package for unit testing in `R`"](https://cran.r-project.org/package=tinytest) created by Mark van der Loo.
+[`tinytest` is a "lightweight, no-dependency, but full-featured package for unit testing in `R`,"](https://cran.r-project.org/package=tinytest) created by Mark van der Loo.
 
-The `tinyviztest` package extends `tinytest` with a an expectation function called `expect_vdiff()`. This expectation can be used to:
+The `tinyviztest` package extends `tinytest` to allow developers to test both base `R` and `ggplot2` plots:
 
-1. Take snapshots of known "target" plots.
-2. Test if the "current" plot matches the target.
-
-`tinyviztest` supports both `ggplot2` and base `R` plots.
+1. Taking snapshots of known "target" plots.
+2. Testing if the "current" plot matches the target.
+3. Displaying the target and current plots side-by-side along with a visual "diff" to facilitate comparison.
 
 Under the hood, `tinyviztest` uses [the `gdiff` package by Paul Murrell](https://cran.r-project.org/package=gdiff) to compare plots, and [the `png` package by Simon Urbanek](https://cran.r-project.org/package=png) to display snapshots.
 
