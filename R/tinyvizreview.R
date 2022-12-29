@@ -31,10 +31,17 @@ tinyvizreview <- function(
     fn_new <- grDevices::as.raster(png::readPNG(fn_new))
     fn_diff <- grDevices::as.raster(png::readPNG(fn_diff))
 
+    # reset graphics parameters
+    def.par <- par(no.readonly = TRUE)
 
-    dev.new(width = width, height = height)
+    # plot grid
     par(mfrow = c(1, 3), mar = rep(0, 4))
     plot(fn_old)
     plot(fn_new)
     plot(fn_diff)
+
+    # reset graphics parameters
+    par(def.par)
+
+    return(invisible(NULL))
 }
