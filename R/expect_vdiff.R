@@ -69,13 +69,14 @@ expect_vdiff <- function(x,
         pixels <- 0
 
     } else {
-        pixels <- distance_gdiff(
+        cmp <- distance_gdiff(
             x,
             label = label,
             path = fn_ref,
             tolerance = tolerance,
             device = device)
-        flag <- pixels <= tolerance
+        flag <- compare(x = cmp, label = label, tolerance = tolerance)
+        pixels <- cmp$distance
     }
 
     tinytest::tinytest(

@@ -1,4 +1,9 @@
-distance_gdiff <- function(x, label, path, tolerance = 0, device = gdiff::pngDevice(), ...) {
+distance_gdiff <- function(x,
+                           path,
+                           tolerance = 0,
+                           device = gdiff::pngDevice(),
+                           ...) {
+
     # `gdiff` requires a directory structure
     randdir <- sample(c(0:9, letters), 20, replace = TRUE)
     randdir <- paste0("tinyviztest_compare_", paste(randdir, collapse = ""))
@@ -18,17 +23,11 @@ distance_gdiff <- function(x, label, path, tolerance = 0, device = gdiff::pngDev
         compareDir = compareDir,
         clean = FALSE)
 
-    if (results$diffs[1] > tolerance) {
-        revdir <- file.path("_tinyviztest_review", label)
-        dir.create(revdir, showWarnings = FALSE, recursive = TRUE)
-        file.rename(results$testFiles[1], file.path(revdir, "new.png"))
-        file.rename(results$controlFiles[1], file.path(revdir, "old.png"))
-        file.rename(results$diffFiles[1], file.path(revdir, "diff.png"))
-    }
-
-    # cleanup temp files
-    unlink(randdir, recursive = TRUE, force = TRUE)
-
-    return(results$diffs[1])
+    out <- list(
+        new = results$testFiles[1],
+        old = results$controlFiles[1],
+        diff = results$diffFiles[1],
+        tmp_dir = randdir,
+        distance = unname(results$diffs[1]))
+    return(out)
 }
-

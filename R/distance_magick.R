@@ -1,5 +1,4 @@
 distance_magick <- function(x,
-                            label,
                             path,
                             tolerance = 0,
                             metric = "AE",
@@ -14,18 +13,22 @@ distance_magick <- function(x,
     # `gdiff` requires a directory structure
     randdir <- sample(c(0:9, letters), 20, replace = TRUE)
     randdir <- paste0("tinyviztest_compare_", paste(randdir, collapse = ""))
-    randfn <- paste0(file.path(randdir), ".png")
+    randfn <- file.path(randdir, paste0("new", ".png"))
 
     render(x, randfn, device = device)
 
     old <- magick::image_read(path)
     new <- magick::image_read(randfn)
-    dist <- magick::image_compare_dist(old, new, metric = metric)$distortion
+    imgdist <- magick::image_compare_dist(old, new, metric = metric)$distortion
+    imgdiff <- magick::image_compare(old, new, metric = metric)
+    fn_diff <- file.path(randdir, "diff.png")
+    magick::image_write(imgdiff, path = fn_diff)
 
     out <- list(
-        old = randfn,
-        new = path,
-        dir = randdir,
-        distance = dist)
+        new = randfn,
+        old = path,
+        diff = fn_diff,
+        tmp_dir = randdir,
+        distance = imgdist)
     return(out)
 }
