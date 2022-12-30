@@ -1,4 +1,4 @@
-# Visual regression testing with `R` and `tinytest`
+# Visual regression tests with `R` and `tinytest`
 
 [`tinytest` is a "lightweight, no-dependency, but full-featured package for unit testing in `R`,"](https://cran.r-project.org/package=tinytest) created by Mark van der Loo.
 
