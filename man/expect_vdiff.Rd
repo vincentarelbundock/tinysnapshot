@@ -9,7 +9,7 @@ expect_vdiff(x, label, tolerance = 0, metric = "AE", fuzz = 0)
 \arguments{
 \item{x}{an object of class \code{ggplot} or a function which returns a base R plot. See Examples below.}
 
-\item{label}{a string to identify the test. Each plot in the test suite must have a unique label.}
+\item{label}{a string to identify the test (alpha-numeric or underscores). Each plot in the test suite must have a unique label.}
 
 \item{tolerance}{distance estimates larger than this threshold will trigger a test failure. Scale depends on the \code{metric} argument. With the default \code{metric="AE"} (absolute error), the \code{tolerance} corresponds roughly to the number of pixels of difference between the plot and the reference image. See also \code{?distance_plot}}
 
