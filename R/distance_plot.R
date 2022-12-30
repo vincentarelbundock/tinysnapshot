@@ -1,3 +1,10 @@
+#' Measure the distance between an `R` plot and a plot saved as a PNG file.
+#' 
+#' @inheritParams expect_vdiff
+#' @param x a `ggplot2` object or a function which returns a base `R` plot when executed.
+#' @param path Path to the saved plot in PNG format.
+#' @param clean `TRUE` deletes temporary files.
+#' @export
 distance_plot <- function(x,
                           path,
                           tolerance = 0,

@@ -8,7 +8,7 @@ The `tinyviztest` package extends `tinytest` with expectations to test plots cre
 2. Testing if the "current" plot matches the target.
 3. Displaying the target and current plots side-by-side, along with a visual "diff" to facilitate comparison.
 
-Under the hood, `tinyviztest` uses [the `magick` package by Jeroen Ooms](https://cran.r-project.org/package=magick) to read and compare images.
+Under the hood, `tinyviztest` uses [the `magick` package](https://cran.r-project.org/package=magick) by Jeroen Ooms to read and compare images.
 
 ## Installation
 
@@ -35,13 +35,15 @@ library("tinytest")
 using("tinyviztest")
 ```
 
-When users run the `tinytest` suite (`tinytest::run_test_dir("inst/tinytest")`), the `expect_vdiff()` expectations are executed and three main states can arise:
+When users run the `tinytest` suite, the `expect_vdiff()` expectations are executed and three main states can arise:
 
 * On first run: 
-    - The test fail and saves a visual snapshot in PNG format in the `inst/tinytest/_tinyviztest` directory.
+    - Test fails and saves a visual snapshot in the `inst/tinytest/_tinyviztest` directory.
 * On subsequent runs:
-    - Test pass when the plot matches the reference PNG file.
-    - Test fail and saves comparison files in `inst/tinytest/_tinyviztest_review`
+    - Test passes when the plot matches the snapshot PNG file.
+    - Test fails and saves comparison files in `inst/tinytest/_tinyviztest_review`
+
+All files are saved in PNG format using the `grDevices::png()` device.
 
 ### `ggplot2`
 
@@ -78,7 +80,7 @@ p2 <- function() plot(mtcars$hp, mtcars$mpg)
 # On subsequent runs: pass
 expect_vdiff(p1, label = "base_example")
 
-# always fails
+# Always fails
 expect_vdiff(p2, label = "base_example")
 ```
 
@@ -101,7 +103,7 @@ tinyvizreview("base")
 
 ## Updating snapshots
 
-To update a test, simply delete the relevant snapshot from `inst/tinytest/_tinyviztest` and run the test suite again.
+To update a test, simply delete the relevant snapshot from the `inst/tinytest/_tinyviztest` folder, and run the test suite again.
 
 ## Minimal package example
 
