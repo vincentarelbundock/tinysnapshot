@@ -4,6 +4,8 @@ render <- function(x, path, device =  gdiff::pngDevice()) {
         stop(msg, call. = FALSE)
     }
 
+    dir.create(dirname(path), showWarnings = FALSE, recursive = TRUE)
+
     # support both types
     png(path)
     if (inherits(x, "ggplot")) {
