@@ -7,7 +7,7 @@ render <- function(x, path) {
     dir.create(dirname(path), showWarnings = FALSE, recursive = TRUE)
 
     # support both types
-    grDevices::png(path)
+    ragg::agg_png(path)
 
     if (inherits(x, "ggplot")) {
         print(x)
@@ -18,9 +18,7 @@ render <- function(x, path) {
         stop(msg, call. = FALSE)
     }
 
-    grDevices::dev.off()
-
-    return(invisible(NULL))
+    invisible(grDevices::dev.off())
 
     ##### old code works with `gdiff`
 
