@@ -6,8 +6,6 @@ distance_plot <- function(x,
                           clean = TRUE,
                           ...) {
 
-    device = gdiff::pngDevice()
-
     if (!file.exists(path)) {
         msg <- sprintf("This file does not exist: %s", path)
         stop(msg, call. = FALSE)
@@ -18,7 +16,7 @@ distance_plot <- function(x,
     randdir <- paste0("tinyviztest_compare_", paste(randdir, collapse = ""))
     randfn <- file.path(randdir, paste0("new", ".png"))
 
-    render(x, randfn, device = device)
+    render(x, randfn)
 
     old <- magick::image_read(path)
     new <- magick::image_read(randfn)

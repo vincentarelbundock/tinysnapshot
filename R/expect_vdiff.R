@@ -57,10 +57,6 @@ expect_vdiff <- function(x,
                          metric = "AE",
                          fuzz = 0) {
 
-    # Graphics device to generate output. See ?[gdiff::gdiffDevice]
-    # we could eventually add support for other devices
-    device <- gdiff::pngDevice()
-
     # sanity
     if (!is.character(metric) || length(metric) != 1 || !metric %in% magick::metric_types()) {
         msg <- sprintf(
@@ -75,7 +71,7 @@ expect_vdiff <- function(x,
     if (!file.exists(fn_ref)) {
         msg <- sprintf("Creating reference file: %s", fn_ref)
         warning(msg, call. = FALSE)
-        render(x, path = fn_ref, device = device)
+        render(x, path = fn_ref)
         flag <- FALSE
         pixels <- 0
 
@@ -85,7 +81,6 @@ expect_vdiff <- function(x,
             label = label,
             path = fn_ref,
             tolerance = tolerance,
-            device = device,
             clean = FALSE)
         flag <- compare(x = cmp, label = label, tolerance = tolerance)
         pixels <- cmp$distance

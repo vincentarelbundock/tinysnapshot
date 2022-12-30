@@ -1,4 +1,4 @@
-render <- function(x, path, device =  gdiff::pngDevice()) {
+render <- function(x, path) {
     if (!identical(tools::file_ext(path), "png")) {
         msg <- "Plots can only be rendered to files with .png extension."
         stop(msg, call. = FALSE)
@@ -7,7 +7,8 @@ render <- function(x, path, device =  gdiff::pngDevice()) {
     dir.create(dirname(path), showWarnings = FALSE, recursive = TRUE)
 
     # support both types
-    png(path)
+    grDevices::png(path)
+
     if (inherits(x, "ggplot")) {
         print(x)
     } else if (is.function(x)) {
@@ -16,7 +17,8 @@ render <- function(x, path, device =  gdiff::pngDevice()) {
         msg <- "Must be an object of class `ggplot` or a function which prints a plot."
         stop(msg, call. = FALSE)
     }
-    dev.off()
+
+    grDevices::dev.off()
 
     return(invisible(NULL))
 
