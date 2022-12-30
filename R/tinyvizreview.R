@@ -27,9 +27,9 @@ tinyvizreview <- function(
         }
     }
 
-    fn_old <- grDevices::as.raster(png::readPNG(fn_old))
-    fn_new <- grDevices::as.raster(png::readPNG(fn_new))
-    fn_diff <- grDevices::as.raster(png::readPNG(fn_diff))
+    fn_old <- grDevices::as.raster(magick::image_read(fn_old))
+    fn_new <- grDevices::as.raster(magick::image_read(fn_new))
+    fn_diff <- grDevices::as.raster(magick::image_read(fn_diff))
 
     # reset graphics parameters
     def.par <- graphics::par(no.readonly = TRUE)

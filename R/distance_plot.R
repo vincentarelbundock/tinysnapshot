@@ -1,9 +1,13 @@
-distance_magick <- function(x,
-                            path,
-                            tolerance = 0,
-                            metric = "AE",
-                            device = gdiff::pngDevice(),
-                            ...) {
+distance_plot <- function(x,
+                          path,
+                          tolerance = 0,
+                          metric = "AE",
+                          fuzz = 0,
+                          clean = TRUE,
+                          ...) {
+
+    device = gdiff::pngDevice()
+
     flag <- suppressPackageStartupMessages(require("magick"))
     if (!isTRUE(flag)) {
         msg <- "Please install the `magick` package."
@@ -19,8 +23,8 @@ distance_magick <- function(x,
 
     old <- magick::image_read(path)
     new <- magick::image_read(randfn)
-    imgdist <- magick::image_compare_dist(old, new, metric = metric)$distortion
-    imgdiff <- magick::image_compare(old, new, metric = metric)
+    imgdist <- magick::image_compare_dist(old, new, metric = metric, fuzz = fuzz)$distortion
+    imgdiff <- magick::image_compare(old, new, metric = metric, fuzz = fuzz)
     fn_diff <- file.path(randdir, "diff.png")
     magick::image_write(imgdiff, path = fn_diff)
 
@@ -30,5 +34,10 @@ distance_magick <- function(x,
         diff = fn_diff,
         tmp_dir = randdir,
         distance = imgdist)
+
+    if (isTRUE(clean)) {
+        unlink(out$tmp_dir, recursive = TRUE, force = TRUE)
+    }
+
     return(out)
 }

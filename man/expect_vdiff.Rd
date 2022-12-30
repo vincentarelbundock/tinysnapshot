@@ -4,14 +4,20 @@
 \alias{expect_vdiff}
 \title{Test if the new plot matches a target plot}
 \usage{
-expect_vdiff(x, label, tolerance = 0)
+expect_vdiff(x, label, tolerance = 0, metric = "AE", fuzz = 0)
 }
 \arguments{
 \item{x}{an object of class \code{ggplot} or a function which returns a base R plot. See Examples below.}
 
 \item{label}{a string to identify the test. Each plot in the test suite must have a unique label.}
 
-\item{tolerance}{integer the number of different pixels that are acceptable before triggering a failure.}
+\item{tolerance}{distance estimates larger than this threshold will trigger a test failure. Scale depends on the \code{metric} argument. With the default \code{metric="AE"} (absolute error), the \code{tolerance} corresponds roughly to the number of pixels of difference between the plot and the reference image. See also \code{?distance_plot}}
+
+\item{metric}{string with a \href{http://www.imagemagick.org/script/command-line-options.php#metric}{metric}
+from \link[magick:metric_types]{metric_types()} such as \code{"AE"} or \code{"phash"}}
+
+\item{fuzz}{relative color distance (value between 0 and 100) to be considered similar
+in the filling algorithm}
 }
 \value{
 A \code{tinytest} object. A tinytest object is a

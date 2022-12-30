@@ -6,6 +6,7 @@
 ^README.html
 ^README.Rmd
 ^_tinyviztest
+^sandbox$
 ^_tinyviztest_compare
 ^_tinyviztest_current
 ^\.github$

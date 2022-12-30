@@ -8,7 +8,7 @@ The `tinyviztest` package extends `tinytest` to test plots created by both base 
 2. Testing if the "current" plot matches the target.
 3. Displaying the target and current plots side-by-side along with a visual "diff" to facilitate comparison.
 
-Under the hood, `tinyviztest` uses [the `gdiff` package by Paul Murrell](https://cran.r-project.org/package=gdiff) to compare plots, and [the `png` package by Simon Urbanek](https://cran.r-project.org/package=png) to display snapshots.
+Under the hood, `tinyviztest` uses [the `gdiff` package by Paul Murrell](https://cran.r-project.org/package=gdiff) and [the `magick` package by Jeroen Ooms.](https://cran.r-project.org/package=magick)
 
 ## Installation
 

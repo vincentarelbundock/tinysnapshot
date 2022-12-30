@@ -14,7 +14,8 @@
 #' 
 #' @param x an object of class `ggplot` or a function which returns a base R plot. See Examples below.
 #' @param label a string to identify the test. Each plot in the test suite must have a unique label.
-#' @param tolerance integer the number of different pixels that are acceptable before triggering a failure.
+#' @param tolerance distance estimates larger than this threshold will trigger a test failure. Scale depends on the `metric` argument. With the default `metric="AE"` (absolute error), the `tolerance` corresponds roughly to the number of pixels of difference between the plot and the reference image. See also `?distance_plot`
+#' @inheritParams magick::image_compare
 #' @return A `tinytest` object. A tinytest object is a
 #' \code{logical} with attributes holding information about the test that was
 #' run
@@ -52,11 +53,21 @@
 #' @export
 expect_vdiff <- function(x,
                          label,
-                         tolerance = 0) {
+                         tolerance = 0,
+                         metric = "AE",
+                         fuzz = 0) {
 
     # Graphics device to generate output. See ?[gdiff::gdiffDevice]
     # we could eventually add support for other devices
     device <- gdiff::pngDevice()
+
+    # sanity
+    if (!is.character(metric) || length(metric) != 1 || !metric %in% magick::metric_types()) {
+        msg <- sprintf(
+            "The `metric` argument must be a single string, element of: %s",
+            paste(magick::metric_types(), collapse = ", "))
+        stop(msg, call. = FALSE)
+    }
 
     fn_ref <- file.path("_tinyviztest", paste0(label, ".png"))
 
@@ -69,12 +80,13 @@ expect_vdiff <- function(x,
         pixels <- 0
 
     } else {
-        cmp <- distance_gdiff(
+        cmp <- distance_plot(
             x,
             label = label,
             path = fn_ref,
             tolerance = tolerance,
-            device = device)
+            device = device,
+            clean = FALSE)
         flag <- compare(x = cmp, label = label, tolerance = tolerance)
         pixels <- cmp$distance
     }
