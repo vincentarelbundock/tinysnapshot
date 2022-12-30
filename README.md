@@ -1,12 +1,12 @@
 # Visual regression tests with `R` and `tinytest`
 
-[`tinytest` is a "lightweight, no-dependency, but full-featured package for unit testing in `R`,"](https://cran.r-project.org/package=tinytest) created by Mark van der Loo.
+`tinytest` is a ["lightweight, no-dependency, but full-featured package for unit testing in `R`"](https://cran.r-project.org/package=tinytest) created by Mark van der Loo.
 
-The `tinyviztest` package extends `tinytest` to test plots created by both base `R` and `ggplot2`. In particular, `tinyviztest` allows:
+The `tinyviztest` package extends `tinytest` with expectations to test plots created in either base `R` or `ggplot2`. In particular, `tinyviztest` allows:
 
 1. Taking snapshots of known "target" plots.
 2. Testing if the "current" plot matches the target.
-3. Displaying the target and current plots side-by-side along with a visual "diff" to facilitate comparison.
+3. Displaying the target and current plots side-by-side, along with a visual "diff" to facilitate comparison.
 
 Under the hood, `tinyviztest` uses [the `magick` package by Jeroen Ooms](https://cran.r-project.org/package=magick) to read and compare images.
 
