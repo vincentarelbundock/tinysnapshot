@@ -115,7 +115,8 @@ Create a `temp` directory and use the `pkgKitten` package to create an ultra-min
 library(tinytest)
 library(pkgKitten)
 kitten(name = "testpkg")
-
+```
+```r
     Creating directories ...
     Creating DESCRIPTION ...
     Creating NAMESPACE ...
@@ -144,7 +145,8 @@ Our package now includes 7 tests: 1 created by default by the `puppy()` function
 ```r
 setwd("testpkg")
 tinytest::run_test_dir("inst/tinytest")
-
+```
+```r
     test_testpkg.R................    1 tests OK 22ms
     test-basic.R..................    6 tests 6 fails 0.8s
     ----- FAILED[]: test-basic.R<15--15>
@@ -174,7 +176,9 @@ The second time we run the test suite, only 3 of the `test-basic.R` tests fail:
 
 ```r
 tinytest::run_test_dir("inst/tinytest")
+```
 
+```r
     test_testpkg.R................    1 tests OK 6ms
     test-basic.R..................    6 tests 3 fails 0.6s
     ----- FAILED[]: test-basic.R<18--18>
