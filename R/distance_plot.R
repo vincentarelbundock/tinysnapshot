@@ -8,9 +8,8 @@ distance_plot <- function(x,
 
     device = gdiff::pngDevice()
 
-    flag <- suppressPackageStartupMessages(require("magick"))
-    if (!isTRUE(flag)) {
-        msg <- "Please install the `magick` package."
+    if (!file.exists(path)) {
+        msg <- sprintf("This file does not exist: %s", path)
         stop(msg, call. = FALSE)
     }
 
