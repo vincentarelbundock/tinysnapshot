@@ -2,7 +2,7 @@
 
 `tinytest` is a ["lightweight, no-dependency, but full-featured package for unit testing in `R`"](https://cran.r-project.org/package=tinytest) created by Mark van der Loo.
 
-The `tinyviztest` package extends `tinytest` with expectations to test plots created in either base `R` or `ggplot2`. In particular, `tinyviztest` allows:
+The `tinyviztest` package extends `tinytest` with expectations to test the output of `print()` and plots created in either base `R` or `ggplot2`. In particular, `tinyviztest` allows:
 
 1. Taking snapshots of known "target" plots or `print()` output.
 2. Testing if the "current" plot or `print()` output matches the target.
