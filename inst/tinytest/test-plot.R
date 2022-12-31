@@ -12,23 +12,23 @@ p2 <- function() plot(mtcars$hp, mtcars$wt)
 # good plot
 # Run once to create the reference plot
 # Run twice to pass the test
-expect_vdiff(p1, "base")
+expect_vdiff(p1, "plot-base")
 
 # bad plot always fails
-expect_vdiff(p2, "base")
+expect_vdiff(p2, "plot-base")
 
 
 ###### ggplot2
 suppressPackageStartupMessages(library("ggplot2"))
 
 p1 <- ggplot(mtcars, aes(mpg, hp)) + geom_point()
-expect_vdiff(p1, "ggplot2_variable")
+expect_vdiff(p1, label = "plot-ggplot2_variable")
 
 p2 <- ggplot(mtcars, aes(mpg, wt)) + geom_point()
-expect_vdiff(p2, "ggplot2_variable")
+expect_vdiff(p2, label = "plot-ggplot2_variable")
 
 p3 <- ggplot(mtcars, aes(mpg, hp)) + geom_point()
-expect_vdiff(p3, "ggplot2_theme")
+expect_vdiff(p3, label = "plot-ggplot2_theme")
 
 p4 <- ggplot(mtcars, aes(mpg, hp)) + geom_point() + theme_minimal()
-expect_vdiff(p4, "ggplot2_theme")
+expect_vdiff(p4, label = "plot-ggplot2_theme")
