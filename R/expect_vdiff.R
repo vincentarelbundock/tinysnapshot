@@ -74,22 +74,37 @@ expect_vdiff <- function(x,
         msg <- sprintf("Creating reference file: %s", fn_ref)
         warning(msg, call. = FALSE)
         render(x, path = fn_ref)
-        flag <- FALSE
+        fail <- TRUE
         pixels <- 0
 
     } else {
-        cmp <- distance_plot(
+        dis <- distance(
             x,
             label = label,
             path = fn_ref,
             tolerance = tolerance,
             clean = FALSE)
-        flag <- compare(x = cmp, label = label, tolerance = tolerance)
-        pixels <- cmp$distance
+
+        # failure
+        if (dis$distance > tolerance) {
+            dir.create("_tinyviztest_review", showWarnings = FALSE, recursive = TRUE)
+            file.copy(
+                from = dis$review, 
+                to = file.path("_tinyviztest_review", paste0(label, ".png")))
+            fail <- TRUE
+        
+        # success
+        } else {
+            fail <- FALSE
+        }
+
+        pixels <- dis$distance
+
+        unlink(dis$tmp_dir, recursive = TRUE, force = TRUE)
     }
 
     tinytest::tinytest(
-        result = flag,
+        result = !fail,
         call = sys.call(sys.parent(1)),
         diff = as.character(pixels),
         info = "pixels")

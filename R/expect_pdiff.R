@@ -20,7 +20,12 @@ print.tinyvizstring <- function(x) cat(x)
 #' \code{logical} with attributes holding information about the test that was
 #' run
 #' @export
-expect_pdiff <- function(x, label, disp.width = 200) {
+expect_pdiff <- function(
+    x,
+    label,
+    mode = "unified",
+    format = "raw",
+    disp.width = 160) {
 
     label <- portable_label(label) 
 
@@ -34,19 +39,38 @@ expect_pdiff <- function(x, label, disp.width = 200) {
         sink(fn)
         print(x)
         sink()
-        flag <- FALSE
-        di <- "blah"
+        fail <- TRUE
+        di <- "Missing reference file."
 
     } else {
         ref <- readChar(fn, file.info(fn)$size)
         class(ref) <- c("tinyvizstring", class(ref))
-        di <- diffobj::diffPrint(ref, x, disp.width = disp.width)
-        flag <- suppressWarnings(!any(di))
-        di <- paste(as.character(di), collapse = "\n")
+        di <- diffobj::diffPrint(
+            ref,
+            x,
+            mode = mode,
+            format = format,
+            disp.width = disp.width)
+
+        fail <- suppressWarnings(any(di))
+
+        # failure
+        if (isTRUE(fail)) {
+            dir.create("_tinyviztest_review", showWarnings = FALSE, recursive = TRUE)
+            fn <- file.path("_tinyviztest_review", paste0(label, ".txt"))
+            sink(fn)
+            print(di)
+            sink()
+            di <- paste(as.character(di), collapse = "\n")
+
+        # success
+        } else {
+            di <- ""
+        }
     }
 
     tinytest::tinytest(
-        result = flag,
+        result = !fail,
         call = sys.call(sys.parent(1)),
         diff = di,
         info = "diffobj::printDiff()")

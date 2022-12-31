@@ -4,12 +4,45 @@
 \alias{expect_pdiff}
 \title{Test if printed output matches a target printout}
 \usage{
-expect_pdiff(x, label, disp.width = 200)
+expect_pdiff(x, label, mode = "unified", format = "raw", disp.width = 160)
 }
 \arguments{
 \item{x}{an object which returns text to the console when calling \verb{print(x})`}
 
 \item{label}{a string to identify the test (alpha-numeric, hypohens, or underscores). Each plot in the test suite must have a unique label.}
+
+\item{mode}{character(1L), one of:
+\itemize{
+  \item \dQuote{unified}: diff mode used by \code{git diff}
+  \item \dQuote{sidebyside}: line up the differences side by side
+  \item \dQuote{context}: show the target and current hunks in their
+    entirety; this mode takes up a lot of screen space but makes it easier
+    to see what the objects actually look like
+  \item \dQuote{auto}: default mode; pick one of the above, will favor
+    \dQuote{sidebyside} unless \code{getOption("width")} is less than 80,
+    or in \code{diffPrint} and objects are dimensioned and do not fit side
+    by side, or in \code{diffChr}, \code{diffDeparse}, \code{diffFile} and
+    output does not fit in side by side without wrapping
+}}
+
+\item{format}{character(1L), controls the diff output format, one of:
+\itemize{
+  \item \dQuote{auto}: to select output format based on terminal
+    capabilities; will attempt to use one of the ANSI formats if they
+    appear to be supported, and if not or if you are in the Rstudio console
+    it will attempt to use HTML and browser output if in interactive mode.
+  \item \dQuote{raw}: plain text
+  \item \dQuote{ansi8}: color and format diffs using basic ANSI escape
+    sequences
+  \item \dQuote{ansi256}: like \dQuote{ansi8}, except using the full range
+    of ANSI formatting options
+  \item \dQuote{html}: color and format using HTML markup; the resulting
+    string is processed with \code{\link{enc2utf8}} when output as a full
+    web page (see docs for \code{html.output} under \code{\link[diffobj]{Style}}).
+}
+Defaults to \dQuote{auto}.  See \code{palette.of.styles} for details
+on customization, \code{\link{style}} for full control of output format.
+See `pager` parameter for more discussion of Rstudio behavior.}
 
 \item{disp.width}{integer(1L) number of display columns to take up; note that
 in \dQuote{sidebyside} \code{mode} the effective display width is half this
