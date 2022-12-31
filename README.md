@@ -24,7 +24,6 @@ remotes::install_github("markvanderloo/tinytest/pkg")
 remotes::install_github("vincentarelbundock/tinyviztest")
 ```
 
-
 ## Visual expectations
 
 To test a visual expectation, we create an `R` script, give it a name that starts with "test", and save it in the `inst/tinytest/` directory of our package.
@@ -85,7 +84,7 @@ expect_vdiff(p1, label = "base_example")
 expect_vdiff(p2, label = "base_example")
 ```
 
-## Reviewing changes
+### Reviewing changes
 
 If tests fail, you may want to review the plots to see what changed. First, we call `tinyvizreview()` to get a list of snapshots to review:
 
@@ -101,6 +100,75 @@ tinyvizreview("base")
 ```
 
 ![](https://user-images.githubusercontent.com/987057/210011007-757b7f6d-4b57-4f77-b586-22e7d13bf9f5.png)
+
+
+## Print expectations
+
+First, we save this script in `inst/tinytest/test-print.R`:
+
+```r
+library("tinytest")
+using("tinyviztest")
+
+mod1 <- lm(mpg ~ hp + factor(gear), mtcars)
+expect_pdiff(summary(mod1), label = "print-lm_summary")
+
+mod2 <- lm(mpg ~ factor(gear), mtcars)
+expect_pdiff(summary(mod2), label = "print-lm_summary")
+```
+
+Then, we run the tests. Note that both tests fail, and that a reference text file is saved to `inst/tinytest/_tinyviztest/print-summary_lm.txt`:
+
+```r
+tinytest::run_test_file("inst/tinytest/test-print.R")
+```
+
+```{r}
+    test-print.R..................    2 tests 2 fails 0.3s
+    ----- FAILED[]: test-print.R<12--12>
+    call| expect_pdiff(summary(mod1), label = "print-lm_summary")
+    diff| blah
+    info| diffobj::printDiff()
+    ----- FAILED[]: test-print.R<15--15>
+    call| expect_pdiff(summary(mod2), label = "print-lm_summary")
+    diff| < ref                                                             > x                                                             
+    diff| @@ 1,21 @@                                                        @@ 1,20 @@                                                      
+    diff| 
+    diff| Call:                                                             Call:                                                         
+    diff| < lm(formula = mpg ~ hp + factor(gear), data = mtcars)            > lm(formula = mpg ~ factor(gear), data = mtcars)               
+    diff| 
+    diff| Residuals:                                                        Residuals:                                                    
+    diff|     Min      1Q  Median      3Q     Max                               Min      1Q  Median      3Q     Max                       
+    diff| < -4.4937 -2.3586 -0.8277  2.2753  7.7287                         > -6.7333 -3.2333 -0.9067  2.8483  9.3667                       
+    diff| 
+    diff| Coefficients:                                                     Coefficients:                                                 
+    diff|               Estimate Std. Error t value Pr(>|t|)                              Estimate Std. Error t value Pr(>|t|)            
+    diff| < (Intercept)   27.88193    2.10908  13.220 1.47e-13 ***          > (Intercept)     16.107      1.216  13.250 7.87e-14 ***        
+    diff| < hp            -0.06685    0.01105  -6.052 1.59e-06 ***          ~                                                               
+    diff| < factor(gear)4  2.63486    1.55164   1.698 0.100575              > factor(gear)4    8.427      1.823   4.621 7.26e-05 ***        
+    diff| < factor(gear)5  6.57476    1.64268   4.002 0.000417 ***          > factor(gear)5    5.273      2.431   2.169   0.0384 *          
+    diff| ---                                                               ---                                                           
+    diff| Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1    Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    diff| 
+    diff| < Residual standard error: 3.154 on 28 degrees of freedom         > Residual standard error: 4.708 on 29 degrees of freedom       
+    diff| < Multiple R-squared:  0.7527,    Adjusted R-squared:  0.7262     > Multiple R-squared:  0.4292,    Adjusted R-squared:  0.3898   
+    diff| < F-statistic: 28.41 on 3 and 28 DF,  p-value: 1.217e-08          > F-statistic:  10.9 on 2 and 29 DF,  p-value: 0.0002948        
+    diff| 
+    info| diffobj::printDiff()
+    
+    Warning message:
+    Creating reference file: _tinyviztest/print-lm_summary.txt 
+    tinytest::run_test_file("inst/tinytest/test-print.R")
+```
+
+The second time we run it, there is already a reference text file, so only one of the tests fails. This is the expected result.
+
+Some `tinytest` functions will not print the full diff. In those cases, you can then save the results object and print it out manually:
+
+```r
+results <- tinytest::run_test_dir()
+print(results, nlong = Inf)
+```
 
 ## Updating snapshots
 
@@ -200,71 +268,3 @@ tinytest::run_test_dir("inst/tinytest")
 
 If you read through the `test-basic.R` code, you will see that this is the expected number of test failures.
 
-
-## Print expectations
-
-First, we save this script in `inst/tinytest/test-print.R`:
-
-```r
-library("tinytest")
-using("tinyviztest")
-
-mod1 <- lm(mpg ~ hp + factor(gear), mtcars)
-expect_pdiff(summary(mod1), label = "print-lm_summary")
-
-mod2 <- lm(mpg ~ factor(gear), mtcars)
-expect_pdiff(summary(mod2), label = "print-lm_summary")
-```
-
-Then, we run the tests. Note that both tests fail, and that a reference text file is saved to `inst/tinytest/_tinyviztest/print-summary_lm.txt`:
-
-```r
-tinytest::run_test_file("inst/tinytest/test-print.R")
-```
-
-```{r}
-    test-print.R..................    2 tests 2 fails 0.3s
-    ----- FAILED[]: test-print.R<12--12>
-    call| expect_pdiff(summary(mod1), label = "print-lm_summary")
-    diff| blah
-    info| diffobj::printDiff()
-    ----- FAILED[]: test-print.R<15--15>
-    call| expect_pdiff(summary(mod2), label = "print-lm_summary")
-    diff| < ref                                                             > x                                                             
-    diff| @@ 1,21 @@                                                        @@ 1,20 @@                                                      
-    diff| 
-    diff| Call:                                                             Call:                                                         
-    diff| < lm(formula = mpg ~ hp + factor(gear), data = mtcars)            > lm(formula = mpg ~ factor(gear), data = mtcars)               
-    diff| 
-    diff| Residuals:                                                        Residuals:                                                    
-    diff|     Min      1Q  Median      3Q     Max                               Min      1Q  Median      3Q     Max                       
-    diff| < -4.4937 -2.3586 -0.8277  2.2753  7.7287                         > -6.7333 -3.2333 -0.9067  2.8483  9.3667                       
-    diff| 
-    diff| Coefficients:                                                     Coefficients:                                                 
-    diff|               Estimate Std. Error t value Pr(>|t|)                              Estimate Std. Error t value Pr(>|t|)            
-    diff| < (Intercept)   27.88193    2.10908  13.220 1.47e-13 ***          > (Intercept)     16.107      1.216  13.250 7.87e-14 ***        
-    diff| < hp            -0.06685    0.01105  -6.052 1.59e-06 ***          ~                                                               
-    diff| < factor(gear)4  2.63486    1.55164   1.698 0.100575              > factor(gear)4    8.427      1.823   4.621 7.26e-05 ***        
-    diff| < factor(gear)5  6.57476    1.64268   4.002 0.000417 ***          > factor(gear)5    5.273      2.431   2.169   0.0384 *          
-    diff| ---                                                               ---                                                           
-    diff| Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1    Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-    diff| 
-    diff| < Residual standard error: 3.154 on 28 degrees of freedom         > Residual standard error: 4.708 on 29 degrees of freedom       
-    diff| < Multiple R-squared:  0.7527,    Adjusted R-squared:  0.7262     > Multiple R-squared:  0.4292,    Adjusted R-squared:  0.3898   
-    diff| < F-statistic: 28.41 on 3 and 28 DF,  p-value: 1.217e-08          > F-statistic:  10.9 on 2 and 29 DF,  p-value: 0.0002948        
-    diff| 
-    info| diffobj::printDiff()
-    
-    Warning message:
-    Creating reference file: _tinyviztest/print-lm_summary.txt 
-    tinytest::run_test_file("inst/tinytest/test-print.R")
-```
-
-The second time we run it, there is already a reference text file, so only one of the tests fails. This is the expected result.
-
-Some `tinytest` functions will not print the full diff. In those cases, you can then save the results object and print it out manually:
-
-```r
-results <- tinytest::run_test_dir()
-print(results, nlong = Inf)
-```
