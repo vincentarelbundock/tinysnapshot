@@ -1,4 +1,4 @@
-# Regression tests for plots and prints using `R` and `tinytest`
+# Regression tests for `ggplot2`, base `R` plots, and `print()`, using `R` and `tinytest`
 
 `tinytest` is a ["lightweight, no-dependency, but full-featured package for unit testing in `R`"](https://cran.r-project.org/package=tinytest) created by Mark van der Loo.
 
@@ -24,7 +24,7 @@ remotes::install_github("markvanderloo/tinytest/pkg")
 remotes::install_github("vincentarelbundock/tinyviztest")
 ```
 
-## Visual expectations
+## Visual expectations: `expect_vdiff()`
 
 To test a visual expectation, we create an `R` script, give it a name that starts with "test", and save it in the `inst/tinytest/` directory of our package.
 
@@ -35,7 +35,7 @@ library("tinytest")
 using("tinyviztest")
 ```
 
-When users run the `tinytest` suite, the `expect_vdiff()` expectations are executed and three main states can arise:
+When users run the `tinytest` suite, the `expect_vdiff()` and `expect_pdiff()` expectations are executed and three main states can arise:
 
 * On first run: 
     - Test fails and saves a visual snapshot in the `inst/tinytest/_tinyviztest` directory.
@@ -85,7 +85,7 @@ expect_vdiff(p2, label = "base_example")
 ```
 
 
-## Print expectations
+## Print expectations: `expect_pdiff()`
 
 First, we save this script in `inst/tinytest/test-print.R`:
 
@@ -110,32 +110,41 @@ tinytest::run_test_file("inst/tinytest/test-print.R")
     test-print.R..................    2 tests 2 fails 0.3s
     ----- FAILED[]: test-print.R<12--12>
     call| expect_pdiff(summary(mod1), label = "print-lm_summary")
-    diff| blah
+    diff| Missing reference file.
     info| diffobj::printDiff()
     ----- FAILED[]: test-print.R<15--15>
     call| expect_pdiff(summary(mod2), label = "print-lm_summary")
-    diff| < ref                                                             > x                                                             
-    diff| @@ 1,21 @@                                                        @@ 1,20 @@                                                      
+    diff| < ref                                                           
+    diff| > x                                                             
+    diff| @@ 1,21 / 1,20 @@                                               
     diff| 
-    diff| Call:                                                             Call:                                                         
-    diff| < lm(formula = mpg ~ hp + factor(gear), data = mtcars)            > lm(formula = mpg ~ factor(gear), data = mtcars)               
+    diff| Call:                                                         
+    diff| < lm(formula = mpg ~ hp + factor(gear), data = mtcars)          
+    diff| > lm(formula = mpg ~ factor(gear), data = mtcars)               
     diff| 
-    diff| Residuals:                                                        Residuals:                                                    
-    diff|     Min      1Q  Median      3Q     Max                               Min      1Q  Median      3Q     Max                       
-    diff| < -4.4937 -2.3586 -0.8277  2.2753  7.7287                         > -6.7333 -3.2333 -0.9067  2.8483  9.3667                       
+    diff| Residuals:                                                    
+    diff| Min      1Q  Median      3Q     Max                       
+    diff| < -4.4937 -2.3586 -0.8277  2.2753  7.7287                       
+    diff| > -6.7333 -3.2333 -0.9067  2.8483  9.3667                       
     diff| 
-    diff| Coefficients:                                                     Coefficients:                                                 
-    diff|               Estimate Std. Error t value Pr(>|t|)                              Estimate Std. Error t value Pr(>|t|)            
-    diff| < (Intercept)   27.88193    2.10908  13.220 1.47e-13 ***          > (Intercept)     16.107      1.216  13.250 7.87e-14 ***        
-    diff| < hp            -0.06685    0.01105  -6.052 1.59e-06 ***          ~                                                               
-    diff| < factor(gear)4  2.63486    1.55164   1.698 0.100575              > factor(gear)4    8.427      1.823   4.621 7.26e-05 ***        
-    diff| < factor(gear)5  6.57476    1.64268   4.002 0.000417 ***          > factor(gear)5    5.273      2.431   2.169   0.0384 *          
-    diff| ---                                                               ---                                                           
-    diff| Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1    Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    diff| Coefficients:                                                 
+    diff| Estimate Std. Error t value Pr(>|t|)            
+    diff| < (Intercept)   27.88193    2.10908  13.220 1.47e-13 ***        
+    diff| < hp            -0.06685    0.01105  -6.052 1.59e-06 ***        
+    diff| > (Intercept)     16.107      1.216  13.250 7.87e-14 ***        
+    diff| < factor(gear)4  2.63486    1.55164   1.698 0.100575            
+    diff| > factor(gear)4    8.427      1.823   4.621 7.26e-05 ***        
+    diff| < factor(gear)5  6.57476    1.64268   4.002 0.000417 ***        
+    diff| > factor(gear)5    5.273      2.431   2.169   0.0384 *          
+    diff| ---                                                           
+    diff| Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     diff| 
-    diff| < Residual standard error: 3.154 on 28 degrees of freedom         > Residual standard error: 4.708 on 29 degrees of freedom       
-    diff| < Multiple R-squared:  0.7527,    Adjusted R-squared:  0.7262     > Multiple R-squared:  0.4292,    Adjusted R-squared:  0.3898   
-    diff| < F-statistic: 28.41 on 3 and 28 DF,  p-value: 1.217e-08          > F-statistic:  10.9 on 2 and 29 DF,  p-value: 0.0002948        
+    diff| < Residual standard error: 3.154 on 28 degrees of freedom       
+    diff| > Residual standard error: 4.708 on 29 degrees of freedom       
+    diff| < Multiple R-squared:  0.7527,    Adjusted R-squared:  0.7262   
+    diff| > Multiple R-squared:  0.4292,    Adjusted R-squared:  0.3898   
+    diff| < F-statistic: 28.41 on 3 and 28 DF,  p-value: 1.217e-08        
+    diff| > F-statistic:  10.9 on 2 and 29 DF,  p-value: 0.0002948        
     diff| 
     info| diffobj::printDiff()
     
@@ -145,7 +154,7 @@ tinytest::run_test_file("inst/tinytest/test-print.R")
 
 The second time we run it, there is already a reference text file, so only one of the tests fails. This is the expected result.
 
-Some `tinytest` functions will not print the full diff. In those cases, you can then save the results object and print it out manually:
+Some `tinytest` functions will not print the full diff. In those cases, you can save the `tinytest` object and print it out manually while specifying the `nlong` argument:
 
 ```r
 results <- tinytest::run_test_dir()
@@ -154,7 +163,7 @@ print(results, nlong = Inf)
 
 ## Reviewing test failures
 
-If tests fail, `tinyviztest` will save diff files for you to review in the `inst/tinytest/_tinyviztest_review/` folder. Diff files for plots look like this:
+When (not "if") tests fail, `tinyviztest` will save diff files in the `inst/tinytest/_tinyviztest_review/` folder. Diff files for plots look like this:
 
 ![](https://user-images.githubusercontent.com/987057/210011007-757b7f6d-4b57-4f77-b586-22e7d13bf9f5.png)
 
@@ -196,7 +205,7 @@ Diff files for printouts look like this:
 
 ## Updating snapshots
 
-To update a test, simply delete the relevant snapshot from the `inst/tinytest/_tinyviztest` folder, and run the test suite again.
+To update the snapshot for a test, simply delete the relevant snapshot from the `inst/tinytest/_tinyviztest` folder, and run the test suite again. As when we ran the suite for the very first time, this will report a failure but generate a new snapshot.
 
 ## Minimal package example
 
@@ -247,7 +256,7 @@ tinytest::run_test_dir("inst/tinytest")
     diff| 0
     info| pixels
     ----- FAILED[]: test-basic.R<18--18>
-    call| expect_vdiff(p2, "base")
+    call| **expect_vdiff**(p2, "base")
     diff| 3232
     info| pixels
     ----- FAILED[]: test-basic.R<25--25>
@@ -291,4 +300,3 @@ tinytest::run_test_dir("inst/tinytest")
 ```
 
 If you read through the `test-basic.R` code, you will see that this is the expected number of test failures.
-
