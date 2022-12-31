@@ -158,7 +158,6 @@ tinytest::run_test_file("inst/tinytest/test-print.R")
     
     Warning message:
     Creating reference file: _tinyviztest/print-lm_summary.txt 
-    tinytest::run_test_file("inst/tinytest/test-print.R")
 ```
 
 The second time we run it, there is already a reference text file, so only one of the tests fails. This is the expected result.
