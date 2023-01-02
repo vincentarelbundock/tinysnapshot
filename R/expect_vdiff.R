@@ -71,8 +71,7 @@ expect_vdiff <- function(x,
 
     # if there is no reference file, this is the first arwe need to create it
     if (!file.exists(fn_ref)) {
-        msg <- sprintf("Creating reference file: %s", fn_ref)
-        warning(msg, call. = FALSE)
+        generate_snapshot_at_home(fn_ref)
         render(x, path = fn_ref)
         fail <- TRUE
         pixels <- 0
@@ -107,5 +106,5 @@ expect_vdiff <- function(x,
         result = !fail,
         call = sys.call(sys.parent(1)),
         diff = as.character(pixels),
-        info = "pixels")
+        info = paste("Distance metric:", metric))
 }

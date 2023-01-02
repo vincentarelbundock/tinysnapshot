@@ -20,21 +20,18 @@ print.tinyvizstring <- function(x) cat(x)
 #' \code{logical} with attributes holding information about the test that was
 #' run
 #' @export
-expect_pdiff <- function(
-    x,
-    label,
-    mode = "unified",
-    format = "raw",
-    disp.width = 160) {
-
-    label <- portable_label(label) 
+expect_pdiff <- function(x,
+                         label,
+                         mode = "unified",
+                         format = "raw",
+                         disp.width = 160) {
+    label <- portable_label(label)
 
     fn <- file.path("_tinyviztest", paste0(label, ".txt"))
 
-    # if there is no reference file (first run), we create it
+    # snapshot missing -> generate
     if (!file.exists(fn)) {
-        msg <- sprintf("Creating reference file: %s", fn)
-        warning(msg, call. = FALSE)
+        generate_snapshot_at_home(fn)
         dir.create(dirname(fn), showWarnings = FALSE, recursive = TRUE)
         sink(fn)
         print(x)
@@ -42,6 +39,7 @@ expect_pdiff <- function(
         fail <- TRUE
         di <- "Missing reference file."
 
+    # snapshot exists -> diff
     } else {
         ref <- readChar(fn, file.info(fn)$size)
         class(ref) <- c("tinyvizstring", class(ref))
@@ -68,7 +66,6 @@ expect_pdiff <- function(
             di <- ""
         }
     }
-
     tinytest::tinytest(
         result = !fail,
         call = sys.call(sys.parent(1)),
