@@ -4,7 +4,7 @@
 \alias{expect_pdiff}
 \title{Test if printed output matches a target printout}
 \usage{
-expect_pdiff(x, label, mode = "unified", format = "raw", disp.width = 160)
+expect_pdiff(x, label, mode = "unified", format = "raw")
 }
 \arguments{
 \item{x}{an object which returns text to the console when calling \verb{print(x})`}
@@ -43,13 +43,6 @@ expect_pdiff(x, label, mode = "unified", format = "raw", disp.width = 160)
 Defaults to \dQuote{auto}.  See \code{palette.of.styles} for details
 on customization, \code{\link{style}} for full control of output format.
 See `pager` parameter for more discussion of Rstudio behavior.}
-
-\item{disp.width}{integer(1L) number of display columns to take up; note that
-in \dQuote{sidebyside} \code{mode} the effective display width is half this
-number (set to 0L to use default widths which are \code{getOption("width")}
-for normal styles and \code{80L} for HTML styles.  Future versions of
-\code{diffobj} may change this to larger values for two dimensional objects
-for better diffs (see details).}
 }
 \value{
 A \code{tinytest} object. A tinytest object is a

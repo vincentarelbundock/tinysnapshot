@@ -19,11 +19,16 @@
 expect_pdiff <- function(x,
                          label,
                          mode = "unified",
-                         format = "raw") {
+                         format = "raw",
+                         tol = sqrt(.Machine$double.eps),
+                         mode = getOption("diffobj.mode", "unified"),
+                         format = getOption("diffobj.format","ansi256"),
+                         ...) {
 
-    fn <- snapshot_file(label, extension = "txt")
     info <- diff <- NA_character_
     fail <- FALSE
+
+    fn <- snapshot_file(label, extension = "txt")
 
     # snapshot missing -> generate (only "at home")
     if (!file.exists(fn)) {
