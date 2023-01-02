@@ -1,4 +1,4 @@
-portable_label <- function(label, extension = NULL, warn = TRUE) {
+snapshot_label <- function(label, extension = NULL, warn = TRUE) {
     regex <- "[^[:alnum:]|_|-]"
     out <- gsub(regex, "_", label)
     if (isTRUE(warn) && grepl(regex, label)) {
@@ -28,7 +28,7 @@ generate_snapshot_at_home <- function(fn) {
 }
 
 
-find_snapshot <- function(fn) {
+snapshot_file <- function(fn, extension = "txt") {
     # test runners give us certainty
     if (tinytest::at_home()) {
         path <- file.path("_tinyviztest", fn)
@@ -39,6 +39,10 @@ find_snapshot <- function(fn) {
         if (!file.exists(path)) {
             path <- file.path("_tinyviztest", fn)
         }
+    }
+
+    if (!is.null(extension)) {
+        path <- paste0(path, ".", extension)
     }
 
     return(path)

@@ -66,7 +66,7 @@ expect_vdiff <- function(x,
         stop(msg, call. = FALSE)
     }
 
-    fn <- portable_label(label, extension = "png") 
+    fn <- snapshot_label(label, extension = "png") 
 
     # if there is no reference file, this is the first arwe need to create it
     if (!file.exists(fn)) {

@@ -1,7 +1,3 @@
-# method to print the custom class object we feed to `diffobj::diffPrint()`
-print.tinyvizstring <- function(x) cat(x)
-
-
 #' Test if printed output matches a target printout
 #'
 #' This expectation can be used with `tinytest` to check if the new plot matches
@@ -26,48 +22,37 @@ expect_pdiff <- function(x,
                          format = "raw",
                          disp.width = 160) {
 
-    fn <- portable_label(label, extension = "txt")
+    fn <- snapshot_file(label, extension = "txt")
+    info <- diff <- NA_character_
+    fail <- FALSE
 
-    # snapshot missing -> generate
+    # snapshot missing -> generate (only "at home")
     if (!file.exists(fn)) {
         fail <- TRUE
-        fn <- file.path("_tinyviztest", paste0(label, ".txt"))
-        di <- generate_snapshot_at_home(fn)
-        dir.create(dirname(fn), showWarnings = FALSE, recursive = TRUE)
-        sink(fn)
-        print(x)
-        sink()
+        info <- write_snapshot_print(x, fn = fn)
 
     # snapshot exists -> diff
     } else {
         ref <- readChar(fn, file.info(fn)$size)
+        print.tinyvizstring <- function(x) cat(x)
         class(ref) <- c("tinyvizstring", class(ref))
-        di <- diffobj::diffPrint(
+
+        do <- diffobj::diffPrint(
             ref,
             x,
             mode = mode,
             format = format,
             disp.width = disp.width)
 
-        fail <- suppressWarnings(any(di))
-
-        # failure
-        if (isTRUE(fail)) {
-            dir.create("_tinyviztest_review", showWarnings = FALSE, recursive = TRUE)
-            fn <- file.path("_tinyviztest_review", paste0(label, ".txt"))
-            sink(fn)
-            print(di)
-            sink()
-            di <- paste(as.character(di), collapse = "\n")
-
-        # success
-        } else {
-            di <- NA_character_
+        if (suppressWarnings(any(do))) {
+            fail <- TRUE
+            diff <- paste(as.character(do), collapse = "\n")
         }
     }
 
     tinytest::tinytest(
         result = !fail,
         call = sys.call(sys.parent(1)),
-        diff = di)
+        info = info,
+        diff = diff)
 }
