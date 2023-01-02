@@ -19,8 +19,7 @@
 expect_pdiff <- function(x,
                          label,
                          mode = "unified",
-                         format = "raw",
-                         disp.width = 160) {
+                         format = "raw") {
 
     fn <- snapshot_file(label, extension = "txt")
     info <- diff <- NA_character_
@@ -42,7 +41,7 @@ expect_pdiff <- function(x,
             x,
             mode = mode,
             format = format,
-            disp.width = disp.width)
+            ...)
 
         if (suppressWarnings(any(do))) {
             fail <- TRUE
