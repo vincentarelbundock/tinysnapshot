@@ -25,19 +25,18 @@ expect_pdiff <- function(x,
                          mode = "unified",
                          format = "raw",
                          disp.width = 160) {
-    label <- portable_label(label)
 
-    fn <- file.path("_tinyviztest", paste0(label, ".txt"))
+    fn <- portable_label(label, extension = "txt")
 
     # snapshot missing -> generate
     if (!file.exists(fn)) {
-        generate_snapshot_at_home(fn)
+        fail <- TRUE
+        fn <- file.path("_tinyviztest", paste0(label, ".txt"))
+        di <- generate_snapshot_at_home(fn)
         dir.create(dirname(fn), showWarnings = FALSE, recursive = TRUE)
         sink(fn)
         print(x)
         sink()
-        fail <- TRUE
-        di <- "Missing reference file."
 
     # snapshot exists -> diff
     } else {
@@ -63,12 +62,12 @@ expect_pdiff <- function(x,
 
         # success
         } else {
-            di <- ""
+            di <- NA_character_
         }
     }
+
     tinytest::tinytest(
         result = !fail,
         call = sys.call(sys.parent(1)),
-        diff = di,
-        info = "diffobj::printDiff()")
+        diff = di)
 }

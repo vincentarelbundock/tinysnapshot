@@ -57,9 +57,8 @@ expect_vdiff <- function(x,
                          metric = "AE",
                          fuzz = 0) {
 
-    label <- portable_label(label) 
 
-    # sanity
+    # valid metric argument
     if (!is.character(metric) || length(metric) != 1 || !metric %in% magick::metric_types()) {
         msg <- sprintf(
             "The `metric` argument must be a single string, element of: %s",
@@ -67,12 +66,14 @@ expect_vdiff <- function(x,
         stop(msg, call. = FALSE)
     }
 
-    fn_ref <- file.path("_tinyviztest", paste0(label, ".png"))
+    fn <- portable_label(label, extension = "png") 
 
     # if there is no reference file, this is the first arwe need to create it
-    if (!file.exists(fn_ref)) {
-        generate_snapshot_at_home(fn_ref)
-        render(x, path = fn_ref)
+    if (!file.exists(fn)) {
+        fn <- file.path("_tinyviztest", paste0(label, ".png"))
+        di <- generate_snapshot_at_home(fn)
+        dir.create(dirname(fn), showWarnings = FALSE, recursive = TRUE)
+        render(x, path = fn)
         fail <- TRUE
         pixels <- 0
 
@@ -80,7 +81,7 @@ expect_vdiff <- function(x,
         dis <- distance(
             x,
             label = label,
-            path = fn_ref,
+            path = fn,
             tolerance = tolerance,
             clean = FALSE)
 
