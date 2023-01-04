@@ -10,53 +10,70 @@
 #' folder and run the test suite again.
 #' 
 #' @param x an object which returns text to the console when calling `print(x`)`
-#' @inheritParams expect_vdiff
+#' @inheritParams expect_snapshot_plot
 #' @inheritParams diffobj::diffPrint
+#' @param ... Additional arguments are passed to `diffobj::diffPrint()`
 #' @return A `tinytest` object. A tinytest object is a
 #' \code{logical} with attributes holding information about the test that was
 #' run
 #' @export
-expect_pdiff <- function(x,
-                         label,
-                         mode = "unified",
-                         format = "raw",
-                         tol = sqrt(.Machine$double.eps),
-                         mode = getOption("diffobj.mode", "unified"),
-                         format = getOption("diffobj.format","ansi256"),
-                         ...) {
+expect_snapshot_print <- function(current,
+                                  label,
+                                  mode = getOption("diffobj.mode", default = "unified"),
+                                  format = getOption("diffobj.format", default = "ansi256"),
+                                  ...) {
 
-    info <- diff <- NA_character_
+    # defaults
+    snapshot <- snapshot_label(label)
+    snapshot_fn <- file.path("_tinyviztest", paste0(snapshot, ".txt"))
+    cal <- sys.call(sys.parent(1))
+    diff <- info <- NA_character_
     fail <- FALSE
 
-    fn <- snapshot_file(label, extension = "txt")
+    # hard to identify location of the snapshot unless we are running at home
+    if (!tinytest::at_home()) {
+        info <- 'Snapshots can only be tested "at home" using `tinytest` runners: `run_test_dir()` or `run_test_file()`. See `?tinytest::at_home`'
+        return(tinytest::tinytest(FALSE, call = cal, info = info))
+    }
 
-    # snapshot missing -> generate (only "at home")
-    if (!file.exists(fn)) {
-        fail <- TRUE
-        info <- write_snapshot_print(x, fn = fn)
+    # if snapshot missing, copy current to snapshot, and return failure immediately
+    if (!isTRUE(checkmate::check_file_exists(snapshot_fn))) {
+        dir.create(dirname(snapshot_fn), showWarnings = FALSE, recursive = TRUE)
+        sink(snapshot_fn)
+        print(current)
+        sink()
+        info <- paste("Creating snapshot:", snapshot_fn)
+        return(tinytest::tinytest(FALSE, call = cal, info = info))
+    }
 
     # snapshot exists -> diff
-    } else {
-        ref <- readChar(fn, file.info(fn)$size)
-        print.tinyvizstring <- function(x) cat(x)
-        class(ref) <- c("tinyvizstring", class(ref))
+    print.tinysnapshotprint <- function(x) cat(x)
+    target <- readChar(snapshot_fn, file.info(snapshot_fn)$size)
+    class(target) <- c("tinysnapshotprint", class(target))
 
-        do <- diffobj::diffPrint(
-            ref,
-            x,
-            mode = mode,
-            format = format,
-            ...)
+    do <- diffobj::diffPrint(
+        current,
+        target,
+        mode = "unified",
+        format = format,
+        ...)
 
-        if (suppressWarnings(any(do))) {
-            fail <- TRUE
-            diff <- paste(as.character(do), collapse = "\n")
-        }
+    if (suppressWarnings(any(do))) {
+        fail <- TRUE
+        diff <- paste(as.character(do), collapse = "\n")
+        info <- paste("Snapshot:", snapshot_fn)
     }
 
     tinytest::tinytest(
         result = !fail,
-        call = sys.call(sys.parent(1)),
+        call = cal,
         info = info,
         diff = diff)
 }
+
+
+
+#' Alias to `expect_snapshot_print` for backward compatibility
+#' @export
+#' @noRd
+expect_pdiff <- expect_snapshot_print

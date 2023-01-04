@@ -9,8 +9,8 @@ mod2 <- lm(mpg ~ factor(gear), mtcars)
 
 # First run fails
 # Second run passes
-expect_pdiff(summary(mod1), label = "print-lm_summary")
+expect_snapshot_print(summary(mod1), "print-lm_summary")
 
 # Always fails
-expect_pdiff(summary(mod2), label = "print-lm_summary")
+expect_snapshot_print(summary(mod2), "print-lm_summary")
 

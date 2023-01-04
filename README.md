@@ -24,7 +24,7 @@ remotes::install_github("markvanderloo/tinytest/pkg")
 remotes::install_github("vincentarelbundock/tinyviztest")
 ```
 
-## Visual expectations: `expect_vdiff()`
+## Visual expectations: `expect_snapshot_plot()`
 
 To test a visual expectation, we create an `R` script, give it a name that starts with "test", and save it in the `inst/tinytest/` directory of our package.
 
@@ -35,7 +35,7 @@ library("tinytest")
 using("tinyviztest")
 ```
 
-When users run the `tinytest` suite, the `expect_vdiff()` and `expect_pdiff()` expectations are executed and three main states can arise:
+When users run the `tinytest` suite, the `expect_snapshot_plot()` and `expect_snapshot_print()` expectations are executed and three main states can arise:
 
 * On first run: 
     - Test fails and saves a visual snapshot in the `inst/tinytest/_tinyviztest` directory.
@@ -59,10 +59,10 @@ p2 <- ggplot(mtcars, aes(mpg, hp)) + geom_point()
 
 # On first run: fail and save a snapshot
 # On subsequent runs: pass
-expect_vdiff(p1, label = "ggplot2_example")
+expect_snapshot_plot(p1, label = "ggplot2_example")
 
 # Always fails
-expect_vdiff(p2, label = "ggplot2_example")
+expect_snapshot_plot(p2, label = "ggplot2_example")
 ```
 
 ### Base `R` graphics
@@ -78,14 +78,14 @@ p2 <- function() plot(mtcars$hp, mtcars$mpg)
 
 # On first run: fail and save a snapshot
 # On subsequent runs: pass
-expect_vdiff(p1, label = "base_example")
+expect_snapshot_plot(p1, label = "base_example")
 
 # Always fails
-expect_vdiff(p2, label = "base_example")
+expect_snapshot_plot(p2, label = "base_example")
 ```
 
 
-## Print expectations: `expect_pdiff()`
+## Print expectations: `expect_snapshot_print()`
 
 First, we save this script in `inst/tinytest/test-print.R`:
 
@@ -94,10 +94,10 @@ library("tinytest")
 using("tinyviztest")
 
 mod1 <- lm(mpg ~ hp + factor(gear), mtcars)
-expect_pdiff(summary(mod1), label = "print-lm_summary")
+expect_snapshot_print(summary(mod1), label = "print-lm_summary")
 
 mod2 <- lm(mpg ~ factor(gear), mtcars)
-expect_pdiff(summary(mod2), label = "print-lm_summary")
+expect_snapshot_print(summary(mod2), label = "print-lm_summary")
 ```
 
 Then, we run the tests. Note that both tests fail, and that a reference text file is saved to `inst/tinytest/_tinyviztest/print-summary_lm.txt`:
@@ -109,11 +109,11 @@ tinytest::run_test_file("inst/tinytest/test-print.R")
 ```{r}
     test-print.R..................    2 tests 2 fails 0.3s
     ----- FAILED[]: test-print.R<12--12>
-    call| expect_pdiff(summary(mod1), label = "print-lm_summary")
+    call| expect_snapshot_print(summary(mod1), label = "print-lm_summary")
     diff| Missing reference file.
     info| diffobj::printDiff()
     ----- FAILED[]: test-print.R<15--15>
-    call| expect_pdiff(summary(mod2), label = "print-lm_summary")
+    call| expect_snapshot_print(summary(mod2), label = "print-lm_summary")
     diff| < ref                                                           
     diff| > x                                                             
     diff| @@ 1,21 / 1,20 @@                                               
@@ -252,20 +252,20 @@ tinytest::run_test_dir("inst/tinytest")
     test_testpkg.R................    1 tests OK 22ms
     test-basic.R..................    6 tests 6 fails 0.8s
     ----- FAILED[]: test-basic.R<15--15>
-    call| expect_vdiff(p1, "base")
+    call| expect_snapshot_plot(p1, "base")
     diff| 0
     info| pixels
     ----- FAILED[]: test-basic.R<18--18>
-    call| **expect_vdiff**(p2, "base")
+    call| **expect_snapshot_plot**(p2, "base")
     diff| 3232
     info| pixels
     ----- FAILED[]: test-basic.R<25--25>
-    call| expect_vdiff(p1, "ggplot2_variable")
+    call| expect_snapshot_plot(p1, "ggplot2_variable")
     diff| 0
     info| pixels
-    FAILED[]: test-basic.R<28--28> expect_vdiff(p2, "ggplot2_variable")
-    FAILED[]: test-basic.R<31--31> expect_vdiff(p3, "ggplot2_theme")
-    FAILED[]: test-basic.R<34--34> expect_vdiff(p4, "ggplot2_theme")
+    FAILED[]: test-basic.R<28--28> expect_snapshot_plot(p2, "ggplot2_variable")
+    FAILED[]: test-basic.R<31--31> expect_snapshot_plot(p3, "ggplot2_theme")
+    FAILED[]: test-basic.R<34--34> expect_snapshot_plot(p4, "ggplot2_theme")
     
     Showing 6 out of 7 results: 6 fails, 1 passes (0.8s)
     Warning messages:
@@ -284,15 +284,15 @@ tinytest::run_test_dir("inst/tinytest")
     test_testpkg.R................    1 tests OK 6ms
     test-basic.R..................    6 tests 3 fails 0.6s
     ----- FAILED[]: test-basic.R<18--18>
-    call| expect_vdiff(p2, "base")
+    call| expect_snapshot_plot(p2, "base")
     diff| 3232
     info| pixels
     ----- FAILED[]: test-basic.R<28--28>
-    call| expect_vdiff(p2, "ggplot2_variable")
+    call| expect_snapshot_plot(p2, "ggplot2_variable")
     diff| 33536
     info| pixels
     ----- FAILED[]: test-basic.R<34--34>
-    call| expect_vdiff(p4, "ggplot2_theme")
+    call| expect_snapshot_plot(p4, "ggplot2_theme")
     diff| 191955
     info| pixels
     
