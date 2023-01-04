@@ -67,21 +67,11 @@ expect_snapshot_plot <- function(current,
     current_fn <- paste0(tempfile(), ".png")
     snapshot_fn <- file.path("_tinyviztest", paste0(snapshot, ".png"))
 
-    # hard to identify location of the snapshot unless we are running at home
-    check_user_input <- checkmate::makeAssertCollection()
-    if (!isTRUE(tinytest::at_home())) {
-        msg <- 'Snapshots can only be tested "at home" using `tinytest` runners: `run_test_dir()` or `run_test_file()`.'
-        check_user_input$push(msg)
-    }
-    checkmate::reportAssertions(check_user_input)
-
-    
-    # `current` input validation
+    # `current` input validation (more informative message than default checkmate)
     if (!isTRUE(checkmate::check_function(current)) && !isTRUE(checkmate::check_class(current, "ggplot"))) {
         info <- "`current` must be a `ggplot2` object or a function which returns a base `R` plot."
         return(tinytest::tinytest(FALSE, call = cal, info = info))
     }
-
 
     # write current plot to file
     ragg::agg_png(current_fn, width = width, height = height)
@@ -94,9 +84,16 @@ expect_snapshot_plot <- function(current,
 
     # if snapshot missing, copy current to snapshot, and return failure immediately
     if (!isTRUE(checkmate::check_file_exists(snapshot_fn))) {
-        dir.create(dirname(snapshot_fn), recursive = TRUE, showWarnings = FALSE)
-        file.copy(from = current_fn, to = snapshot_fn)
-        info <- paste("Creating snapshot:", snapshot_fn)
+        if (isTRUE(tinytest::at_home())) {
+            dir.create(dirname(snapshot_fn), recursive = TRUE, showWarnings = FALSE)
+            file.copy(from = current_fn, to = snapshot_fn)
+            info <- paste("Creating snapshot:", snapshot_fn)
+        } else {
+            # stop() otherwise source("test-file.R") fails silently
+            info <- 'Snapshot missing: %s. Make sure you execute commands in the right directory, or use one of the `tinytest` runners to generate new snapshots: `run_test_dir()` or `run_test_file()`.'
+            info <- sprintf(info, snapshot_fn)
+            stop(info, call. = FALSE)
+        }
         return(tinytest::tinytest(FALSE, call = cal, info = info))
     }
 

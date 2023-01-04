@@ -30,23 +30,20 @@ expect_snapshot_print <- function(current,
     diff <- info <- NA_character_
     fail <- FALSE
 
-    check_user_input <- checkmate::makeAssertCollection()
-
-    # hard to identify location of the snapshot unless we are running at home
-    if (!isTRUE(tinytest::at_home())) {
-        msg <- 'Snapshots can only be tested "at home" using `tinytest` runners: `run_test_dir()` or `run_test_file()`.'
-        check_user_input$push(msg)
-    }
-
-    checkmate::reportAssertions(check_user_input)
-
     # if snapshot missing, copy current to snapshot, and return failure immediately
     if (!isTRUE(checkmate::check_file_exists(snapshot_fn))) {
-        dir.create(dirname(snapshot_fn), showWarnings = FALSE, recursive = TRUE)
-        sink(snapshot_fn)
-        print(current)
-        sink()
-        info <- paste("Creating snapshot:", snapshot_fn)
+        if (isTRUE(tinytest::at_home())) {
+            dir.create(dirname(snapshot_fn), showWarnings = FALSE, recursive = TRUE)
+            sink(snapshot_fn)
+            print(current)
+            sink()
+            info <- paste("Creating snapshot:", snapshot_fn)
+        } else {
+             # stop() otherwise source("test-file.R") fails silently
+            info <- 'Snapshot missing: %s. Make sure you execute commands in the right directory, or use one of the `tinytest` runners to generate new snapshots: `run_test_dir()` or `run_test_file()`.'
+            info <- sprintf(info, snapshot_fn)
+            stop(info, call. = FALSE)
+        }
         return(tinytest::tinytest(FALSE, call = cal, info = info))
     }
 
