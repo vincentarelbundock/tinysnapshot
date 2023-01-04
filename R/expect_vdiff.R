@@ -68,11 +68,14 @@ expect_snapshot_plot <- function(current,
     snapshot_fn <- file.path("_tinyviztest", paste0(snapshot, ".png"))
 
     # hard to identify location of the snapshot unless we are running at home
-    if (!tinytest::at_home()) {
-        info <- 'Snapshots can only be tested "at home" using `tinytest` runners: `run_test_dir()` or `run_test_file()`. See `?tinytest::at_home`'
-        return(tinytest::tinytest(FALSE, call = cal, info = info))
+    check_user_input <- checkmate::makeAssertCollection()
+    if (!isTRUE(tinytest::at_home())) {
+        msg <- 'Snapshots can only be tested "at home" using `tinytest` runners: `run_test_dir()` or `run_test_file()`.'
+        check_user_input$push(msg)
     }
+    checkmate::reportAssertions(check_user_input)
 
+    
     # `current` input validation
     if (!isTRUE(checkmate::check_function(current)) && !isTRUE(checkmate::check_class(current, "ggplot"))) {
         info <- "`current` must be a `ggplot2` object or a function which returns a base `R` plot."
@@ -132,38 +135,18 @@ expect_equivalent_images <- function(current,
     info <- diff <- NA_character_
     fail <- FALSE
 
+
     # input sanity checks
-    info_tol <- checkmate::check_numeric(tol, lower = 0)
-    if (!isTRUE(info_tol)) {
-        return(tinytest::tinytest(FALSE, call = cal, info = info_tol))
-    }
-
-    info_fuzz <- checkmate::check_numeric(fuzz, lower = 0)
-    if (!isTRUE(info_fuzz)) {
-        return(tinytest::tinytest(FALSE, call = cal, info = info_fuzz))
-    }
-
-    info_metric <- checkmate::check_choice(metric, choices = magick::metric_types())
-    if (!isTRUE(info_metric)) {
-        return(tinytest::tinytest(FALSE, call = cal, info = info_metric))
-    }
-
-    info_current <- checkmate::check_file_exists(current, extension = c("png", "jpg"))
-    if (!isTRUE(info_current)) {
-        return(tinytest::tinytest(FALSE, call = cal, info = info_current))
-    }
-
-    info_target <- checkmate::check_file_exists(target, extension = c("png", "jpg"))
-    if (!isTRUE(info_target)) {
-        return(tinytest::tinytest(FALSE, call = cal, info = info_target))
-    }
-
+    check_user_input <- checkmate::makeAssertCollection()
+    checkmate::assert_numeric(tol, lower = 0, add = check_user_input)
+    checkmate::assert_numeric(fuzz, lower = 0, add = check_user_input)
+    checkmate::assert_choice(metric, choices = magick::metric_types(), add = check_user_input)
+    checkmate::assert_file_exists(current, extension = c("png", "jpg"), add = check_user_input)
+    checkmate::assert_file_exists(target, extension = c("png", "jpg"), add = check_user_input)
     if (!is.null(diffpath)) {
-        info_diffpath <- checkmate::check_path_for_output(diffpath, overwrite = TRUE)
-        if (!isTRUE(info_diffpath)) {
-            return(tinytest::tinytest(FALSE, call = cal, info = info_diffpath))
-        }
+        checkmate::assert_path_for_output(diffpath, overwrite = TRUE, add = check_user_input)
     }
+    checkmate::reportAssertions(check_user_input)
 
     # distance > tol
     target <- magick::image_read(target)
