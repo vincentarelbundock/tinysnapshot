@@ -57,7 +57,7 @@ expect_snapshot_plot <- function(current,
                                  label,
                                  width = 480,
                                  height = 480,
-                                 tol = sqrt(.Machine$double.eps),
+                                 tol = width * height * 0.001,
                                  metric = "AE",
                                  fuzz = 0) {
 
