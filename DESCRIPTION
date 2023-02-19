@@ -1,7 +1,7 @@
 Package: tinyviztest
 Type: Package
 Title: Visual tests using the `tinytest` framework
-Version: 0.0.0.9005
+Version: 0.0.0.9006
 Date: 2023-02-19
 Author: Vincent Arel-Bundock
 Maintainer: Vincent Arel-Bundock <vincent.arel-bundock@umontreal.ca>

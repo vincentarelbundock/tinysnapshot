@@ -20,9 +20,9 @@ expect_snapshot_plot(
 
 \item{label}{a string to identify the snapshot (alpha-numeric, hypohens, or underscores). Each plot in the test suite must have a unique label.}
 
-\item{width}{of snapshot in pixel (only for ragg device)}
+\item{width}{of snapshot in pixel (not supported for svg)}
 
-\item{height}{of snapshot in pixels (only for ragg device)}
+\item{height}{of snapshot in pixels (not supported for svg)}
 
 \item{tol}{distance estimates larger than this threshold will trigger a test failure. Scale depends on the \code{metric} argument. With the default \code{metric="AE"} (absolute error), the \code{tolerance} corresponds roughly to the number of pixels of difference between the plot and the reference image.}
 

@@ -14,8 +14,8 @@
 #' 
 #' @param current an object of class `ggplot` or a function which returns a base R plot. See Examples below.
 #' @param label a string to identify the snapshot (alpha-numeric, hypohens, or underscores). Each plot in the test suite must have a unique label.
-#' @param width of snapshot in pixel (only for ragg device)
-#' @param height of snapshot in pixels (only for ragg device)
+#' @param width of snapshot in pixel (not supported for svg)
+#' @param height of snapshot in pixels (not supported for svg)
 #' @param device "svg", "png", "ragg" or "svglite"
 #' @param tol distance estimates larger than this threshold will trigger a test failure. Scale depends on the `metric` argument. With the default `metric="AE"` (absolute error), the `tolerance` corresponds roughly to the number of pixels of difference between the plot and the reference image.
 #' @inheritParams magick::image_compare
@@ -189,7 +189,7 @@ expect_equivalent_images <- function(current,
         width <- nrow(current) + nrow(target) + nrow(diffplot)
         height <- max(c(ncol(current), ncol(target), ncol(diffplot)))
 
-        ragg::agg_png(diffpath, width = width, height = height)
+        grDevices::png(diffpath, width = width, height = height)
         def_par <- graphics::par(no.readonly = TRUE) # save graphics params
         graphics::par(mfrow = c(1, 3), mar = rep(0, 4))
         plot(target)
@@ -208,9 +208,3 @@ expect_equivalent_images <- function(current,
         info = info,
         diff = diff)
 }
-
-
-#' Alias to `expect_snapshot_plot` for backward compatibility
-#' @export
-#' @noRd
-expect_vdiff <- expect_snapshot_plot

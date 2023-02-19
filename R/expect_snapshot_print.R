@@ -71,10 +71,3 @@ expect_snapshot_print <- function(current,
         info = info,
         diff = diff)
 }
-
-
-
-#' Alias to `expect_snapshot_print` for backward compatibility
-#' @export
-#' @noRd
-expect_pdiff <- expect_snapshot_print
