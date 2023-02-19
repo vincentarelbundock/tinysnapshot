@@ -11,3 +11,11 @@ snapshot_label <- function(label) {
 
     return(out)
 }
+
+assert_package <- function(package) {
+    flag <- requireNamespace(package, quietly = TRUE)
+    if (isFALSE(flag)) {
+        msg <- sprintf("Please install the `%s` package.", package)
+        stop(msg, call. = FALSE)
+    }
+}

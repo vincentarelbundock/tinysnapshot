@@ -1,8 +1,8 @@
 Package: tinyviztest
 Type: Package
 Title: Visual tests using the `tinytest` framework
-Version: 0.0.0.9003
-Date: 2022-12-29
+Version: 0.0.0.9005
+Date: 2023-02-19
 Author: Vincent Arel-Bundock
 Maintainer: Vincent Arel-Bundock <vincent.arel-bundock@umontreal.ca>
 Description: Visual tests using the `tinytest` framework.
@@ -14,7 +14,8 @@ Imports:
     ragg,
     tinytest
 Suggests:
-    ggplot2
+    ggplot2,
+    svglite
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3

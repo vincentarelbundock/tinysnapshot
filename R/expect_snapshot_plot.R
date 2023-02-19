@@ -16,7 +16,7 @@
 #' @param label a string to identify the snapshot (alpha-numeric, hypohens, or underscores). Each plot in the test suite must have a unique label.
 #' @param width of snapshot in pixel (only for ragg device)
 #' @param height of snapshot in pixels (only for ragg device)
-#' @param device "ragg" or "svg"
+#' @param device "svg", "png", "ragg" or "svglite"
 #' @param tol distance estimates larger than this threshold will trigger a test failure. Scale depends on the `metric` argument. With the default `metric="AE"` (absolute error), the `tolerance` corresponds roughly to the number of pixels of difference between the plot and the reference image.
 #' @inheritParams magick::image_compare
 #' @return A `tinytest` object. A tinytest object is a
@@ -61,16 +61,17 @@ expect_snapshot_plot <- function(current,
                                  tol = width * height * 0.001,
                                  metric = "AE",
                                  fuzz = 0,
-                                 device = "ragg") {
+                                 device = getOption("tinyviztest_device", default = "ragg")
+                                 ) {
 
-    checkmate::check_choice(device, c("ragg", "svg"))
+    checkmate::check_choice(device, c("ragg", "png", "svg", "svglite"))
 
     # defaults
     snapshot <- snapshot_label(label)
     cal <- sys.call(sys.parent(1))
-    if (device == "ragg") {
+    if (device %in% c("png", "ragg")) {
         ext <- ".png"
-    } else {
+    } else if (device %in% c("svg", "svglite")) {
         ext <- ".svg"
     }
     current_fn <- paste0(tempfile(), ext)
@@ -84,24 +85,22 @@ expect_snapshot_plot <- function(current,
 
     # write current plot to file
     if (device == "ragg") {
+        assert_package("ragg")
         ragg::agg_png(current_fn, width = width, height = height)
-        if (inherits(current, "ggplot")) {
-            print(current)
-        } else {
-            current()
-        }
-        invisible(grDevices::dev.off())
-
+    } else if (device == "png") {
+        grDevices::png(current_fn, width = width, height = height)
+    } else if (device == "svglite") {
+        assert_package("svglite")
+        svglite::svglite(current_fn, width = 7, height = 7)
     } else if (device == "svg") {
-        # TODO: size
         grDevices::svg(current_fn, width = 7, height = 7)
-        if (inherits(current, "ggplot")) {
-            print(current)
-        } else {
-            current()
-        }
-        invisible(grDevices::dev.off())
     }
+    if (inherits(current, "ggplot")) {
+        print(current)
+    } else {
+        current()
+    }
+    invisible(grDevices::dev.off())
 
     # if snapshot missing, copy current to snapshot, and return failure immediately
     if (!isTRUE(checkmate::check_file_exists(snapshot_fn))) {
