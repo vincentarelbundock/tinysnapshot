@@ -179,7 +179,7 @@ expect_equivalent_images <- function(current,
     if (dis > tol) fail <- TRUE
 
     # diff plot
-    if (!is.null(diffpath)) {
+    if (isTRUE(fail) && !is.null(diffpath)) {
         diffplot <- magick::image_compare(current, target, metric = metric, fuzz = fuzz)
 
         current <- grDevices::as.raster(current)
