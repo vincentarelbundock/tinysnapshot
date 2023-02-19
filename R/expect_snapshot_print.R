@@ -31,7 +31,7 @@ expect_snapshot_print <- function(current,
     fail <- FALSE
 
     # if snapshot missing, copy current to snapshot, and return failure immediately
-    if (!isTRUE(checkmate::check_file_exists(snapshot_fn))) {
+    if (!isTRUE(ts_check_file_exists(snapshot_fn))) {
         if (isTRUE(tinytest::at_home())) {
             dir.create(dirname(snapshot_fn), showWarnings = FALSE, recursive = TRUE)
             sink(snapshot_fn)
