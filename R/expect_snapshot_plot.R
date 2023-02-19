@@ -14,8 +14,9 @@
 #' 
 #' @param current an object of class `ggplot` or a function which returns a base R plot. See Examples below.
 #' @param label a string to identify the snapshot (alpha-numeric, hypohens, or underscores). Each plot in the test suite must have a unique label.
-#' @param width of snapshot in pixels
-#' @param height of snapshot in pixels
+#' @param width of snapshot in pixel (only for ragg device)
+#' @param height of snapshot in pixels (only for ragg device)
+#' @param device "ragg" or "svg"
 #' @param tol distance estimates larger than this threshold will trigger a test failure. Scale depends on the `metric` argument. With the default `metric="AE"` (absolute error), the `tolerance` corresponds roughly to the number of pixels of difference between the plot and the reference image.
 #' @inheritParams magick::image_compare
 #' @return A `tinytest` object. A tinytest object is a
@@ -59,13 +60,21 @@ expect_snapshot_plot <- function(current,
                                  height = 480,
                                  tol = width * height * 0.001,
                                  metric = "AE",
-                                 fuzz = 0) {
+                                 fuzz = 0,
+                                 device = "ragg") {
+
+    checkmate::check_choice(device, c("ragg", "svg"))
 
     # defaults
     snapshot <- snapshot_label(label)
     cal <- sys.call(sys.parent(1))
-    current_fn <- paste0(tempfile(), ".png")
-    snapshot_fn <- file.path("_tinyviztest", paste0(snapshot, ".png"))
+    if (device == "ragg") {
+        ext <- ".png"
+    } else {
+        ext <- ".svg"
+    }
+    current_fn <- paste0(tempfile(), ext)
+    snapshot_fn <- file.path("_tinyviztest", paste0(snapshot, ext))
 
     # `current` input validation (more informative message than default checkmate)
     if (!isTRUE(checkmate::check_function(current)) && !isTRUE(checkmate::check_class(current, "ggplot"))) {
@@ -74,13 +83,25 @@ expect_snapshot_plot <- function(current,
     }
 
     # write current plot to file
-    ragg::agg_png(current_fn, width = width, height = height)
-    if (inherits(current, "ggplot")) {
-        print(current)
-    } else {
-        current()
+    if (device == "ragg") {
+        ragg::agg_png(current_fn, width = width, height = height)
+        if (inherits(current, "ggplot")) {
+            print(current)
+        } else {
+            current()
+        }
+        invisible(grDevices::dev.off())
+
+    } else if (device == "svg") {
+        # TODO: size
+        grDevices::svg(current_fn, width = 7, height = 7)
+        if (inherits(current, "ggplot")) {
+            print(current)
+        } else {
+            current()
+        }
+        invisible(grDevices::dev.off())
     }
-    invisible(grDevices::dev.off())
 
     # if snapshot missing, copy current to snapshot, and return failure immediately
     if (!isTRUE(checkmate::check_file_exists(snapshot_fn))) {
@@ -90,7 +111,7 @@ expect_snapshot_plot <- function(current,
             info <- paste("Creating snapshot:", snapshot_fn)
         } else {
             # stop() otherwise source("test-file.R") fails silently
-            info <- 'Snapshot missing: %s. Make sure you execute commands in the right directory, or use one of the `tinytest` runners to generate new snapshots: `run_test_dir()` or `run_test_file()`.'
+            info <- "Snapshot missing: %s. Make sure you execute commands in the right directory, or use one of the `tinytest` runners to generate new snapshots: `run_test_dir()` or `run_test_file()`."
             info <- sprintf(info, snapshot_fn)
             stop(info, call. = FALSE)
         }
@@ -132,22 +153,22 @@ expect_equivalent_images <- function(current,
     info <- diff <- NA_character_
     fail <- FALSE
 
-
     # input sanity checks
     check_user_input <- checkmate::makeAssertCollection()
     checkmate::assert_numeric(tol, lower = 0, add = check_user_input)
     checkmate::assert_numeric(fuzz, lower = 0, add = check_user_input)
     checkmate::assert_choice(metric, choices = magick::metric_types(), add = check_user_input)
-    checkmate::assert_file_exists(current, extension = c("png", "jpg"), add = check_user_input)
-    checkmate::assert_file_exists(target, extension = c("png", "jpg"), add = check_user_input)
+    checkmate::assert_file_exists(current, extension = c("png", "jpg", "svg"), add = check_user_input)
+    checkmate::assert_file_exists(target, extension = c("png", "jpg", "svg"), add = check_user_input)
     if (!is.null(diffpath)) {
         checkmate::assert_path_for_output(diffpath, overwrite = TRUE, add = check_user_input)
     }
     checkmate::reportAssertions(check_user_input)
 
     # distance > tol
-    target <- magick::image_read(target)
-    current <- magick::image_read(current)
+    # warnings: ImageMagick wants us to install `rsvg` for better quality rendering
+    target <- suppressWarnings(magick::image_read(target))
+    current <- suppressWarnings(magick::image_read(current))
     dis <- magick::image_compare_dist(
         target,
         current,
