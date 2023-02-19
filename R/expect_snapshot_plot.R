@@ -30,26 +30,26 @@
 #' using(tinyviztest)
 #'
 #' # ggplot2: run once to save a snapshot
-#' expect_vdiff(
+#' expect_snapshot_plot(
 #'   ggplot(mtcars, aes(mpg, hp)) + geom_point(),
 #'   label = "ggplot2 example")
 #'
 #' # ggplot2: run a second time -> PASS
-#' expect_vdiff(
+#' expect_snapshot_plot(
 #'   ggplot(mtcars, aes(mpg, hp)) + geom_point(),
 #'   label = "ggplot2 example")
 #'
 #' # ggplot2: run with the wrong plot -> FAIL
-#' expect_vdiff(
+#' expect_snapshot_plot(
 #'   ggplot(mtcars, aes(mpg, wt)) + geom_point(),
 #'   label = "ggplot2 example")
 #'
 #' # Base R graphics: Function which returns a plot
-#' expect_vdiff(
+#' expect_snapshot_plot(
 #'   function() plot(mtcars$mpg, mtcars$wt),
 #'   label = "base R example")
 #'
-#' expect_vdiff(
+#' expect_snapshot_plot(
 #'   function() plot(mtcars$mpg, mtcars$wt),
 #'   label = "base R example")
 #' }
