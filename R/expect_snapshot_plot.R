@@ -14,8 +14,8 @@
 #' 
 #' @param current an object of class `ggplot` or a function which returns a base R plot. See Examples below.
 #' @param label a string to identify the snapshot (alpha-numeric, hypohens, or underscores). Each plot in the test suite must have a unique label.
-#' @param width of snapshot in pixel (not supported for svg)
-#' @param height of snapshot in pixels (not supported for svg)
+#' @param width of the snapshot. PNG default: 480 pixels. SVG default: 7 inches.
+#' @param height of the snapshot. PNG default: 480 pixels. SVG default: 7 inches.
 #' @param device "svg", "png", "ragg" or "svglite"
 #' @param tol distance estimates larger than this threshold will trigger a test failure. Scale depends on the `metric` argument. With the default `metric="AE"` (absolute error), the `tolerance` corresponds roughly to the number of pixels of difference between the plot and the reference image.
 #' @inheritParams magick::image_compare
@@ -56,8 +56,8 @@
 #' @export
 expect_snapshot_plot <- function(current,
                                  label,
-                                 width = 480,
-                                 height = 480,
+                                 width = NULL,
+                                 height = NULL,
                                  tol = width * height * 0.001,
                                  metric = "AE",
                                  fuzz = 0,
@@ -71,8 +71,12 @@ expect_snapshot_plot <- function(current,
     cal <- sys.call(sys.parent(1))
     if (device %in% c("png", "ragg")) {
         ext <- ".png"
+        if (is.null(width)) width <- 480
+        if (is.null(height)) height <- width
     } else if (device %in% c("svg", "svglite")) {
         ext <- ".svg"
+        if (is.null(width)) width <- 7
+        if (is.null(height)) height <- width
     }
     current_fn <- paste0(tempfile(), ext)
     snapshot_fn <- file.path("_tinyviztest", paste0(snapshot, ext))

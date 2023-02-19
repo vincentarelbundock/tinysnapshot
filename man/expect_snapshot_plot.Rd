@@ -7,8 +7,8 @@
 expect_snapshot_plot(
   current,
   label,
-  width = 480,
-  height = 480,
+  width = NULL,
+  height = NULL,
   tol = width * height * 0.001,
   metric = "AE",
   fuzz = 0,
@@ -20,9 +20,9 @@ expect_snapshot_plot(
 
 \item{label}{a string to identify the snapshot (alpha-numeric, hypohens, or underscores). Each plot in the test suite must have a unique label.}
 
-\item{width}{of snapshot in pixel (not supported for svg)}
+\item{width}{of the snapshot. PNG default: 480 pixels. SVG default: 7 inches.}
 
-\item{height}{of snapshot in pixels (not supported for svg)}
+\item{height}{of the snapshot. PNG default: 480 pixels. SVG default: 7 inches.}
 
 \item{tol}{distance estimates larger than this threshold will trigger a test failure. Scale depends on the \code{metric} argument. With the default \code{metric="AE"} (absolute error), the \code{tolerance} corresponds roughly to the number of pixels of difference between the plot and the reference image.}
 
