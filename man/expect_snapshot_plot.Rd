@@ -9,7 +9,7 @@ expect_snapshot_plot(
   label,
   width = NULL,
   height = NULL,
-  tol = width * height * 0.001,
+  tol = 0,
   metric = "AE",
   fuzz = 0,
   device = getOption("tinyviztest_device", default = "ragg")
