@@ -169,7 +169,6 @@ expect_equivalent_images <- function(current,
     # warnings: ImageMagick wants us to install `rsvg` for better quality rendering
     target <- suppressWarnings(magick::image_read(target))
     current <- suppressWarnings(magick::image_read(current))
-    browser()
     dis <- magick::image_compare_dist(
         target,
         current,
