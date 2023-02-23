@@ -7,8 +7,8 @@
 expect_snapshot_print(
   current,
   label,
-  mode = getOption("diffobj.mode", default = "unified"),
-  format = getOption("diffobj.format", default = "ansi256"),
+  mode = getOption("tinyviztest_mode", default = "unified"),
+  format = getOption("tinyviztest_format", default = "ansi256"),
   ...
 )
 }

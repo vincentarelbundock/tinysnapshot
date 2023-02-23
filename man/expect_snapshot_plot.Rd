@@ -7,11 +7,11 @@
 expect_snapshot_plot(
   current,
   label,
-  width = NULL,
-  height = NULL,
-  tol = 0,
-  metric = "AE",
-  fuzz = 0,
+  width = getOption("tinyviztest_width", default = NULL),
+  height = getOption("tinyviztest_height", default = NULL),
+  tol = getOption("tinyviztest_tol", default = 0),
+  metric = getOption("tinyviztest_metric", default = "AE"),
+  fuzz = getOption("tinyviztest_fuzz", default = 0),
   device = getOption("tinyviztest_device", default = "ragg")
 )
 }

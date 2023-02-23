@@ -10,10 +10,10 @@ License: GPL (>= 3)
 Imports:
     diffobj,
     magick,
-    ragg,
     tinytest
 Suggests:
     ggplot2,
+    ragg,
     svglite
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
