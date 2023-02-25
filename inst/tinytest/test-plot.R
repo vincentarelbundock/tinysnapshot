@@ -2,7 +2,7 @@
 # 2nd run: These tests fail 3 times
 library("tinytest")
 using("tinysnapshot")
-options(tinysnapshot_device = "svglite")
+options(tinysnapshot_device = "svg")
 
 ###### base R
 p1 <- function() plot(mtcars$hp, mtcars$mpg)
