@@ -2,7 +2,7 @@
 
 `tinytest` is a ["lightweight, no-dependency, but full-featured package for unit testing in `R`"](https://cran.r-project.org/package=tinytest) created by Mark van der Loo.
 
-`tinyviztest` extends `tinytest` with expectations to test the output of `print()` and plots created in either base `R` or `ggplot2`. In particular, `tinyviztest` allows:
+`tinyviztest` extends `tinytest` with expectations to test plots (base `R` or `ggplot2`) and `print()` output. In particular, `tinyviztest` allows:
 
 1. Taking snapshots of known "target" plots or `print()` output.
 2. Testing if the "current" plot or `print()` output matches the target.
@@ -83,8 +83,9 @@ expect_snapshot_plot(p2, label = "base_example")
 
 ```{r}
 options(tinyviztest_device = "svglite")
-options(tinyviztest_height = 7)
+options(tinyviztest_height = 7) # inches
 options(tinyviztest_width = 7)
+options(tinyviztest_tol = 200) # pixels
 ```
 
 ### Visual diff
@@ -108,11 +109,17 @@ mod2 <- lm(mpg ~ factor(gear), mtcars)
 expect_snapshot_print(summary(mod2), label = "print-lm_summary")
 ```
 
-Then, we run the tests. Note that both tests fail, and that a reference text file is saved to `inst/tinytest/_tinyviztest/print-summary_lm.txt`:
+Then, we run the tests. 
 
 ```r
 tinytest::run_test_file("inst/tinytest/test-print.R")
 ```
+
+The first time we run the test, it fails and saves a reference file. The second time we run it, there is already a reference text file, so only one of the tests fails. This is the expected result.
+
+## Print diff
+
+When tests fail, `tinytest` will return a diff like this one: 
 
 ```{r}
     test-print.R..................    2 tests 2 fails 0.3s
@@ -160,11 +167,7 @@ tinytest::run_test_file("inst/tinytest/test-print.R")
     Creating reference file: _tinyviztest/print-lm_summary.txt 
 ```
 
-The second time we run it, there is already a reference text file, so only one of the tests fails. This is the expected result.
-
-### Print Diff
-
-Some `tinytest` functions will not print the full diff. In those cases, you can save the `tinytest` object and print it out manually while specifying the `nlong` argument:
+When there are too many failures, `tinytest` will not always print the full diff. In those cases, you can save the `tinytest` object and print it out manually while specifying the `nlong` argument:
 
 ```r
 results <- tinytest::run_test_dir()
