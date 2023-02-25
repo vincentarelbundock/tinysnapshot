@@ -3,6 +3,8 @@
 library("tinytest")
 using("tinysnapshot")
 
+options(tinysnapshot_device = "svg")
+
 ###### base R
 p1 <- function() plot(mtcars$hp, mtcars$mpg)
 p2 <- function() plot(mtcars$hp, mtcars$wt)
@@ -32,3 +34,6 @@ expect_snapshot_plot(p3, "svg-ggplot2_theme")
 p4 <- ggplot(mtcars, aes(mpg, hp)) + geom_point() + theme_minimal()
 flag <- tinysnapshot::expect_snapshot_plot(p4, "svg-ggplot2_theme")
 expect_false(flag)
+
+
+options(tinysnapshot_device = NULL)
