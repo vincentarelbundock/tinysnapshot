@@ -1,4 +1,4 @@
-# Snapshots for print and plot regression tests using the `tinytest` framework in `R`
+# Snapshots for unit tests using the `tinytest` framework for `R`
 
 `tinytest` is a ["lightweight, no-dependency, but full-featured package for unit testing in `R`"](https://cran.r-project.org/package=tinytest) created by Mark van der Loo.
 
