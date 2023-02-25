@@ -13,6 +13,7 @@ Imports:
 Suggests:
     ggplot2,
     ragg,
+    rsvg,
     svglite
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
