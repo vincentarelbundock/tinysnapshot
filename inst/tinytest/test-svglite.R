@@ -1,3 +1,5 @@
+source("helpers.R")
+
 # 1st run: These tests fail 6 times and generate 3 reference plots
 # 2nd run: These tests fail 3 times
 library("tinytest")
