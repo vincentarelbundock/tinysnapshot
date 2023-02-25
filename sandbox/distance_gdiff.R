@@ -15,7 +15,7 @@
 
 #     # `gdiff` requires a directory structure
 #     randdir <- sample(c(0:9, letters), 20, replace = TRUE)
-#     randdir <- paste0("tinyviztest_compare_", paste(randdir, collapse = ""))
+#     randdir <- paste0("tinysnapshot_compare_", paste(randdir, collapse = ""))
 #     controlDir <- file.path(randdir, "control")
 #     testDir <- file.path(randdir, "test")
 #     compareDir <- file.path(randdir, "compare")

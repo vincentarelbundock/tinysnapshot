@@ -1,10 +1,10 @@
-\name{tinyviztest-package}
-\alias{tinyviztest-package}
-\alias{tinyviztest}
+\name{tinysnapshot-package}
+\alias{tinysnapshot-package}
+\alias{tinysnapshot}
 \docType{package}
-\title{\packageTitle{tinyviztest}}
-\description{\packageDescription{tinyviztest}}
-\section{Package Content}{\packageIndices{tinyviztest}}
-\author{\packageAuthor{tinyviztest}}
-\section{Maintainer}{\packageMaintainer{tinyviztest}}
+\title{\packageTitle{tinysnapshot}}
+\description{\packageDescription{tinysnapshot}}
+\section{Package Content}{\packageIndices{tinysnapshot}}
+\author{\packageAuthor{tinysnapshot}}
+\section{Maintainer}{\packageMaintainer{tinysnapshot}}
 \keyword{package}

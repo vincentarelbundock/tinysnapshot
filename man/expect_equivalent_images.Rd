@@ -7,9 +7,9 @@
 expect_equivalent_images(
   current,
   target,
-  tol = getOption("tinyviztest_tol", default = 0),
-  metric = getOption("tinyviztest_metric", default = "AE"),
-  fuzz = getOption("tinyviztest_fuzz", default = 0),
+  tol = getOption("tinysnapshot_tol", default = 0),
+  metric = getOption("tinysnapshot_metric", default = "AE"),
+  fuzz = getOption("tinysnapshot_fuzz", default = 0),
   diffpath = NULL
 )
 }

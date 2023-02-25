@@ -4,12 +4,12 @@
 #' a target plot. 
 #' 
 #' When the expectation is checked for the first time, the expectation fails and
-#' a reference plot is saved to the `inst/tinytest/_tinyviztest` folder.
+#' a reference plot is saved to the `inst/tinytest/_tinysnapshot` folder.
 #' 
 #' When the expectation fails, the reference plot, the new plot, and a diff are
 #' saved to the `inst/tinytest/label` folder. Call the `review()` function to compare.
 #' 
-#' To update a snapshot, delete the reference file from the `_tinyviztest`
+#' To update a snapshot, delete the reference file from the `_tinysnapshot`
 #' folder and run the test suite again.
 #' 
 #' @param current an object of class `ggplot` or a function which returns a base R plot. See Examples below.
@@ -28,7 +28,7 @@
 #' \dontrun{
 #' library(ggplot2)
 #' library(tinytest)
-#' using(tinyviztest)
+#' using(tinysnapshot)
 #'
 #' # ggplot2: run once to save a snapshot
 #' expect_snapshot_plot(
@@ -57,12 +57,12 @@
 #' @export
 expect_snapshot_plot <- function(current,
                                  label,
-                                 width = getOption("tinyviztest_width", default = NULL),
-                                 height = getOption("tinyviztest_height", default = NULL),
-                                 tol = getOption("tinyviztest_tol", default = 0),
-                                 metric = getOption("tinyviztest_metric", default = "AE"),
-                                 fuzz = getOption("tinyviztest_fuzz", default = 0),
-                                 device = getOption("tinyviztest_device", default = "ragg")
+                                 width = getOption("tinysnapshot_width", default = NULL),
+                                 height = getOption("tinysnapshot_height", default = NULL),
+                                 tol = getOption("tinysnapshot_tol", default = 0),
+                                 metric = getOption("tinysnapshot_metric", default = "AE"),
+                                 fuzz = getOption("tinysnapshot_fuzz", default = 0),
+                                 device = getOption("tinysnapshot_device", default = "svg")
                                  ) {
 
     ts_assert_choice(device, c("ragg", "png", "svg", "svglite"))
@@ -80,7 +80,7 @@ expect_snapshot_plot <- function(current,
         if (is.null(height)) height <- width
     }
     current_fn <- paste0(tempfile(), ext)
-    snapshot_fn <- file.path("_tinyviztest", paste0(snapshot, ext))
+    snapshot_fn <- file.path("_tinysnapshot", paste0(snapshot, ext))
 
     if (!is.function(current) && !inherits(current, "ggplot")) {
         info <- "`current` must be a `ggplot2` object or a function which returns a base `R` plot."
@@ -122,14 +122,14 @@ expect_snapshot_plot <- function(current,
     }
 
     # if snapshot present -> compare images and save diff plot
-    dir.create("_tinyviztest_review", recursive = TRUE, showWarnings = FALSE)
+    dir.create("_tinysnapshot_review", recursive = TRUE, showWarnings = FALSE)
     out <- expect_equivalent_images(
         current_fn,
         snapshot_fn,
         tol = tol,
         metric = metric,
         fuzz = fuzz,
-        diffpath = file.path("_tinyviztest_review", paste0(basename(snapshot), ".png")) 
+        diffpath = file.path("_tinysnapshot_review", paste0(basename(snapshot), ".png")) 
     )
     attr(out, "call") <- cal
     return(out)
@@ -146,9 +146,9 @@ expect_snapshot_plot <- function(current,
 #' @export
 expect_equivalent_images <- function(current,
                                      target,
-                                     tol = getOption("tinyviztest_tol", default = 0),
-                                     metric = getOption("tinyviztest_metric", default = "AE"),
-                                     fuzz = getOption("tinyviztest_fuzz", default = 0),
+                                     tol = getOption("tinysnapshot_tol", default = 0),
+                                     metric = getOption("tinysnapshot_metric", default = "AE"),
+                                     fuzz = getOption("tinysnapshot_fuzz", default = 0),
                                      diffpath = NULL) {
                                 
     # default values

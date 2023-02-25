@@ -35,5 +35,5 @@ vignettes/*.pdf
 *.utf8.md
 *.knit.md
 
-/inst/tinytest/_tinyviztest_review/
+/inst/tinytest/_tinysnapshot_review/
 /README.html

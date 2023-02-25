@@ -4,9 +4,9 @@
 #' a target plot. 
 #' 
 #' When the expectation is checked for the first time, the expectation fails and
-#' a reference text file is saved to the `inst/tinytest/_tinyviztest` folder.
+#' a reference text file is saved to the `inst/tinytest/_tinysnapshot` folder.
 #' 
-#' To update a snapshot, delete the reference file from the `_tinyviztest`
+#' To update a snapshot, delete the reference file from the `_tinysnapshot`
 #' folder and run the test suite again.
 #' 
 #' See 
@@ -21,13 +21,13 @@
 #' @export
 expect_snapshot_print <- function(current,
                                   label,
-                                  mode = getOption("tinyviztest_mode", default = "unified"),
-                                  format = getOption("tinyviztest_format", default = "ansi256"),
+                                  mode = getOption("tinysnapshot_mode", default = "unified"),
+                                  format = getOption("tinysnapshot_format", default = "ansi256"),
                                   ...) {
 
     # defaults
     snapshot <- snapshot_label(label)
-    snapshot_fn <- file.path("_tinyviztest", paste0(snapshot, ".txt"))
+    snapshot_fn <- file.path("_tinysnapshot", paste0(snapshot, ".txt"))
     cal <- sys.call(sys.parent(1))
     diff <- info <- NA_character_
     fail <- FALSE

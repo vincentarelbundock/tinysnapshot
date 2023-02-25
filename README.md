@@ -2,13 +2,13 @@
 
 `tinytest` is a ["lightweight, no-dependency, but full-featured package for unit testing in `R`"](https://cran.r-project.org/package=tinytest) created by Mark van der Loo.
 
-`tinyviztest` extends `tinytest` with expectations to test plots (base `R` or `ggplot2`) and `print()` output. In particular, `tinyviztest` allows:
+`tinysnapshot` extends `tinytest` with expectations to test plots (base `R` or `ggplot2`) and `print()` output. In particular, `tinysnapshot` allows:
 
 1. Taking snapshots of known "target" plots or `print()` output.
 2. Testing if the "current" plot or `print()` output matches the target.
 3. Displaying a visual "diff" to facilitate comparison when a test fails.
 
-Under the hood, `tinyviztest` uses [the `magick` package](https://cran.r-project.org/package=magick) by Jeroen Ooms to read and compare images, and [the `diffobj`package](https://CRAN.R-project.org/package=diffobj) by Brodie Gaslam to compare printed output.
+Under the hood, `tinysnapshot` uses [the `magick` package](https://cran.r-project.org/package=magick) by Jeroen Ooms to read and compare images, and [the `diffobj`package](https://CRAN.R-project.org/package=diffobj) by Brodie Gaslam to compare printed output.
 
 ## Installation
 
@@ -24,16 +24,16 @@ Each test script with visual expectations must include these two lines at the to
 
 ```r
 library("tinytest")
-using("tinyviztest")
+using("tinysnapshot")
 ```
 
 When users run the `tinytest` suite, the `expect_snapshot_plot()` and `expect_snapshot_print()` expectations are executed and three main states can arise:
 
 * On first run: 
-    - Test fails and saves a visual snapshot in the `inst/tinytest/_tinyviztest` directory.
+    - Test fails and saves a visual snapshot in the `inst/tinytest/_tinysnapshot` directory.
 * On subsequent runs:
     - Test passes when the plot matches the snapshot file.
-    - Test fails and saves comparison files in `inst/tinytest/_tinyviztest_review`
+    - Test fails and saves comparison files in `inst/tinytest/_tinysnapshot_review`
 
 All files are saved in PNG format using the `grDevices::png()` device.
 
@@ -44,7 +44,7 @@ In this example script, we test two `ggplot2` objects:
 ```r
 library("ggplot2")
 library("tinytest")
-using("tinyviztest")
+using("tinysnapshot")
 
 p1 <- ggplot(mtcars, aes(mpg, wt)) + geom_point()
 p2 <- ggplot(mtcars, aes(mpg, hp)) + geom_point()
@@ -63,7 +63,7 @@ Testing a Base `R` plot is slightly different: we need to supply a function whic
 
 ```r
 library("tinytest")
-using("tinyviztest")
+using("tinysnapshot")
 
 p1 <- function() plot(mtcars$hp, mtcars$wt)
 p2 <- function() plot(mtcars$hp, mtcars$mpg)
@@ -82,15 +82,15 @@ expect_snapshot_plot(p2, label = "base_example")
 
 
 ```{r}
-options(tinyviztest_device = "svglite")
-options(tinyviztest_height = 7) # inches
-options(tinyviztest_width = 7)
-options(tinyviztest_tol = 200) # pixels
+options(tinysnapshot_device = "svglite")
+options(tinysnapshot_height = 7) # inches
+options(tinysnapshot_width = 7)
+options(tinysnapshot_tol = 200) # pixels
 ```
 
 ### Visual diff
 
-When (not "if") tests fail, `tinyviztest` will save diff files in the `inst/tinytest/_tinyviztest_review/` folder. Diff files for plots look like this:
+When (not "if") tests fail, `tinysnapshot` will save diff files in the `inst/tinytest/_tinysnapshot_review/` folder. Diff files for plots look like this:
 
 ![](https://user-images.githubusercontent.com/987057/210011007-757b7f6d-4b57-4f77-b586-22e7d13bf9f5.png)
 
@@ -100,7 +100,7 @@ First, we save this script in `inst/tinytest/test-print.R`:
 
 ```r
 library("tinytest")
-using("tinyviztest")
+using("tinysnapshot")
 
 mod1 <- lm(mpg ~ hp + factor(gear), mtcars)
 expect_snapshot_print(summary(mod1), label = "print-lm_summary")
@@ -164,7 +164,7 @@ When tests fail, `tinytest` will return a diff like this one:
     info| diffobj::printDiff()
     
     Warning message:
-    Creating reference file: _tinyviztest/print-lm_summary.txt 
+    Creating reference file: _tinysnapshot/print-lm_summary.txt 
 ```
 
 When there are too many failures, `tinytest` will not always print the full diff. In those cases, you can save the `tinytest` object and print it out manually while specifying the `nlong` argument:
@@ -176,11 +176,11 @@ print(results, nlong = Inf)
 
 ## Updating snapshots
 
-To update the snapshot for a test, simply delete the relevant snapshot from the `inst/tinytest/_tinyviztest` folder and run the test suite again. As when we ran the suite for the very first time, this will report a failure but generate a new snapshot.
+To update the snapshot for a test, simply delete the relevant snapshot from the `inst/tinytest/_tinysnapshot` folder and run the test suite again. As when we ran the suite for the very first time, this will report a failure but generate a new snapshot.
 
 ## Minimal package example
 
-We now create a minimal `R` package to illustrate how to use `tinyviztest` in the "real world."
+We now create a minimal `R` package to illustrate how to use `tinysnapshot` in the "real world."
 
 Create a `temp` directory and use the `pkgKitten` package to create an ultra-minimalist package (an alternative would be the `usethis` package):
 
@@ -204,11 +204,11 @@ kitten(name = "testpkg")
     And run 'R CMD check'. Run it frequently. And think of those kittens.
 ```
 
-Download an example test script from the `tinyviztest` repository:
+Download an example test script from the `tinysnapshot` repository:
 
 ```r
 download.file(
-    url = "https://raw.githubusercontent.com/vincentarelbundock/tinyviztest/main/inst/tinytest/test-basic.R",
+    url = "https://raw.githubusercontent.com/vincentarelbundock/tinysnapshot/main/inst/tinytest/test-basic.R",
     destfile = "testpkg/inst/tinytest/test-basic.R",
     quiet = TRUE)
 ```
@@ -240,9 +240,9 @@ tinytest::run_test_dir("inst/tinytest")
     
     Showing 6 out of 7 results: 6 fails, 1 passes (0.8s)
     Warning messages:
-    1: Creating reference file: _tinyviztest/base.png 
-    2: Creating reference file: _tinyviztest/ggplot2_variable.png 
-    3: Creating reference file: _tinyviztest/ggplot2_theme.png 
+    1: Creating reference file: _tinysnapshot/base.png 
+    2: Creating reference file: _tinysnapshot/ggplot2_variable.png 
+    3: Creating reference file: _tinysnapshot/ggplot2_theme.png 
 ```
 
 The second time we run the test suite, only 3 of the `test-basic.R` tests fail:

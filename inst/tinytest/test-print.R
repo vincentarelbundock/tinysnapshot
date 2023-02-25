@@ -2,7 +2,7 @@
 # 2nd run: These tests fail 1 time
 
 library("tinytest")
-using("tinyviztest")
+using("tinysnapshot")
 
 mod1 <- lm(mpg ~ hp + factor(gear), mtcars)
 mod2 <- lm(mpg ~ factor(gear), mtcars)
@@ -12,4 +12,4 @@ mod2 <- lm(mpg ~ factor(gear), mtcars)
 expect_snapshot_print(summary(mod1), "print-lm_summary")
 
 # Always fails
-expect_false(tinyviztest::expect_snapshot_print(summary(mod2), "print-lm_summary"))
+expect_false(tinysnapshot::expect_snapshot_print(summary(mod2), "print-lm_summary"))

@@ -7,12 +7,12 @@
 expect_snapshot_plot(
   current,
   label,
-  width = getOption("tinyviztest_width", default = NULL),
-  height = getOption("tinyviztest_height", default = NULL),
-  tol = getOption("tinyviztest_tol", default = 0),
-  metric = getOption("tinyviztest_metric", default = "AE"),
-  fuzz = getOption("tinyviztest_fuzz", default = 0),
-  device = getOption("tinyviztest_device", default = "ragg")
+  width = getOption("tinysnapshot_width", default = NULL),
+  height = getOption("tinysnapshot_height", default = NULL),
+  tol = getOption("tinysnapshot_tol", default = 0),
+  metric = getOption("tinysnapshot_metric", default = "AE"),
+  fuzz = getOption("tinysnapshot_fuzz", default = 0),
+  device = getOption("tinysnapshot_device", default = "svg")
 )
 }
 \arguments{
@@ -43,19 +43,19 @@ a target plot.
 }
 \details{
 When the expectation is checked for the first time, the expectation fails and
-a reference plot is saved to the \verb{inst/tinytest/_tinyviztest} folder.
+a reference plot is saved to the \verb{inst/tinytest/_tinysnapshot} folder.
 
 When the expectation fails, the reference plot, the new plot, and a diff are
 saved to the \code{inst/tinytest/label} folder. Call the \code{review()} function to compare.
 
-To update a snapshot, delete the reference file from the \verb{_tinyviztest}
+To update a snapshot, delete the reference file from the \verb{_tinysnapshot}
 folder and run the test suite again.
 }
 \examples{
 \dontrun{
 library(ggplot2)
 library(tinytest)
-using(tinyviztest)
+using(tinysnapshot)
 
 # ggplot2: run once to save a snapshot
 expect_snapshot_plot(
