@@ -14,7 +14,6 @@ p2 <- function() plot(mtcars$hp, mtcars$wt)
 expect_snapshot_plot(p1, "plot-base")
 
 # bad plot always fails
-# TODO: this doesn't fail. I have a browser() call in to inspect
 flag <- tinysnapshot::expect_snapshot_plot(p2, "plot-base")
 expect_false(flag)
 
