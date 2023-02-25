@@ -10,3 +10,4 @@
 ^_tinyviztest_compare
 ^_tinyviztest_current
 ^\.github$
+^Makefile$

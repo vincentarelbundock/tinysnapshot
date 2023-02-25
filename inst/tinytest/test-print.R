@@ -12,5 +12,4 @@ mod2 <- lm(mpg ~ factor(gear), mtcars)
 expect_snapshot_print(summary(mod1), "print-lm_summary")
 
 # Always fails
-expect_snapshot_print(summary(mod2), "print-lm_summary")
-
+expect_false(tinyviztest::expect_snapshot_print(summary(mod2), "print-lm_summary"))

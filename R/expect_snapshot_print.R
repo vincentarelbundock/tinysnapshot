@@ -9,13 +9,16 @@
 #' To update a snapshot, delete the reference file from the `_tinyviztest`
 #' folder and run the test suite again.
 #' 
-#' @param x an object which returns text to the console when calling `print(x`)`
+#' See 
+#' 
+#' @param current an object which returns text to the console when calling `print(x`)`
+#' @param mode "unified", "sidebyside", "context", or "auto". See `?diffobj::diffPrint`
+#' @param format "raw", "ansi8", "ansi256", "html", or "auto". See `?diffobj::diffPrint`
 #' @inheritParams expect_snapshot_plot
 #' @inheritParams diffobj::diffPrint
 #' @param ... Additional arguments are passed to `diffobj::diffPrint()`
 #' @return A `tinytest` object. A tinytest object is a
-#' \code{logical} with attributes holding information about the test that was
-#' run
+#' \code{logical} with attributes holding information about the test that was run
 #' @export
 expect_snapshot_print <- function(current,
                                   label,

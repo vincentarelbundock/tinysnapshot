@@ -1,0 +1,21 @@
+
+Call:
+lm(formula = mpg ~ hp + factor(gear), data = mtcars)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-4.4937 -2.3586 -0.8277  2.2753  7.7287 
+
+Coefficients:
+              Estimate Std. Error t value Pr(>|t|)    
+(Intercept)   27.88193    2.10908  13.220 1.47e-13 ***
+hp            -0.06685    0.01105  -6.052 1.59e-06 ***
+factor(gear)4  2.63486    1.55164   1.698 0.100575    
+factor(gear)5  6.57476    1.64268   4.002 0.000417 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 3.154 on 28 degrees of freedom
+Multiple R-squared:  0.7527,	Adjusted R-squared:  0.7262 
+F-statistic: 28.41 on 3 and 28 DF,  p-value: 1.217e-08
+

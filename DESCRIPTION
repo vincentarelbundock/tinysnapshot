@@ -1,7 +1,7 @@
 Package: tinyviztest
 Type: Package
 Title: Snapshots for unit tests using the `tinytest` framework
-Version: 0.0.0.9007
+Version: 0.0.0.9008
 Author: Vincent Arel-Bundock
 Maintainer: Vincent Arel-Bundock <vincent.arel-bundock@umontreal.ca>
 Description: Use the `tinytest` framekwork to compare plots and console printouts to known snapshots ("golden tests"). Supports base `R` and `ggplot2` plots.
@@ -9,7 +9,7 @@ License: GPL (>= 3)
 Imports:
     diffobj,
     magick,
-    tinytest
+    tinytest (>= 1.4.1)
 Suggests:
     ggplot2,
     ragg,

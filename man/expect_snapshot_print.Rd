@@ -13,51 +13,19 @@ expect_snapshot_print(
 )
 }
 \arguments{
-\item{current}{an object of class \code{ggplot} or a function which returns a base R plot. See Examples below.}
+\item{current}{an object which returns text to the console when calling \verb{print(x})`}
 
 \item{label}{a string to identify the snapshot (alpha-numeric, hypohens, or underscores). Each plot in the test suite must have a unique label.}
 
-\item{mode}{character(1L), one of:
-\itemize{
-  \item \dQuote{unified}: diff mode used by \code{git diff}
-  \item \dQuote{sidebyside}: line up the differences side by side
-  \item \dQuote{context}: show the target and current hunks in their
-    entirety; this mode takes up a lot of screen space but makes it easier
-    to see what the objects actually look like
-  \item \dQuote{auto}: default mode; pick one of the above, will favor
-    \dQuote{sidebyside} unless \code{getOption("width")} is less than 80,
-    or in \code{diffPrint} and objects are dimensioned and do not fit side
-    by side, or in \code{diffChr}, \code{diffDeparse}, \code{diffFile} and
-    output does not fit in side by side without wrapping
-}}
+\item{mode}{"unified", "sidebyside", "context", or "auto". See \code{?diffobj::diffPrint}}
 
-\item{format}{character(1L), controls the diff output format, one of:
-\itemize{
-  \item \dQuote{auto}: to select output format based on terminal
-    capabilities; will attempt to use one of the ANSI formats if they
-    appear to be supported, and if not or if you are in the Rstudio console
-    it will attempt to use HTML and browser output if in interactive mode.
-  \item \dQuote{raw}: plain text
-  \item \dQuote{ansi8}: color and format diffs using basic ANSI escape
-    sequences
-  \item \dQuote{ansi256}: like \dQuote{ansi8}, except using the full range
-    of ANSI formatting options
-  \item \dQuote{html}: color and format using HTML markup; the resulting
-    string is processed with \code{\link{enc2utf8}} when output as a full
-    web page (see docs for \code{html.output} under \code{\link[diffobj]{Style}}).
-}
-Defaults to \dQuote{auto}.  See \code{palette.of.styles} for details
-on customization, \code{\link{style}} for full control of output format.
-See `pager` parameter for more discussion of Rstudio behavior.}
+\item{format}{"raw", "ansi8", "ansi256", "html", or "auto". See \code{?diffobj::diffPrint}}
 
 \item{...}{Additional arguments are passed to \code{diffobj::diffPrint()}}
-
-\item{x}{an object which returns text to the console when calling \verb{print(x})`}
 }
 \value{
 A \code{tinytest} object. A tinytest object is a
-\code{logical} with attributes holding information about the test that was
-run
+\code{logical} with attributes holding information about the test that was run
 }
 \description{
 This expectation can be used with \code{tinytest} to check if the new plot matches
@@ -69,4 +37,6 @@ a reference text file is saved to the \verb{inst/tinytest/_tinyviztest} folder.
 
 To update a snapshot, delete the reference file from the \verb{_tinyviztest}
 folder and run the test suite again.
+
+See
 }
