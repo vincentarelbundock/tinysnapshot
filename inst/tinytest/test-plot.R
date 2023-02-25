@@ -1,6 +1,6 @@
 # 1st run: These tests fail 6 times and generate 3 reference plots
 # 2nd run: These tests fail 3 times
-options(tinysnapshot_device = "png")
+options(tinysnapshot_device = "ragg")
 
 library("tinytest")
 using("tinysnapshot")
@@ -17,7 +17,6 @@ expect_snapshot_plot(p1, "plot-base")
 
 # bad plot always fails
 expect_false(tinysnapshot::expect_snapshot_plot(p2, "plot-base"))
-
 
 ###### ggplot2
 suppressPackageStartupMessages(library("ggplot2"))
