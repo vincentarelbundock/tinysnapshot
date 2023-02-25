@@ -168,11 +168,17 @@ expect_equivalent_images <- function(current,
 
     # distance > tol
     # warnings: ImageMagick wants us to install `rsvg` for better quality rendering
-    target <- suppressWarnings(magick::image_read(target))
-    current <- suppressWarnings(magick::image_read(current))
+    # image_read() sometimes returns all white files on SVG
+    if (tools::file_ext(target) == "svg") {
+        file_target <- suppressWarnings(magick::image_read_svg(target))
+        file_current <- suppressWarnings(magick::image_read_svg(current))
+    } else {
+        file_target <- suppressWarnings(magick::image_read(target))
+        file_current <- suppressWarnings(magick::image_read(current))
+    }
     dis <- magick::image_compare_dist(
-        target,
-        current,
+        file_target,
+        file_current,
         metric = metric,
         fuzz = fuzz)
     dis <- unname(dis$distortion)
@@ -182,20 +188,20 @@ expect_equivalent_images <- function(current,
 
     # diff plot
     if (isTRUE(fail) && !is.null(diffpath)) {
-        diffplot <- magick::image_compare(current, target, metric = metric, fuzz = fuzz)
+        diffplot <- magick::image_compare(file_current, file_target, metric = metric, fuzz = fuzz)
 
-        current <- grDevices::as.raster(current)
-        target <- grDevices::as.raster(target)
+        file_current <- grDevices::as.raster(file_current)
+        file_target <- grDevices::as.raster(file_target)
         diffplot <- grDevices::as.raster(diffplot)
 
-        width <- nrow(current) + nrow(target) + nrow(diffplot)
-        height <- max(c(ncol(current), ncol(target), ncol(diffplot)))
+        width <- nrow(file_current) + nrow(file_target) + nrow(diffplot)
+        height <- max(c(ncol(file_current), ncol(file_target), ncol(diffplot)))
 
         grDevices::png(diffpath, width = width, height = height)
         def_par <- graphics::par(no.readonly = TRUE) # save graphics params
         graphics::par(mfrow = c(1, 3), mar = rep(0, 4))
-        plot(target)
-        plot(current)
+        plot(file_target)
+        plot(file_current)
         plot(diffplot)
         invisible(grDevices::dev.off())
         graphics::par(def_par) # reset graphics parameters
