@@ -1,10 +1,7 @@
 # 1st run: These tests fail 6 times and generate 3 reference plots
 # 2nd run: These tests fail 3 times
-options(tinysnapshot_device = "ragg")
-
 library("tinytest")
 using("tinysnapshot")
-
 
 ###### base R
 p1 <- function() plot(mtcars$hp, mtcars$mpg)
@@ -32,6 +29,3 @@ expect_snapshot_plot(p3, "plot-ggplot2_theme")
 
 p4 <- ggplot(mtcars, aes(mpg, hp)) + geom_point() + theme_minimal()
 expect_false(tinysnapshot::expect_snapshot_plot(p4, "plot-ggplot2_theme"))
-
-
-options(tinysnapshot_device = NULL)
