@@ -117,7 +117,7 @@ tinytest::run_test_file("inst/tinytest/test-print.R")
 
 The first time we run the test, it fails and saves a reference file. The second time we run it, there is already a reference text file, so only one of the tests fails. This is the expected result.
 
-## Print diff
+### Print diff
 
 When tests fail, `tinytest` will return a diff like this one: 
 
