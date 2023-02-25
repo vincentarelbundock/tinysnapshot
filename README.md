@@ -1,4 +1,4 @@
-# Snapshots for unit tests using the `tinytest` framework for `R`
+# `tinysnapshot`: Snapshots for unit tests in `R` using the `tinytest` framework.
 
 `tinytest` is a ["lightweight, no-dependency, but full-featured package for unit testing in `R`"](https://cran.r-project.org/package=tinytest) created by Mark van der Loo.
 
