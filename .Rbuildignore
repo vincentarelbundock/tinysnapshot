@@ -1,13 +1,6 @@
 ^.git$
 ^.*\.Rproj$
 ^\.Rproj\.user$
-^inst/tinytest/_tinysnapshot_compare/
-^inst/tinytest/_tinysnapshot_current/
-^README.html
-^README.Rmd
-^_tinysnapshot
 ^sandbox$
-^_tinysnapshot_compare
-^_tinysnapshot_current
 ^\.github$
 ^Makefile$
