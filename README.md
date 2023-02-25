@@ -1,32 +1,24 @@
-# Regression tests for `ggplot2`, base `R` plots, and `print()`, using `R` and `tinytest`
+# Snapshots for print and plot regression tests using the `tinytest` framework in `R`
 
 `tinytest` is a ["lightweight, no-dependency, but full-featured package for unit testing in `R`"](https://cran.r-project.org/package=tinytest) created by Mark van der Loo.
 
-The `tinyviztest` package extends `tinytest` with expectations to test the output of `print()` and plots created in either base `R` or `ggplot2`. In particular, `tinyviztest` allows:
+`tinyviztest` extends `tinytest` with expectations to test the output of `print()` and plots created in either base `R` or `ggplot2`. In particular, `tinyviztest` allows:
 
 1. Taking snapshots of known "target" plots or `print()` output.
 2. Testing if the "current" plot or `print()` output matches the target.
-3. Displaying the target and current plots side-by-side, along with a visual "diff" to facilitate comparison.
+3. Displaying a visual "diff" to facilitate comparison when a test fails.
 
 Under the hood, `tinyviztest` uses [the `magick` package](https://cran.r-project.org/package=magick) by Jeroen Ooms to read and compare images, and [the `diffobj`package](https://CRAN.R-project.org/package=diffobj) by Brodie Gaslam to compare printed output.
 
 ## Installation
 
-This package requires a version of `tinytest` greater than 1.3.1. If this version is not yet available on CRAN, you can install it from Github:
-
 ```r
-remotes::install_github("markvanderloo/tinytest/pkg")
-```
-
-`tinyviztest` is not available on CRAN yet. It can be installed from Github:
-
-```r
-remotes::install_github("vincentarelbundock/tinyviztest")
+install.packages("tinytest")
 ```
 
 ## Visual expectations: `expect_snapshot_plot()`
 
-To test a visual expectation, we create an `R` script, give it a name that starts with "test", and save it in the `inst/tinytest/` directory of our package.
+To test a visual expectation, we create an `R` script, give it a name which starts with "test", and save it in the `inst/tinytest/` directory of our package.
 
 Each test script with visual expectations must include these two lines at the top:
 
@@ -40,7 +32,7 @@ When users run the `tinytest` suite, the `expect_snapshot_plot()` and `expect_sn
 * On first run: 
     - Test fails and saves a visual snapshot in the `inst/tinytest/_tinyviztest` directory.
 * On subsequent runs:
-    - Test passes when the plot matches the snapshot PNG file.
+    - Test passes when the plot matches the snapshot file.
     - Test fails and saves comparison files in `inst/tinytest/_tinyviztest_review`
 
 All files are saved in PNG format using the `grDevices::png()` device.
@@ -84,6 +76,22 @@ expect_snapshot_plot(p1, label = "base_example")
 expect_snapshot_plot(p2, label = "base_example")
 ```
 
+### Options and arguments
+
+`expect_snapshot_plot` supports 4 graphics devices: `png` and `ragg` for PNG, and `svg` and `svglite` for SVG. It can set different values for the height and width of the pictures (pixels for PNG and inches for SVG). Most of the arguments can also be fixed globally using options:
+
+
+```{r}
+options(tinyviztest_device = "svglite")
+options(tinyviztest_height = 7)
+options(tinyviztest_width = 7)
+```
+
+### Visual diff
+
+When (not "if") tests fail, `tinyviztest` will save diff files in the `inst/tinytest/_tinyviztest_review/` folder. Diff files for plots look like this:
+
+![](https://user-images.githubusercontent.com/987057/210011007-757b7f6d-4b57-4f77-b586-22e7d13bf9f5.png)
 
 ## Print expectations: `expect_snapshot_print()`
 
@@ -154,6 +162,8 @@ tinytest::run_test_file("inst/tinytest/test-print.R")
 
 The second time we run it, there is already a reference text file, so only one of the tests fails. This is the expected result.
 
+### Print Diff
+
 Some `tinytest` functions will not print the full diff. In those cases, you can save the `tinytest` object and print it out manually while specifying the `nlong` argument:
 
 ```r
@@ -161,51 +171,9 @@ results <- tinytest::run_test_dir()
 print(results, nlong = Inf)
 ```
 
-## Reviewing test failures
-
-When (not "if") tests fail, `tinyviztest` will save diff files in the `inst/tinytest/_tinyviztest_review/` folder. Diff files for plots look like this:
-
-![](https://user-images.githubusercontent.com/987057/210011007-757b7f6d-4b57-4f77-b586-22e7d13bf9f5.png)
-
-Diff files for printouts look like this:
-
-```r
-< ref                                                           
-> x                                                             
-@@ 1,21 / 1,20 @@                                               
-                                                                
-  Call:                                                         
-< lm(formula = mpg ~ hp + factor(gear), data = mtcars)          
-> lm(formula = mpg ~ factor(gear), data = mtcars)               
-                                                                
-  Residuals:                                                    
-      Min      1Q  Median      3Q     Max                       
-< -4.4937 -2.3586 -0.8277  2.2753  7.7287                       
-> -6.7333 -3.2333 -0.9067  2.8483  9.3667                       
-                                                                
-  Coefficients:                                                 
-                Estimate Std. Error t value Pr(>|t|)            
-< (Intercept)   27.88193    2.10908  13.220 1.47e-13 ***        
-< hp            -0.06685    0.01105  -6.052 1.59e-06 ***        
-> (Intercept)     16.107      1.216  13.250 7.87e-14 ***        
-< factor(gear)4  2.63486    1.55164   1.698 0.100575            
-> factor(gear)4    8.427      1.823   4.621 7.26e-05 ***        
-< factor(gear)5  6.57476    1.64268   4.002 0.000417 ***        
-> factor(gear)5    5.273      2.431   2.169   0.0384 *          
-  ---                                                           
-  Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-                                                                
-< Residual standard error: 3.154 on 28 degrees of freedom       
-> Residual standard error: 4.708 on 29 degrees of freedom       
-< Multiple R-squared:  0.7527,    Adjusted R-squared:  0.7262   
-> Multiple R-squared:  0.4292,    Adjusted R-squared:  0.3898   
-< F-statistic: 28.41 on 3 and 28 DF,  p-value: 1.217e-08        
-> F-statistic:  10.9 on 2 and 29 DF,  p-value: 0.0002948        
-```
-
 ## Updating snapshots
 
-To update the snapshot for a test, simply delete the relevant snapshot from the `inst/tinytest/_tinyviztest` folder, and run the test suite again. As when we ran the suite for the very first time, this will report a failure but generate a new snapshot.
+To update the snapshot for a test, simply delete the relevant snapshot from the `inst/tinytest/_tinyviztest` folder and run the test suite again. As when we ran the suite for the very first time, this will report a failure but generate a new snapshot.
 
 ## Minimal package example
 
@@ -298,5 +266,3 @@ tinytest::run_test_dir("inst/tinytest")
     
     Showing 3 out of 7 results: 3 fails, 4 passes (0.7s)
 ```
-
-If you read through the `test-basic.R` code, you will see that this is the expected number of test failures.

@@ -26,11 +26,9 @@ expect_snapshot_plot(
 
 \item{tol}{distance estimates larger than this threshold will trigger a test failure. Scale depends on the \code{metric} argument. With the default \code{metric="AE"} (absolute error), the \code{tolerance} corresponds roughly to the number of pixels of difference between the plot and the reference image.}
 
-\item{metric}{string with a \href{http://www.imagemagick.org/script/command-line-options.php#metric}{metric}
-from \link[magick:metric_types]{metric_types()} such as \code{"AE"} or \code{"phash"}}
+\item{metric}{string with a metric from \code{magick::metric_types()} such as \code{"AE"} or \code{"phash"}.}
 
-\item{fuzz}{relative color distance (value between 0 and 100) to be considered similar
-in the filling algorithm}
+\item{fuzz}{relative color distance between 0 and 100 to be considered simmilar.}
 
 \item{device}{"svg", "png", "ragg" or "svglite"}
 }

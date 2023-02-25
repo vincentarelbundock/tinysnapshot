@@ -18,7 +18,8 @@
 #' @param height of the snapshot. PNG default: 480 pixels. SVG default: 7 inches.
 #' @param device "svg", "png", "ragg" or "svglite"
 #' @param tol distance estimates larger than this threshold will trigger a test failure. Scale depends on the `metric` argument. With the default `metric="AE"` (absolute error), the `tolerance` corresponds roughly to the number of pixels of difference between the plot and the reference image.
-#' @inheritParams magick::image_compare
+#' @param metric string with a metric from `magick::metric_types()` such as `"AE"` or `"phash"`.
+#' @param fuzz relative color distance between 0 and 100 to be considered simmilar.
 #' @return A `tinytest` object. A tinytest object is a
 #' \code{logical} with attributes holding information about the test that was
 #' run
