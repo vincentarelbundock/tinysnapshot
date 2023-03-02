@@ -94,9 +94,13 @@ expect_snapshot_plot <- function(current,
     } else if (device == "png") {
         grDevices::png(current_fn, width = width, height = height)
     } else if (device == "svglite") {
+        # need rsvg otherwise magick returns all white images
+        ts_assert_package("rsvg")
         ts_assert_package("svglite")
         svglite::svglite(current_fn, width = 7, height = 7)
     } else if (device == "svg") {
+        # need rsvg otherwise magick returns all white images
+        ts_assert_package("rsvg")
         grDevices::svg(current_fn, width = 7, height = 7)
     }
     if (inherits(current, "ggplot")) {
@@ -167,11 +171,9 @@ expect_equivalent_images <- function(current,
     }
 
     # distance > tol
-    # warnings: ImageMagick wants us to install `rsvg` for better quality rendering
-    # image_read() sometimes returns all white files on SVG
     if (tools::file_ext(target) == "svg") {
-        file_target <- suppressWarnings(magick::image_read_svg(target))
-        file_current <- suppressWarnings(magick::image_read_svg(current))
+        file_target <- magick::image_read_svg(target)
+        file_current <- magick::image_read_svg(current)
     } else {
         file_target <- suppressWarnings(magick::image_read(target))
         file_current <- suppressWarnings(magick::image_read(current))
