@@ -104,7 +104,8 @@ expect_snapshot_plot <- function(current,
         grDevices::svg(current_fn, width = 7, height = 7)
     }
     if (inherits(current, "ggplot")) {
-        print(current)
+        ts_assert_package("ggplot2")
+        print(current + ggplot2::theme_test())
     } else {
         current()
     }
