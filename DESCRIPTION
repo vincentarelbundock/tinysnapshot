@@ -1,6 +1,6 @@
 Package: tinysnapshot
 Type: Package
-Title: Snapshots for unit tests using the `tinytest` framework
+Title: Snapshots for Unit Tests using the 'tinytest' Framework
 Version: 0.0.1
 Author: Vincent Arel-Bundock
 Maintainer: Vincent Arel-Bundock <vincent.arel-bundock@umontreal.ca>
@@ -10,7 +10,7 @@ Imports:
     diffobj,
     magick (>= 2.7.4),
     tinytest (>= 1.4.1)
-Suggests:
+Suggestskk:
     ggplot2,
     ragg,
     rsvg,
