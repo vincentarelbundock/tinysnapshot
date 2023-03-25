@@ -13,7 +13,13 @@ Under the hood, `tinysnapshot` uses [the `magick` package](https://cran.r-projec
 ## Installation
 
 ```r
-install.packages("tinytest")
+install.packages("tinysnapshot")
+```
+
+You may also want to install additional packages to benefit from extra features:
+
+```r
+install.packages(c("rsvg", "ragg", "svglite"))
 ```
 
 ## Visual expectations: `expect_snapshot_plot()`
@@ -177,6 +183,16 @@ print(results, nlong = Inf)
 ## Updating snapshots
 
 To update the snapshot for a test, simply delete the relevant snapshot from the `inst/tinytest/_tinysnapshot` folder and run the test suite again. As when we ran the suite for the very first time, this will report a failure but generate a new snapshot.
+
+## CRAN, continuous integration, and deterministic plots
+
+In general, the images produced by `R` are not *deterministic*, meaning that they can vary slightly based on the operating system, graphics device, `R` version, etc. Unfortunately, this means that visual expectations will often fail on CRAN, where tests are run on many different platforms.
+
+Other packages [like `vdiffr`](https://vdiffr.r-lib.org/) ship with an embedded version `svglite` and their own fonts to ensure deterministic plots. `tinysnapshot` does not do that (yet). Here are some steps you can take to make testing images less painful in continuous integration:
+
+* Use the `svglite` graphics device by default: `options(tinysnapshot_device = "svglite")`
+* Skip visual tests on CRAN.
+* Run continuous integration tests using the same `R` version and operating system as the one used to generate the snapshots.
 
 ## Minimal package example
 
