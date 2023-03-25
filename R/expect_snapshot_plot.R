@@ -82,6 +82,7 @@ expect_snapshot_plot <- function(current,
     current_fn <- paste0(tempfile(), ext)
     snapshot_fn <- file.path("_tinysnapshot", paste0(snapshot, ext))
 
+
     if (!is.function(current) && !inherits(current, "ggplot")) {
         info <- "`current` must be a `ggplot2` object or a function which returns a base `R` plot."
         return(tinytest::tinytest(FALSE, call = cal, info = info))
@@ -125,7 +126,7 @@ expect_snapshot_plot <- function(current,
         }
         return(tinytest::tinytest(FALSE, call = cal, info = info))
     }
-
+    
     # if snapshot present -> compare images and save diff plot
     dir.create("_tinysnapshot_review", recursive = TRUE, showWarnings = FALSE)
     out <- expect_equivalent_images(

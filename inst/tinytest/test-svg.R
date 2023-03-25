@@ -18,8 +18,7 @@ p2 <- function() plot(mtcars$hp, mtcars$wt)
 expect_snapshot_plot(p1, "svg-base")
 
 # bad plot always fails
-flag <- tinysnapshot::expect_snapshot_plot(p2, "svg-base")
-expect_false(flag)
+expect_false(ignore(expect_snapshot_plot)(p2, "svg-base"))
 
 ###### ggplot2
 suppressPackageStartupMessages(library("ggplot2"))
@@ -28,15 +27,13 @@ p1 <- ggplot(mtcars, aes(mpg, hp)) + geom_point()
 expect_snapshot_plot(p1, "svg-ggplot2_variable")
 
 p2 <- ggplot(mtcars, aes(mpg, wt)) + geom_point()
-flag <- tinysnapshot::expect_snapshot_plot(p2, "svg-ggplot2_variable")
-expect_false(flag)
+expect_false(ignore(expect_snapshot_plot)(p2, "svg-ggplot2_variable"))
 
 p3 <- ggplot(mtcars, aes(mpg, hp)) + geom_point()
 expect_snapshot_plot(p3, "svg-ggplot2_theme")
 
 p4 <- ggplot(mtcars, aes(mpg, hp)) + geom_point() + theme_minimal()
-flag <- tinysnapshot::expect_snapshot_plot(p4, "svg-ggplot2_theme")
-expect_false(flag)
+expect_false(ignore(expect_snapshot_plot)(p4, "svg-ggplot2_theme"))
 
 
 options(tinysnapshot_device = NULL)
