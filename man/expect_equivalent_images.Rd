@@ -22,7 +22,7 @@ expect_equivalent_images(
 
 \item{metric}{string with a metric from \code{magick::metric_types()} such as \code{"AE"} or \code{"phash"}.}
 
-\item{fuzz}{relative color distance between 0 and 100 to be considered simmilar.}
+\item{fuzz}{relative color distance between 0 and 100 to be considered similar.}
 
 \item{diffpath}{path where to save an image which shows the differences between \code{current} and \code{target}. \code{NULL} means that the diff image is not saved.}
 }

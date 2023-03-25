@@ -10,7 +10,7 @@ Imports:
     diffobj,
     magick (>= 2.7.4),
     tinytest (>= 1.4.1)
-Suggestskk:
+Suggests:
     ggplot2,
     ragg,
     rsvg,

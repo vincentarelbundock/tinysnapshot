@@ -13,13 +13,13 @@
 #' folder and run the test suite again.
 #' 
 #' @param current an object of class `ggplot` or a function which returns a base R plot. See Examples below.
-#' @param label a string to identify the snapshot (alpha-numeric, hypohens, or underscores). Each plot in the test suite must have a unique label.
+#' @param label a string to identify the snapshot (alpha-numeric, hyphens, or underscores). Each plot in the test suite must have a unique label.
 #' @param width of the snapshot. PNG default: 480 pixels. SVG default: 7 inches.
 #' @param height of the snapshot. PNG default: 480 pixels. SVG default: 7 inches.
 #' @param device "svg", "png", "ragg" or "svglite"
 #' @param tol distance estimates larger than this threshold will trigger a test failure. Scale depends on the `metric` argument. With the default `metric="AE"` (absolute error), the `tolerance` corresponds roughly to the number of pixels of difference between the plot and the reference image.
 #' @param metric string with a metric from `magick::metric_types()` such as `"AE"` or `"phash"`.
-#' @param fuzz relative color distance between 0 and 100 to be considered simmilar.
+#' @param fuzz relative color distance between 0 and 100 to be considered similar.
 #' @return A `tinytest` object. A tinytest object is a
 #' \code{logical} with attributes holding information about the test that was
 #' run

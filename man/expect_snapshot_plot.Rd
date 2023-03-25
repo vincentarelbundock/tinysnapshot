@@ -18,7 +18,7 @@ expect_snapshot_plot(
 \arguments{
 \item{current}{an object of class \code{ggplot} or a function which returns a base R plot. See Examples below.}
 
-\item{label}{a string to identify the snapshot (alpha-numeric, hypohens, or underscores). Each plot in the test suite must have a unique label.}
+\item{label}{a string to identify the snapshot (alpha-numeric, hyphens, or underscores). Each plot in the test suite must have a unique label.}
 
 \item{width}{of the snapshot. PNG default: 480 pixels. SVG default: 7 inches.}
 
@@ -28,7 +28,7 @@ expect_snapshot_plot(
 
 \item{metric}{string with a metric from \code{magick::metric_types()} such as \code{"AE"} or \code{"phash"}.}
 
-\item{fuzz}{relative color distance between 0 and 100 to be considered simmilar.}
+\item{fuzz}{relative color distance between 0 and 100 to be considered similar.}
 
 \item{device}{"svg", "png", "ragg" or "svglite"}
 }

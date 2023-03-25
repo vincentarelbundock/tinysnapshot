@@ -5,3 +5,7 @@
 ^\.github$
 ^Makefile$
 Makefile
+.github
+.git
+.gitignore
+^CRAN-SUBMISSION$

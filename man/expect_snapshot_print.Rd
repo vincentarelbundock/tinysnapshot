@@ -15,7 +15,7 @@ expect_snapshot_print(
 \arguments{
 \item{current}{an object which returns text to the console when calling \verb{print(x})`}
 
-\item{label}{a string to identify the snapshot (alpha-numeric, hypohens, or underscores). Each plot in the test suite must have a unique label.}
+\item{label}{a string to identify the snapshot (alpha-numeric, hyphens, or underscores). Each plot in the test suite must have a unique label.}
 
 \item{mode}{"unified", "sidebyside", "context", or "auto". See \code{?diffobj::diffPrint}}
 
