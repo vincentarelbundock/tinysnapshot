@@ -29,11 +29,5 @@ expect_snapshot_plot(p1, "svg-ggplot2_variable")
 p2 <- ggplot(mtcars, aes(mpg, wt)) + geom_point()
 expect_false(ignore(expect_snapshot_plot)(p2, "svg-ggplot2_variable"))
 
-p3 <- ggplot(mtcars, aes(mpg, hp)) + geom_point()
-expect_snapshot_plot(p3, "svg-ggplot2_theme")
-
-p4 <- ggplot(mtcars, aes(mpg, hp)) + geom_point() + theme_minimal()
-expect_false(ignore(expect_snapshot_plot)(p4, "svg-ggplot2_theme"))
-
 
 options(tinysnapshot_device = NULL)

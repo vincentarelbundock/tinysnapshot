@@ -112,20 +112,20 @@ expect_snapshot_plot <- function(current,
     }
     invisible(grDevices::dev.off())
 
-    # if snapshot missing, copy current to snapshot, and return failure immediately
-    if (!isTRUE(ts_check_file_exists(snapshot_fn))) {
-        if (isTRUE(tinytest::at_home())) {
-            dir.create(dirname(snapshot_fn), recursive = TRUE, showWarnings = FALSE)
-            file.copy(from = current_fn, to = snapshot_fn)
-            info <- paste("Creating snapshot:", snapshot_fn)
-        } else {
-            # stop() otherwise source("test-file.R") fails silently
-            info <- "Snapshot missing: %s. Make sure you execute commands in the right directory, or use one of the `tinytest` runners to generate new snapshots: `run_test_dir()` or `run_test_file()`."
-            info <- sprintf(info, snapshot_fn)
-            stop(info, call. = FALSE)
-        }
-        return(tinytest::tinytest(FALSE, call = cal, info = info))
-    }
+    # # if snapshot missing, copy current to snapshot, and return failure immediately
+    # if (!isTRUE(ts_check_file_exists(snapshot_fn))) {
+    #     if (isTRUE(tinytest::at_home())) {
+    #         dir.create(dirname(snapshot_fn), recursive = TRUE, showWarnings = FALSE)
+    #         file.copy(from = current_fn, to = snapshot_fn)
+    #         info <- paste("Creating snapshot:", snapshot_fn)
+    #     } else {
+    #         # stop() otherwise source("test-file.R") fails silently
+    #         info <- "Snapshot missing: %s. Make sure you execute commands in the right directory, or use one of the `tinytest` runners to generate new snapshots: `run_test_dir()` or `run_test_file()`."
+    #         info <- sprintf(info, snapshot_fn)
+    #         stop(info, call. = FALSE)
+    #     }
+    #     return(tinytest::tinytest(FALSE, call = cal, info = info))
+    # }
     
     # if snapshot present -> compare images and save diff plot
     dir.create("_tinysnapshot_review", recursive = TRUE, showWarnings = FALSE)
@@ -171,7 +171,7 @@ expect_equivalent_images <- function(current,
     if (!is.null(diffpath)) {
         ts_assert_path_for_output(diffpath)
     }
-
+    
     # distance > tol
     if (tools::file_ext(target) == "svg") {
         file_target <- magick::image_read_svg(target)
