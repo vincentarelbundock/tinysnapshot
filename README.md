@@ -41,8 +41,6 @@ When users run the `tinytest` suite, the `expect_snapshot_plot()` and `expect_sn
     - Test passes when the plot matches the snapshot file.
     - Test fails and saves comparison files in `inst/tinytest/_tinysnapshot_review`
 
-All files are saved in PNG format using the `grDevices::png()` device.
-
 ### `ggplot2`
 
 In this example script, we test two `ggplot2` objects:
@@ -224,12 +222,12 @@ Download an example test script from the `tinysnapshot` repository:
 
 ```r
 download.file(
-    url = "https://raw.githubusercontent.com/vincentarelbundock/tinysnapshot/main/inst/tinytest/test-basic.R",
-    destfile = "testpkg/inst/tinytest/test-basic.R",
+    url = "https://raw.githubusercontent.com/vincentarelbundock/tinysnapshot/main/inst/tinytest/test-png.R",
+    destfile = "testpkg/inst/tinytest/test-png.R",
     quiet = TRUE)
 ```
 
-Our package now includes 7 tests: 1 created by default by the `puppy()` function, and 6 tests in the `test-basic.R` script. When we run `tinytest` the first time, the 6 `test-basic.R` tests fail, but some generate snapshots in PNG format:
+Our package now includes 7 tests: 1 created by default by the `puppy()` function, and 6 tests in the `test-png.R` script. When we run `tinytest` the first time, the 6 `test-png.R` tests fail, but some generate snapshots in PNG format:
 
 ```r
 setwd("testpkg")
@@ -237,22 +235,22 @@ tinytest::run_test_dir("inst/tinytest")
 ```
 ```r
     test_testpkg.R................    1 tests OK 22ms
-    test-basic.R..................    6 tests 6 fails 0.8s
-    ----- FAILED[]: test-basic.R<15--15>
+    test-png.R..................    6 tests 6 fails 0.8s
+    ----- FAILED[]: test-png.R<15--15>
     call| expect_snapshot_plot(p1, "base")
     diff| 0
     info| pixels
-    ----- FAILED[]: test-basic.R<18--18>
+    ----- FAILED[]: test-png.R<18--18>
     call| **expect_snapshot_plot**(p2, "base")
     diff| 3232
     info| pixels
-    ----- FAILED[]: test-basic.R<25--25>
+    ----- FAILED[]: test-png.R<25--25>
     call| expect_snapshot_plot(p1, "ggplot2_variable")
     diff| 0
     info| pixels
-    FAILED[]: test-basic.R<28--28> expect_snapshot_plot(p2, "ggplot2_variable")
-    FAILED[]: test-basic.R<31--31> expect_snapshot_plot(p3, "ggplot2_theme")
-    FAILED[]: test-basic.R<34--34> expect_snapshot_plot(p4, "ggplot2_theme")
+    FAILED[]: test-png.R<28--28> expect_snapshot_plot(p2, "ggplot2_variable")
+    FAILED[]: test-png.R<31--31> expect_snapshot_plot(p3, "ggplot2_theme")
+    FAILED[]: test-png.R<34--34> expect_snapshot_plot(p4, "ggplot2_theme")
     
     Showing 6 out of 7 results: 6 fails, 1 passes (0.8s)
     Warning messages:
@@ -261,7 +259,7 @@ tinytest::run_test_dir("inst/tinytest")
     3: Creating reference file: _tinysnapshot/ggplot2_theme.png 
 ```
 
-The second time we run the test suite, only 3 of the `test-basic.R` tests fail:
+The second time we run the test suite, only 3 of the `test-png.R` tests fail:
 
 ```r
 tinytest::run_test_dir("inst/tinytest")
@@ -269,16 +267,16 @@ tinytest::run_test_dir("inst/tinytest")
 
 ```r
     test_testpkg.R................    1 tests OK 6ms
-    test-basic.R..................    6 tests 3 fails 0.6s
-    ----- FAILED[]: test-basic.R<18--18>
+    test-png.R....................    6 tests 3 fails 0.6s
+    ----- FAILED[]: test-png.R<18--18>
     call| expect_snapshot_plot(p2, "base")
     diff| 3232
     info| pixels
-    ----- FAILED[]: test-basic.R<28--28>
+    ----- FAILED[]: test-png.R<28--28>
     call| expect_snapshot_plot(p2, "ggplot2_variable")
     diff| 33536
     info| pixels
-    ----- FAILED[]: test-basic.R<34--34>
+    ----- FAILED[]: test-png.R<34--34>
     call| expect_snapshot_plot(p4, "ggplot2_theme")
     diff| 191955
     info| pixels
