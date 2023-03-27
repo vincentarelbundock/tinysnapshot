@@ -24,19 +24,17 @@ expect_snapshot_print(
 \item{...}{Additional arguments are passed to \code{diffobj::diffPrint()}}
 }
 \value{
-A \code{tinytest} object. A tinytest object is a
-\code{logical} with attributes holding information about the test that was run
+A \code{tinytest} object. A \code{tinytest} object is a \code{logical} with attributes holding information about the test that was run
 }
 \description{
 This expectation can be used with \code{tinytest} to check if the new plot matches
 a target plot.
-}
-\details{
+
 When the expectation is checked for the first time, the expectation fails and
 a reference text file is saved to the \verb{inst/tinytest/_tinysnapshot} folder.
 
 To update a snapshot, delete the reference file from the \verb{_tinysnapshot}
 folder and run the test suite again.
 
-See
+See the package README file or website for detailed examples.
 }

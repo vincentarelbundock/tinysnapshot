@@ -16,7 +16,7 @@ expect_snapshot_plot(
 )
 }
 \arguments{
-\item{current}{an object of class \code{ggplot} or a function which returns a base R plot. See Examples below.}
+\item{current}{an object of class \code{ggplot} or a function which returns a base R plot.}
 
 \item{label}{a string to identify the snapshot (alpha-numeric, hyphens, or underscores). Each plot in the test suite must have a unique label.}
 
@@ -33,15 +33,12 @@ expect_snapshot_plot(
 \item{device}{"svg", "png", "ragg" or "svglite"}
 }
 \value{
-A \code{tinytest} object. A tinytest object is a
-\code{logical} with attributes holding information about the test that was
-run
+A \code{tinytest} object. A \code{tinytest} object is a \code{logical} with attributes holding information about the test that was run
 }
 \description{
 This expectation can be used with \code{tinytest} to check if the new plot matches
 a target plot.
-}
-\details{
+
 When the expectation is checked for the first time, the expectation fails and
 a reference plot is saved to the \verb{inst/tinytest/_tinysnapshot} folder.
 
@@ -50,35 +47,6 @@ saved to the \code{inst/tinytest/label} folder. Call the \code{review()} functio
 
 To update a snapshot, delete the reference file from the \verb{_tinysnapshot}
 folder and run the test suite again.
-}
-\examples{
-\dontrun{
-library(ggplot2)
-library(tinytest)
-using(tinysnapshot)
 
-# ggplot2: run once to save a snapshot
-expect_snapshot_plot(
-  ggplot(mtcars, aes(mpg, hp)) + geom_point(),
-  label = "ggplot2 example")
-
-# ggplot2: run a second time -> PASS
-expect_snapshot_plot(
-  ggplot(mtcars, aes(mpg, hp)) + geom_point(),
-  label = "ggplot2 example")
-
-# ggplot2: run with the wrong plot -> FAIL
-expect_snapshot_plot(
-  ggplot(mtcars, aes(mpg, wt)) + geom_point(),
-  label = "ggplot2 example")
-
-# Base R graphics: Function which returns a plot
-expect_snapshot_plot(
-  function() plot(mtcars$mpg, mtcars$wt),
-  label = "base R example")
-
-expect_snapshot_plot(
-  function() plot(mtcars$mpg, mtcars$wt),
-  label = "base R example")
-}
+See the package README file or website for detailed examples.
 }

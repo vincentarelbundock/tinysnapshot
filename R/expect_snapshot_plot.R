@@ -1,5 +1,6 @@
 #' Test if the new plot matches a target (snapshot) plot
 #'
+#' @description
 #' This expectation can be used with `tinytest` to check if the new plot matches
 #' a target plot. 
 #' 
@@ -11,8 +12,10 @@
 #' 
 #' To update a snapshot, delete the reference file from the `_tinysnapshot`
 #' folder and run the test suite again.
+#'
+#' See the package README file or website for detailed examples.
 #' 
-#' @param current an object of class `ggplot` or a function which returns a base R plot. See Examples below.
+#' @param current an object of class `ggplot` or a function which returns a base R plot.
 #' @param label a string to identify the snapshot (alpha-numeric, hyphens, or underscores). Each plot in the test suite must have a unique label.
 #' @param width of the snapshot. PNG default: 480 pixels. SVG default: 7 inches.
 #' @param height of the snapshot. PNG default: 480 pixels. SVG default: 7 inches.
@@ -20,40 +23,8 @@
 #' @param tol distance estimates larger than this threshold will trigger a test failure. Scale depends on the `metric` argument. With the default `metric="AE"` (absolute error), the `tolerance` corresponds roughly to the number of pixels of difference between the plot and the reference image.
 #' @param metric string with a metric from `magick::metric_types()` such as `"AE"` or `"phash"`.
 #' @param fuzz relative color distance between 0 and 100 to be considered similar.
-#' @return A `tinytest` object. A tinytest object is a
-#' \code{logical} with attributes holding information about the test that was
-#' run
+#' @return A `tinytest` object. A `tinytest` object is a `logical` with attributes holding information about the test that was run
 #'
-#' @examples
-#' \dontrun{
-#' library(ggplot2)
-#' library(tinytest)
-#' using(tinysnapshot)
-#'
-#' # ggplot2: run once to save a snapshot
-#' expect_snapshot_plot(
-#'   ggplot(mtcars, aes(mpg, hp)) + geom_point(),
-#'   label = "ggplot2 example")
-#'
-#' # ggplot2: run a second time -> PASS
-#' expect_snapshot_plot(
-#'   ggplot(mtcars, aes(mpg, hp)) + geom_point(),
-#'   label = "ggplot2 example")
-#'
-#' # ggplot2: run with the wrong plot -> FAIL
-#' expect_snapshot_plot(
-#'   ggplot(mtcars, aes(mpg, wt)) + geom_point(),
-#'   label = "ggplot2 example")
-#'
-#' # Base R graphics: Function which returns a plot
-#' expect_snapshot_plot(
-#'   function() plot(mtcars$mpg, mtcars$wt),
-#'   label = "base R example")
-#'
-#' expect_snapshot_plot(
-#'   function() plot(mtcars$mpg, mtcars$wt),
-#'   label = "base R example")
-#' }
 #' @export
 expect_snapshot_plot <- function(current,
                                  label,
@@ -112,20 +83,20 @@ expect_snapshot_plot <- function(current,
     }
     invisible(grDevices::dev.off())
 
-    # # if snapshot missing, copy current to snapshot, and return failure immediately
-    # if (!isTRUE(ts_check_file_exists(snapshot_fn))) {
-    #     if (isTRUE(tinytest::at_home())) {
-    #         dir.create(dirname(snapshot_fn), recursive = TRUE, showWarnings = FALSE)
-    #         file.copy(from = current_fn, to = snapshot_fn)
-    #         info <- paste("Creating snapshot:", snapshot_fn)
-    #     } else {
-    #         # stop() otherwise source("test-file.R") fails silently
-    #         info <- "Snapshot missing: %s. Make sure you execute commands in the right directory, or use one of the `tinytest` runners to generate new snapshots: `run_test_dir()` or `run_test_file()`."
-    #         info <- sprintf(info, snapshot_fn)
-    #         stop(info, call. = FALSE)
-    #     }
-    #     return(tinytest::tinytest(FALSE, call = cal, info = info))
-    # }
+    # if snapshot missing, copy current to snapshot, and return failure immediately
+    if (!isTRUE(ts_check_file_exists(snapshot_fn))) {
+        if (isTRUE(tinytest::at_home())) {
+            dir.create(dirname(snapshot_fn), recursive = TRUE, showWarnings = FALSE)
+            file.copy(from = current_fn, to = snapshot_fn)
+            info <- paste("Creating snapshot:", snapshot_fn)
+        } else {
+            # stop() otherwise source("test-file.R") fails silently
+            info <- "Snapshot missing: %s. Make sure you execute commands in the right directory, or use one of the `tinytest` runners to generate new snapshots: `run_test_dir()` or `run_test_file()`."
+            info <- sprintf(info, snapshot_fn)
+            stop(info, call. = FALSE)
+        }
+        return(tinytest::tinytest(FALSE, call = cal, info = info))
+    }
     
     # if snapshot present -> compare images and save diff plot
     dir.create("_tinysnapshot_review", recursive = TRUE, showWarnings = FALSE)
@@ -149,6 +120,7 @@ expect_snapshot_plot <- function(current,
 #' @param target path to an image file
 #' @param diffpath path where to save an image which shows the differences between `current` and `target`. `NULL` means that the diff image is not saved.
 #' @inheritParams expect_snapshot_plot
+#' @return A `tinytest` object. A `tinytest` object is a `logical` with attributes holding information about the test that was run
 #' @export
 expect_equivalent_images <- function(current,
                                      target,

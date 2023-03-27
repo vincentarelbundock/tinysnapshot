@@ -1,5 +1,6 @@
 #' Test if printed output matches a target printout
 #'
+#' @description
 #' This expectation can be used with `tinytest` to check if the new plot matches
 #' a target plot. 
 #' 
@@ -9,15 +10,14 @@
 #' To update a snapshot, delete the reference file from the `_tinysnapshot`
 #' folder and run the test suite again.
 #' 
-#' See 
+#' See the package README file or website for detailed examples.
 #' 
 #' @param current an object which returns text to the console when calling `print(x`)`
 #' @param mode "unified", "sidebyside", "context", or "auto". See `?diffobj::diffPrint`
 #' @param format "raw", "ansi8", "ansi256", "html", or "auto". See `?diffobj::diffPrint`
 #' @inheritParams expect_snapshot_plot
 #' @param ... Additional arguments are passed to `diffobj::diffPrint()`
-#' @return A `tinytest` object. A tinytest object is a
-#' \code{logical} with attributes holding information about the test that was run
+#' @return A `tinytest` object. A `tinytest` object is a `logical` with attributes holding information about the test that was run
 #' @export
 expect_snapshot_print <- function(current,
                                   label,

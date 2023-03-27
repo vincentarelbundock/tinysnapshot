@@ -26,6 +26,9 @@ expect_equivalent_images(
 
 \item{diffpath}{path where to save an image which shows the differences between \code{current} and \code{target}. \code{NULL} means that the diff image is not saved.}
 }
+\value{
+A \code{tinytest} object. A \code{tinytest} object is a \code{logical} with attributes holding information about the test that was run
+}
 \description{
 Test if two image files are equivalent
 }

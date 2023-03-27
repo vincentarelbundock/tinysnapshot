@@ -4,7 +4,7 @@ Title: Snapshots for Unit Tests using the 'tinytest' Framework
 Version: 0.0.1
 Author: Vincent Arel-Bundock
 Maintainer: Vincent Arel-Bundock <vincent.arel-bundock@umontreal.ca>
-Description: Snapshots for unit tests using the tinytest framework for R. Includes expectations to test base R and ggplot2 plots as well as console output from print().
+Description: Snapshots for unit tests using the 'tinytest' framework for R. Includes expectations to test base R and 'ggplot2' plots as well as console output from print().
 License: GPL (>= 3)
 Imports:
     diffobj,
