@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://vincentarelbundock.github.io/tinysnapshot/dev/authors.html</loc>
+  </url>
+  <url>
+    <loc>https://vincentarelbundock.github.io/tinysnapshot/dev/index.html</loc>
+  </url>
+  <url>
+    <loc>https://vincentarelbundock.github.io/tinysnapshot/dev/news/index.html</loc>
+  </url>
+  <url>
+    <loc>https://vincentarelbundock.github.io/tinysnapshot/dev/reference/expect_equivalent_images.html</loc>
+  </url>
+  <url>
+    <loc>https://vincentarelbundock.github.io/tinysnapshot/dev/reference/expect_snapshot_plot.html</loc>
+  </url>
+  <url>
+    <loc>https://vincentarelbundock.github.io/tinysnapshot/dev/reference/expect_snapshot_print.html</loc>
+  </url>
+  <url>
+    <loc>https://vincentarelbundock.github.io/tinysnapshot/dev/reference/index.html</loc>
+  </url>
+  <url>
+    <loc>https://vincentarelbundock.github.io/tinysnapshot/dev/reference/tinyviztest-package.html</loc>
+  </url>
+</urlset>
