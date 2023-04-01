@@ -11,6 +11,8 @@ Authors@R:
 Maintainer: Vincent Arel-Bundock <vincent.arel-bundock@umontreal.ca>
 Description: Snapshots for unit tests using the 'tinytest' framework for R. Includes expectations to test base R and 'ggplot2' plots as well as console output from print().
 License: GPL (>= 3)
+URL: https://vincentarelbundock.github.io/tinysnapshot
+BugReports: https://github.com/vincentarelbundock/tinysnapshot/issues
 Imports:
     diffobj,
     magick (>= 2.7.4),

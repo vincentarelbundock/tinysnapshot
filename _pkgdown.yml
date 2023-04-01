@@ -1,0 +1,5 @@
+url: https://vincentarelbundock.github.io/tinysnapshot/
+development:
+  mode: auto
+template:
+  bootstrap: 5

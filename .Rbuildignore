@@ -10,3 +10,6 @@ Makefile
 .gitignore
 ^CRAN-SUBMISSION$
 ^inst/tinytest/_tinysnapshot_review$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
