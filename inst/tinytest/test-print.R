@@ -1,3 +1,5 @@
+source("helpers.R")
+
 # 1st run: These tests fail 2 times and generate 1 reference text file
 # 2nd run: These tests fail 1 time
 library("tinytest")

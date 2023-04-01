@@ -23,6 +23,7 @@
 #' @param tol distance estimates larger than this threshold will trigger a test failure. Scale depends on the `metric` argument. With the default `metric="AE"` (absolute error), the `tolerance` corresponds roughly to the number of pixels of difference between the plot and the reference image.
 #' @param metric string with a metric from `magick::metric_types()` such as `"AE"` or `"phash"`.
 #' @param fuzz relative color distance between 0 and 100 to be considered similar.
+#' @param os character vector of operating systems on which the test should be run (e.g., "Windows", "Linux", "Darwin"). Tests are skipped when no element of the vector matches the output of: `Sys.info()["sysname"]`
 #' @return A `tinytest` object. A `tinytest` object is a `logical` with attributes holding information about the test that was run
 #'
 #' @export
@@ -33,10 +34,19 @@ expect_snapshot_plot <- function(current,
                                  tol = getOption("tinysnapshot_tol", default = 0),
                                  metric = getOption("tinysnapshot_metric", default = "AE"),
                                  fuzz = getOption("tinysnapshot_fuzz", default = 0),
-                                 device = getOption("tinysnapshot_device", default = "svg")
+                                 device = getOption("tinysnapshot_device", default = "svg"),
+                                 os = getOption("tinysnapshot_os", default = Sys.info()["sysname"])
                                  ) {
 
     ts_assert_choice(device, c("ragg", "png", "svg", "svglite"))
+    
+    if (!isTRUE(is.vector(os)) || !isTRUE(is.character(os))) {
+        stop("`os` must be a character vector.")
+    }
+    
+    if (!Sys.info()["sysname"] %in% os) {
+        return(invisible(NULL))
+    }
 
     # defaults
     snapshot <- snapshot_label(label)

@@ -12,7 +12,8 @@ expect_snapshot_plot(
   tol = getOption("tinysnapshot_tol", default = 0),
   metric = getOption("tinysnapshot_metric", default = "AE"),
   fuzz = getOption("tinysnapshot_fuzz", default = 0),
-  device = getOption("tinysnapshot_device", default = "svg")
+  device = getOption("tinysnapshot_device", default = "svg"),
+  os = getOption("tinysnapshot_os", default = Sys.info()["sysname"])
 )
 }
 \arguments{
@@ -31,6 +32,8 @@ expect_snapshot_plot(
 \item{fuzz}{relative color distance between 0 and 100 to be considered similar.}
 
 \item{device}{"svg", "png", "ragg" or "svglite"}
+
+\item{os}{character vector of operating systems on which the test should be run (e.g., "Windows", "Linux", "Darwin"). Tests are skipped when no element of the vector matches the output of: \code{Sys.info()["sysname"]}}
 }
 \value{
 A \code{tinytest} object. A \code{tinytest} object is a \code{logical} with attributes holding information about the test that was run

@@ -13,9 +13,7 @@ p2 <- function() plot(mtcars$hp, mtcars$wt)
 # good plot
 # Run once to create the reference plot
 # Run twice to pass the test
-if (!ON_CRAN) {
-    expect_snapshot_plot(p1, "ragg-base")
-}
+expect_snapshot_plot(p1, "ragg-base")
 
 # bad plot always fails
 expect_false(ignore(expect_snapshot_plot)(p2, "ragg-base"))

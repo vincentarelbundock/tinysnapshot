@@ -16,6 +16,12 @@ Under the hood, `tinysnapshot` uses [the `magick` package](https://cran.r-projec
 install.packages("tinysnapshot")
 ```
 
+Install the development version of `tinysnapshot`:
+
+```r
+remotes::install_github("vincentarelbundock/tinysnapshot")
+```
+
 You may also want to install additional packages to benefit from extra features:
 
 ```r
@@ -188,9 +194,10 @@ In general, the images produced by `R` are not *deterministic*, meaning that the
 
 Other packages [like `vdiffr`](https://vdiffr.r-lib.org/) ship with an embedded version `svglite` and their own fonts to ensure deterministic plots. `tinysnapshot` does not do that (yet). Here are some steps you can take to make testing images less painful in continuous integration:
 
+* Use `options(tinysnapshot_os = "Darwin")` (or "Windows", "Linux", etc.) to indicate the operating system on which the snapshots were created, and to skip visual snapshots on other operating systems. Available in `tinysnapshot` 0.0.3 or the development version from Github.
+* Run continuous integration tests using the same `R` version and operating system as the one used to generate the snapshots.
 * Use the `svglite` graphics device by default: `options(tinysnapshot_device = "svglite")`
 * Skip visual tests on CRAN.
-* Run continuous integration tests using the same `R` version and operating system as the one used to generate the snapshots.
 
 ## Minimal package example
 
