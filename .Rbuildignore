@@ -9,3 +9,4 @@ Makefile
 .git
 .gitignore
 ^CRAN-SUBMISSION$
+^inst/tinytest/_tinysnapshot_review$
