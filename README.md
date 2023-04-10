@@ -190,14 +190,31 @@ To update the snapshot for a test, simply delete the relevant snapshot from the 
 
 ## CRAN, continuous integration, and deterministic plots
 
-In general, the images produced by `R` are not *deterministic*, meaning that they can vary slightly based on the operating system, graphics device, `R` version, etc. Unfortunately, this means that visual expectations will often fail on CRAN, where tests are run on many different platforms.
+The images produced by `R` are not *deterministic*, in the sense that they can vary slightly based on the operating system, graphics device, `R` version, etc. Unfortunately, this means that visual expectations will often fail on CRAN, where tests are run on many different platforms.
 
-Other packages [like `vdiffr`](https://vdiffr.r-lib.org/) ship with an embedded version `svglite` and their own fonts to ensure deterministic plots. `tinysnapshot` does not do that (yet). Here are some steps you can take to make testing images less painful in continuous integration:
+Here are some steps you can take to make testing images more portable:
 
-* Use `options(tinysnapshot_os = "Darwin")` (or "Windows", "Linux", etc.) to indicate the operating system on which the snapshots were created, and to skip visual snapshots on other operating systems. Available in `tinysnapshot` 0.0.3 or the development version from Github.
-* Run continuous integration tests using the same `R` version and operating system as the one used to generate the snapshots.
-* Use the `svglite` graphics device by default: `options(tinysnapshot_device = "svglite")`
-* Skip visual tests on CRAN.
+1. Use the `svglite` graphics device.
+2. Use a pre-defined font.
+3. Run continuous integration tests on the same Operating System where you generated the original snapshot files.
+4. Skip visual expectations on CRAN.
+
+From `tinysnapshot` 0.0.3 (or using the development version from Github), many of these steps can be taken automatically by setting a few options at the top of your test scripts:
+
+```{r}
+library(tinytest)
+library(tinysnapshot)
+library(fontquiver)
+library(svglite)
+library(rsvg)
+using("tinysnapshot")
+
+options(tinysnapshot_os = "Darwin") # see Sys.info()["sysname"]
+options(tinysnapshot_device = "svglite")
+options(tinysnapshot_device_args = list(user_fonts = fontquiver::font_families("Liberation")))
+```
+
+Other packages [like `vdiffr`](https://vdiffr.r-lib.org/) ship with an embedded version `svglite` and their own fonts to ensure deterministic plots, but `tinysnapshot` does not do that (yet).
 
 ## Minimal package example
 
