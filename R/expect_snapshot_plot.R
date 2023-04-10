@@ -85,12 +85,10 @@ expect_snapshot_plot <- function(current,
         # need rsvg otherwise magick returns all white images
         ts_assert_package("rsvg")
         ts_assert_package("svglite")
-        device_args[["width"]] <- device_args[["height"]] <- 7
         do.call(svglite::svglite, device_args)
     } else if (device == "svg") {
         # need rsvg otherwise magick returns all white images
         ts_assert_package("rsvg")
-        device_args[["width"]] <- device_args[["height"]] <- 7
         do.call(grDevices::svg, device_args)
     }
     if (inherits(current, "ggplot")) {
