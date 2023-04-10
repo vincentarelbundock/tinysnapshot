@@ -13,6 +13,7 @@ expect_snapshot_plot(
   metric = getOption("tinysnapshot_metric", default = "AE"),
   fuzz = getOption("tinysnapshot_fuzz", default = 0),
   device = getOption("tinysnapshot_device", default = "svg"),
+  device_args = getOption("tinysnapshot_device_args", default = list()),
   os = getOption("tinysnapshot_os", default = Sys.info()["sysname"])
 )
 }
@@ -32,6 +33,8 @@ expect_snapshot_plot(
 \item{fuzz}{relative color distance between 0 and 100 to be considered similar.}
 
 \item{device}{"svg", "png", "ragg" or "svglite"}
+
+\item{device_args}{list of arguments to pass to the device call (e.g., \code{user_fonts} for \code{svglite} device).}
 
 \item{os}{character vector of operating systems on which the test should be run (e.g., "Windows", "Linux", "Darwin"). Tests are skipped when no element of the vector matches the output of: \code{Sys.info()["sysname"]}}
 }

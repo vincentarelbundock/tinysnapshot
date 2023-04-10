@@ -20,6 +20,7 @@
 #' @param width of the snapshot. PNG default: 480 pixels. SVG default: 7 inches.
 #' @param height of the snapshot. PNG default: 480 pixels. SVG default: 7 inches.
 #' @param device "svg", "png", "ragg" or "svglite"
+#' @param device_args list of arguments to pass to the device call (e.g., `user_fonts` for `svglite` device).
 #' @param tol distance estimates larger than this threshold will trigger a test failure. Scale depends on the `metric` argument. With the default `metric="AE"` (absolute error), the `tolerance` corresponds roughly to the number of pixels of difference between the plot and the reference image.
 #' @param metric string with a metric from `magick::metric_types()` such as `"AE"` or `"phash"`.
 #' @param fuzz relative color distance between 0 and 100 to be considered similar.
@@ -35,6 +36,7 @@ expect_snapshot_plot <- function(current,
                                  metric = getOption("tinysnapshot_metric", default = "AE"),
                                  fuzz = getOption("tinysnapshot_fuzz", default = 0),
                                  device = getOption("tinysnapshot_device", default = "svg"),
+                                 device_args = getOption("tinysnapshot_device_args", default = list()),
                                  os = getOption("tinysnapshot_os", default = Sys.info()["sysname"])
                                  ) {
 
@@ -69,21 +71,27 @@ expect_snapshot_plot <- function(current,
         return(tinytest::tinytest(FALSE, call = cal, info = info))
     }
 
+    device_args[["filename"]] <- current_fn
+    device_args[["width"]] <- width
+    device_args[["height"]] <- height
+
     # write current plot to file
     if (device == "ragg") {
         ts_assert_package("ragg")
-        ragg::agg_png(current_fn, width = width, height = height)
+        do.call(ragg::agg_png, device_args)
     } else if (device == "png") {
-        grDevices::png(current_fn, width = width, height = height)
+        do.call(grDevices::png, device_args)
     } else if (device == "svglite") {
         # need rsvg otherwise magick returns all white images
         ts_assert_package("rsvg")
         ts_assert_package("svglite")
-        svglite::svglite(current_fn, width = 7, height = 7)
+        device_args[["width"]] <- device_args[["height"]] <- 7
+        do.call(svglite::svglite, device_args)
     } else if (device == "svg") {
         # need rsvg otherwise magick returns all white images
         ts_assert_package("rsvg")
-        grDevices::svg(current_fn, width = 7, height = 7)
+        device_args[["width"]] <- device_args[["height"]] <- 7
+        do.call(grDevices::svg, device_args)
     }
     if (inherits(current, "ggplot")) {
         ts_assert_package("ggplot2")
