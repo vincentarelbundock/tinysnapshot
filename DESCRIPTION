@@ -1,7 +1,7 @@
 Package: tinysnapshot
 Type: Package
 Title: Snapshots for Unit Tests using the 'tinytest' Framework
-Version: 0.0.2.9003
+Version: 0.0.3
 Authors@R:
     c(person(given = "Vincent",
              family = "Arel-Bundock",
@@ -11,13 +11,14 @@ Authors@R:
 Maintainer: Vincent Arel-Bundock <vincent.arel-bundock@umontreal.ca>
 Description: Snapshots for unit tests using the 'tinytest' framework for R. Includes expectations to test base R and 'ggplot2' plots as well as console output from print().
 License: GPL (>= 3)
-URL: https://vincentarelbundock.github.io/tinysnapshot
+URL: https://github.com/vincentarelbundock/tinysnapshot
 BugReports: https://github.com/vincentarelbundock/tinysnapshot/issues
 Imports:
     diffobj,
     magick (>= 2.7.4),
     tinytest (>= 1.4.1)
 Suggests:
+    fontquiver,
     ggplot2,
     ragg,
     rsvg,
