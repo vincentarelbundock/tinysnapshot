@@ -59,6 +59,7 @@ expect_snapshot_print <- function(current,
         target,
         mode = "unified",
         format = format,
+        guides = FALSE,
         ...)
 
     if (suppressWarnings(any(do))) {
