@@ -1,3 +1,7 @@
+# tinysnapshot 0.0.4
+
+* `diffObj::diffPrint(guides = FALSE)` because `guides` generated errors in some long text comparisons.
+
 # tinysnapshot 0.0.3
 
 * New `os` argument to skip tests on unspecified operating systems.
