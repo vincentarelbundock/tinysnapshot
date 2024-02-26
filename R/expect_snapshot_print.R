@@ -54,13 +54,13 @@ expect_snapshot_print <- function(current,
     target <- readChar(snapshot_fn, file.info(snapshot_fn)$size)
     class(target) <- c("tinysnapshotprint", class(target))
 
-    do <- diffobj::diffPrint(
+    do <- suppressWarnings(diffobj::diffPrint(
         current,
         target,
         mode = "unified",
         format = format,
         guides = FALSE,
-        ...)
+        ...))
 
     if (suppressWarnings(any(do))) {
         fail <- TRUE
