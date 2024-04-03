@@ -61,6 +61,7 @@ expect_snapshot_print <- function(current,
         mode = "unified",
         format = format,
         guides = FALSE,
+        sgr.supported = TRUE,
         strip.sgr = FALSE,
         ...))
 
