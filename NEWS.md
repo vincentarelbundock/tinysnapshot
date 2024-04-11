@@ -1,16 +1,20 @@
-# tinysnapshot 0.0.4
+# dev
+
+* Allow `mode` argument in `expect_snapshot_print()`
+
+# 0.0.4
 
 * `diffObj::diffPrint(guides = FALSE)` because `guides` generated errors in some long text comparisons.
 
-# tinysnapshot 0.0.3
+# 0.0.3
 
 * New `os` argument to skip tests on unspecified operating systems.
 * New `device_args` argument to pass additional arguments to the device function.
 
-# tinysnapshot 0.0.2
+# 0.0.2
 
 * Do not write to the user library on CRAN.
 
-# tinysnapshot 0.0.1
+# 0.0.1
 
 * Initial release
