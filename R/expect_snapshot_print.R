@@ -58,7 +58,7 @@ expect_snapshot_print <- function(current,
     do <- suppressWarnings(diffobj::diffPrint(
         current,
         target,
-        mode = "unified",
+        mode = mode,
         format = format,
         guides = FALSE,
         sgr.supported = TRUE,
