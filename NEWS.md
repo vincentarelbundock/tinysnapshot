@@ -1,6 +1,7 @@
-# dev
+# 0.0.5
 
 * Allow `mode` argument in `expect_snapshot_print()`
+* Silence some useless `diffobj` messages
 
 # 0.0.4
 
