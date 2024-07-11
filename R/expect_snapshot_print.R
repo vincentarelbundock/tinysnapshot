@@ -28,7 +28,7 @@ expect_snapshot_print <- function(current,
     # defaults
     snapshot <- snapshot_label(label)
     snapshot_fn <- file.path("_tinysnapshot", snapshot)
-    if (isTRUE(tools::file_ext(snapshot) == "") {
+    if (isTRUE(tools::file_ext(snapshot) == "")) {
         snapshot_fn <- paste0(snapshot_fn, ".txt")
     }
     cal <- sys.call(sys.parent(1))
