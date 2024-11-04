@@ -216,6 +216,26 @@ options(tinysnapshot_device_args = list(user_fonts = fontquiver::font_families("
 
 Other packages [like `vdiffr`](https://vdiffr.r-lib.org/) ship with an embedded version `svglite` and their own fonts to ensure deterministic plots, but `tinysnapshot` does not do that (yet).
 
+### CRAN multithreading warning
+
+If your package includes lots of snapshots, you may encounter the following CRAN precheck warning:
+
+```
+Running R code in <somefile.R> had CPU time <xx> times elapsed time
+```
+
+This warning is related to multithreading, since CRAN wishes to avoid excessive use of CPU resources by any one package during compilation and testing. (See this [R-devel thread](https://stat.ethz.ch/pipermail/r-package-devel/2023q3/009513.html) for details.) In the case of `tinysnapshot`, the warning can arise due to our dependency on `magick`, which automatically invokes multithreading behind the scenes. A simple [solution](https://github.com/vincentarelbundock/tinysnapshot/issues/13) is thus to turn off `magick`'s multithreading behaviour during CRAN checks. For example, by adding the following code chunk to the top of your `tests/tinytest.R` file. 
+
+```r
+# Throttle magick CPU threads if R CMD check (for CRAN)
+if (any(grepl("_R_CHECK", names(Sys.getenv()), fixed = TRUE))) {
+    if (requireNamespace("magick", quietly = TRUE)) {
+        library(magick)
+        magick:::magick_threads(1)
+    }
+}
+```
+
 ## Minimal package example
 
 We now create a minimal `R` package to illustrate how to use `tinysnapshot` in the "real world."
