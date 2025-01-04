@@ -1,3 +1,7 @@
+# Development
+
+* New `ignore_white_space` argument in `expect_snapshot_print()`.
+
 # 0.0.6
 
 * Allow extensions in snapshot labels to save an .html file instead of .txt

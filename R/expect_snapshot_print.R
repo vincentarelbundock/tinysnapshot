@@ -15,6 +15,7 @@
 #' @param current an object which returns text to the console when calling `print(x`)`
 #' @param mode "unified", "sidebyside", "context", or "auto". See `?diffobj::diffPrint`
 #' @param format "raw", "ansi8", "ansi256", "html", or "auto". See `?diffobj::diffPrint`
+#' @param ignore_white_space `TRUE` to ignore horizontal white space and empty lines.
 #' @inheritParams expect_snapshot_plot
 #' @param ... Additional arguments are passed to `diffobj::diffPrint()`
 #' @return A `tinytest` object. A `tinytest` object is a `logical` with attributes holding information about the test that was run
@@ -23,6 +24,7 @@ expect_snapshot_print <- function(current,
                                   label,
                                   mode = getOption("tinysnapshot_mode", default = "unified"),
                                   format = getOption("tinysnapshot_format", default = "ansi256"),
+                                  ignore_white_space = getOption("tinysnapshot_ignore_white_space", default = FALSE),
                                   ...) {
 
     # defaults
@@ -56,17 +58,33 @@ expect_snapshot_print <- function(current,
     print.tinysnapshotprint <- function(x) cat(x)
     target <- readLines(snapshot_fn, warn = FALSE)
     target <- paste(target, collapse = "\n")
-    class(target) <- c("tinysnapshotprint", class(target))
+    current <- paste(utils::capture.output(print(current)), collapse = "\n")
 
-    do <- suppressWarnings(diffobj::diffPrint(
-        current,
-        target,
+    strip <- function(x) {
+        out <- strsplit(x, "\n")[[1]]
+        out <- sapply(out, trimws)
+        out <- out[out != ""]
+        paste(out, collapse = "\n")
+    }
+    if (isTRUE(ignore_white_space)) {
+        target <- strip(target)
+        current <- strip(current)
+    }
+
+    class(target) <- c("tinysnapshotprint", class(target))
+    class(current) <- c("tinysnapshotprint", class(current))
+
+    diff_args <- c(list(
+        current = current,
+        target = target,
         mode = mode,
         format = format,
         guides = FALSE,
         sgr.supported = TRUE,
-        strip.sgr = FALSE,
-        ...))
+        strip.sgr = FALSE),
+        list(...))
+    diff_args[["ignore.white.space"]] <- ignore_white_space
+    do <- suppressWarnings(do.call(diffobj::diffPrint, diff_args))
 
     if (suppressWarnings(any(do))) {
         fail <- TRUE
