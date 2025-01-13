@@ -1,4 +1,4 @@
-# Development
+# 0.0.7
 
 * New `ignore_white_space` argument in `expect_snapshot_print()`.
 
