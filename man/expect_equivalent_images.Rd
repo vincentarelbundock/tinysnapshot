@@ -10,6 +10,7 @@ expect_equivalent_images(
   tol = getOption("tinysnapshot_tol", default = 0),
   metric = getOption("tinysnapshot_metric", default = "AE"),
   fuzz = getOption("tinysnapshot_fuzz", default = 0),
+  style = getOption("tinysnapshot_plot_diff_style", default = "three"),
   diffpath = NULL
 )
 }
@@ -23,6 +24,8 @@ expect_equivalent_images(
 \item{metric}{string with a metric from \code{magick::metric_types()} such as \code{"AE"} or \code{"phash"}.}
 
 \item{fuzz}{relative color distance between 0 and 100 to be considered similar.}
+
+\item{style}{"three" for current, target and diff plot in a panel, or "one" for only the diffplot}
 
 \item{diffpath}{path where to save an image which shows the differences between \code{current} and \code{target}. \code{NULL} means that the diff image is not saved.}
 }

@@ -136,6 +136,7 @@ expect_snapshot_plot <- function(current,
 #' @param target path to an image file
 #' @param diffpath path where to save an image which shows the differences between `current` and `target`. `NULL` means that the diff image is not saved.
 #' @inheritParams expect_snapshot_plot
+#' @param style "three" for current, target and diff plot in a panel, or "one" for only the diffplot
 #' @return A `tinytest` object. A `tinytest` object is a `logical` with attributes holding information about the test that was run
 #' @export
 expect_equivalent_images <- function(current,
@@ -143,6 +144,7 @@ expect_equivalent_images <- function(current,
                                      tol = getOption("tinysnapshot_tol", default = 0),
                                      metric = getOption("tinysnapshot_metric", default = "AE"),
                                      fuzz = getOption("tinysnapshot_fuzz", default = 0),
+                                     style = getOption("tinysnapshot_plot_diff_style", default = "three"),
                                      diffpath = NULL) {
                                 
     # default values
@@ -159,6 +161,7 @@ expect_equivalent_images <- function(current,
     if (!is.null(diffpath)) {
         ts_assert_path_for_output(diffpath)
     }
+    ts_assert_choice(style, choices = c("one", "three"))
     
     # distance > tol
     if (tools::file_ext(target) == "svg") {
@@ -186,14 +189,24 @@ expect_equivalent_images <- function(current,
         file_target <- grDevices::as.raster(file_target)
         diffplot <- grDevices::as.raster(diffplot)
 
-        width <- nrow(file_current) + nrow(file_target) + nrow(diffplot)
-        height <- max(c(ncol(file_current), ncol(file_target), ncol(diffplot)))
-
+        if (style == "three") {
+            width <- nrow(file_current) + nrow(file_target) + nrow(diffplot)
+            height <- max(c(ncol(file_current), ncol(file_target), ncol(diffplot)))
+        } else if (style == "one") {
+            width <- nrow(diffplot)
+            height <- ncol(diffplot)
+        }
         grDevices::png(diffpath, width = width, height = height)
         def_par <- graphics::par(no.readonly = TRUE) # save graphics params
-        graphics::par(mfrow = c(1, 3), mar = rep(0, 4))
-        plot(file_target)
-        plot(file_current)
+        if (style == "three") {
+            graphics::par(mfrow = c(1, 3), mar = rep(0, 4))
+        } else if (style == "one") {
+            graphics::par(mfrow = c(1, 1), mar = rep(0, 4))
+        }
+        if (style == "three") {
+            plot(file_target)
+            plot(file_current)
+        }
         plot(diffplot)
         invisible(grDevices::dev.off())
         graphics::par(def_par) # reset graphics parameters
