@@ -2,19 +2,19 @@
 #'
 #' @description
 #' This expectation can be used with `tinytest` to check if the new plot matches
-#' a target plot. 
-#' 
+#' a target plot.
+#'
 #' When the expectation is checked for the first time, the expectation fails and
 #' a reference plot is saved to the `inst/tinytest/_tinysnapshot` folder.
-#' 
+#'
 #' When the expectation fails, the reference plot, the new plot, and a diff are
 #' saved to the `inst/tinytest/label` folder. Call the `review()` function to compare.
-#' 
+#'
 #' To update a snapshot, delete the reference file from the `_tinysnapshot`
 #' folder and run the test suite again.
 #'
 #' See the package README file or website for detailed examples.
-#' 
+#'
 #' @param current an object of class `ggplot` or a function which returns a base R plot.
 #' @param label a string to identify the snapshot (alpha-numeric, hyphens, or underscores). Each plot in the test suite must have a unique label.
 #' @param width of the snapshot. PNG default: 480 pixels. SVG default: 7 inches.
@@ -24,6 +24,7 @@
 #' @param tol distance estimates larger than this threshold will trigger a test failure. Scale depends on the `metric` argument. With the default `metric="AE"` (absolute error), the `tolerance` corresponds roughly to the number of pixels of difference between the plot and the reference image.
 #' @param metric string with a metric from `magick::metric_types()` such as `"AE"` or `"phash"`.
 #' @param fuzz relative color distance between 0 and 100 to be considered similar.
+#' @param style A character vector to control the panels of the diff image saved to file. The order and number of entries controls the side-by-side panels. Allowable values are: "old", "new", "diff".
 #' @param os character vector of operating systems on which the test should be run (e.g., "Windows", "Linux", "Darwin"). Tests are skipped when no element of the vector matches the output of: `Sys.info()["sysname"]`
 #' @return A `tinytest` object. A `tinytest` object is a `logical` with attributes holding information about the test that was run
 #'
@@ -37,15 +38,14 @@ expect_snapshot_plot <- function(current,
                                  fuzz = getOption("tinysnapshot_fuzz", default = 0),
                                  device = getOption("tinysnapshot_device", default = "svg"),
                                  device_args = getOption("tinysnapshot_device_args", default = list()),
-                                 os = getOption("tinysnapshot_os", default = Sys.info()["sysname"])
-                                 ) {
-
+                                 style = getOption("tinysnapshot_plot_diff_style", default = c("old", "new", "diff")),
+                                 os = getOption("tinysnapshot_os", default = Sys.info()["sysname"])) {
     ts_assert_choice(device, c("ragg", "png", "svg", "svglite"))
-    
+
     if (!isTRUE(is.vector(os)) || !isTRUE(is.character(os))) {
         stop("`os` must be a character vector.")
     }
-    
+
     if (!Sys.info()["sysname"] %in% os) {
         return(invisible(NULL))
     }
@@ -113,7 +113,7 @@ expect_snapshot_plot <- function(current,
         }
         return(tinytest::tinytest(FALSE, call = cal, info = info))
     }
-    
+
     # if snapshot present -> compare images and save diff plot
     dir.create("_tinysnapshot_review", recursive = TRUE, showWarnings = FALSE)
     out <- expect_equivalent_images(
@@ -122,7 +122,8 @@ expect_snapshot_plot <- function(current,
         tol = tol,
         metric = metric,
         fuzz = fuzz,
-        diffpath = file.path("_tinysnapshot_review", paste0(basename(snapshot), ".png")) 
+        style = style,
+        diffpath = file.path("_tinysnapshot_review", paste0(basename(snapshot), ".png"))
     )
     attr(out, "call") <- cal
     return(out)
@@ -131,12 +132,11 @@ expect_snapshot_plot <- function(current,
 
 
 #' Test if two image files are equivalent
-#' 
+#'
 #' @param current path to an image file
 #' @param target path to an image file
 #' @param diffpath path where to save an image which shows the differences between `current` and `target`. `NULL` means that the diff image is not saved.
 #' @inheritParams expect_snapshot_plot
-#' @param style "three" for current, target and diff plot in a panel, or "one" for only the diffplot
 #' @return A `tinytest` object. A `tinytest` object is a `logical` with attributes holding information about the test that was run
 #' @export
 expect_equivalent_images <- function(current,
@@ -144,15 +144,18 @@ expect_equivalent_images <- function(current,
                                      tol = getOption("tinysnapshot_tol", default = 0),
                                      metric = getOption("tinysnapshot_metric", default = "AE"),
                                      fuzz = getOption("tinysnapshot_fuzz", default = 0),
-                                     style = getOption("tinysnapshot_plot_diff_style", default = "three"),
+                                     style = getOption("tinysnapshot_plot_diff_style", default = c("old", "new", "diff")),
                                      diffpath = NULL) {
-                                
     # default values
     cal <- sys.call(sys.parent(1))
     info <- diff <- NA_character_
     fail <- FALSE
 
     # input sanity checks
+    if (!is.character(style) || length(style) < 1 || length(style) > 3 || any(!style %in% c("old", "new", "diff")) || any(duplicated(style))) {
+        stop("style must be a character vector of length 1, 2, or 3, containing 'old', 'new', 'diff' with no duplicates.")
+    }
+
     ts_assert_choice(metric, choices = magick::metric_types())
     ts_assert_number(tol, lower = 0)
     ts_assert_number(fuzz, lower = 0)
@@ -161,8 +164,7 @@ expect_equivalent_images <- function(current,
     if (!is.null(diffpath)) {
         ts_assert_path_for_output(diffpath)
     }
-    ts_assert_choice(style, choices = c("one", "three"))
-    
+
     # distance > tol
     if (tools::file_ext(target) == "svg") {
         file_target <- magick::image_read_svg(target)
@@ -185,31 +187,26 @@ expect_equivalent_images <- function(current,
     if (isTRUE(fail) && !is.null(diffpath)) {
         diffplot <- magick::image_compare(file_current, file_target, metric = metric, fuzz = fuzz)
 
-        file_current <- grDevices::as.raster(file_current)
-        file_target <- grDevices::as.raster(file_target)
-        diffplot <- grDevices::as.raster(diffplot)
+        images <- list(
+            old = grDevices::as.raster(file_target),
+            new = grDevices::as.raster(file_current),
+            diff = grDevices::as.raster(diffplot)
+        )
 
-        if (style == "three") {
-            width <- nrow(file_current) + nrow(file_target) + nrow(diffplot)
-            height <- max(c(ncol(file_current), ncol(file_target), ncol(diffplot)))
-        } else if (style == "one") {
-            width <- nrow(diffplot)
-            height <- ncol(diffplot)
-        }
+        width <- sum(sapply(images[style], nrow))
+        height <- max(sapply(images[style], ncol))
+
         grDevices::png(diffpath, width = width, height = height)
         def_par <- graphics::par(no.readonly = TRUE) # save graphics params
-        if (style == "three") {
-            graphics::par(mfrow = c(1, 3), mar = rep(0, 4))
-        } else if (style == "one") {
-            graphics::par(mfrow = c(1, 1), mar = rep(0, 4))
+        graphics::par(mfrow = c(1, length(style)), mar = rep(0, 4))
+
+        for (s in style) {
+            plot(images[[s]])
         }
-        if (style == "three") {
-            plot(file_target)
-            plot(file_current)
-        }
-        plot(diffplot)
+
+        # close device and reset graphics parameters
         invisible(grDevices::dev.off())
-        graphics::par(def_par) # reset graphics parameters
+        graphics::par(def_par)
 
         info <- paste("Diff plot saved to:", diffpath)
     }

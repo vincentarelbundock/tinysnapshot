@@ -1,3 +1,7 @@
+# Development
+
+* New `style` argument to `expect_snapshot_plot()` and `expect_equivalent_images()` to control the style of the diff image to print. Plot with "old", "new", and "diff" facets.
+
 # 0.0.7
 
 * New `ignore_white_space` argument in `expect_snapshot_print()`.
