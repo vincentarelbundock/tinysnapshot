@@ -28,6 +28,30 @@ expect_snapshot_plot(p1, "png-ggplot2_variable")
 p2 <- ggplot(mtcars, aes(mpg, wt)) + geom_point()
 expect_false(ignore(expect_snapshot_plot)(p2, "png-ggplot2_variable"))
 
+# test expect_equivalent_images ever so briefly
+pf1 <- tempfile(fileext=".png")
+pf2 <- tempfile(fileext=".png")
+pf3 <- tempfile(fileext=".png")
+set.seed(123)
+D <- data.frame(x = 1:100, y = cumsum(rnorm(100)))
 
+png(pf1)
+with(D, plot(x, y, type='l', main="Plot One"))
+dev.off()
+
+png(pf2)
+with(D, plot(x, y, type='l', main="Plot Two", xlab="Foo"))
+dev.off()
+
+# plots differ so expect false result
+expect_false(expect_equivalent_images(pf1, pf2, diffpath=pf3))
+expect_false(expect_equivalent_images(pf1, pf2, diffpath=pf3, style="one"))
+expect_false(expect_equivalent_images(pf1, pf2, diffpath=pf3, style="three"))
+
+# wrong arguments
+expect_error(expect_equivalent_images(pf1, pf2, diffpath=pf3, style="multiple"))
+options(tinysnapshot_plot_diff_style="wrong argument")
+expect_error(expect_equivalent_images(pf1, pf2, diffpath=pf3))
 
 options(tinysnapshot_device = NULL)
+options(tinysnapshot_plot_diff_style = "three")

@@ -14,6 +14,7 @@ expect_snapshot_plot(
   fuzz = getOption("tinysnapshot_fuzz", default = 0),
   device = getOption("tinysnapshot_device", default = "svg"),
   device_args = getOption("tinysnapshot_device_args", default = list()),
+  style = getOption("tinysnapshot_plot_diff_style", default = c("old", "new", "diff")),
   os = getOption("tinysnapshot_os", default = Sys.info()["sysname"])
 )
 }
@@ -35,6 +36,8 @@ expect_snapshot_plot(
 \item{device}{"svg", "png", "ragg" or "svglite"}
 
 \item{device_args}{list of arguments to pass to the device call (e.g., \code{user_fonts} for \code{svglite} device).}
+
+\item{style}{A character vector to control the panels of the diff image saved to file. The order and number of entries controls the side-by-side panels. Allowable values are: "old", "new", "diff".}
 
 \item{os}{character vector of operating systems on which the test should be run (e.g., "Windows", "Linux", "Darwin"). Tests are skipped when no element of the vector matches the output of: \code{Sys.info()["sysname"]}}
 }
