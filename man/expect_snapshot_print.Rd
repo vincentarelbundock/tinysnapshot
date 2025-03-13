@@ -10,6 +10,8 @@ expect_snapshot_print(
   mode = getOption("tinysnapshot_mode", default = "unified"),
   format = getOption("tinysnapshot_format", default = "ansi256"),
   ignore_white_space = getOption("tinysnapshot_ignore_white_space", default = FALSE),
+  fn_current = getOption("tinysnapshot_fn_current", default = identity),
+  fn_target = getOption("tinysnapshot_fn_target", default = identity),
   ...
 )
 }
@@ -23,6 +25,10 @@ expect_snapshot_print(
 \item{format}{"raw", "ansi8", "ansi256", "html", or "auto". See \code{?diffobj::diffPrint}}
 
 \item{ignore_white_space}{\code{TRUE} to ignore horizontal white space and empty lines.}
+
+\item{fn_current}{A function to apply to the current output before comparison.}
+
+\item{fn_target}{A function to apply to the target output before comparison.}
 
 \item{...}{Additional arguments are passed to \code{diffobj::diffPrint()}}
 }
