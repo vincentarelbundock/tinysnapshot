@@ -17,16 +17,19 @@ p2 <- function() plot(mtcars$hp, mtcars$wt)
 expect_snapshot_plot(p1, "svg-base")
 
 # bad plot always fails
-expect_false(ignore(expect_snapshot_plot)(p2, "svg-base"))
+expect_false(ignore(expect_snapshot_plot)(p2, "svg-base", review = FALSE))
 
 ###### ggplot2
 suppressPackageStartupMessages(library("ggplot2"))
 
-p1 <- ggplot(mtcars, aes(mpg, hp)) + geom_point()
+p1 <- ggplot(mtcars, aes(mpg, hp)) +
+    geom_point()
 expect_snapshot_plot(p1, "svg-ggplot2_variable")
 
-p2 <- ggplot(mtcars, aes(mpg, wt)) + geom_point()
-expect_false(ignore(expect_snapshot_plot)(p2, "svg-ggplot2_variable"))
+p2 <- ggplot(mtcars, aes(mpg, wt)) +
+    geom_point()
+expect_false(ignore(expect_snapshot_plot)(p2, "svg-ggplot2_variable", review = FALSE))
 
 
 options(tinysnapshot_device = NULL)
+

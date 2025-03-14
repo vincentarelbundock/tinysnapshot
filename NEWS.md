@@ -1,3 +1,11 @@
+# Development
+
+New arguments to `expect_snapshot_print()`:
+
+* `fn_current`: A function to process the current snapshot string before comparison.
+* `fn_target`: A function to process the target snapshot string before comparison.
+* `review`: TRUE (default) to write the diff plot to file. FALSE to return a failure but no file.
+
 # 0.0.8
 
 * New `style` argument to `expect_snapshot_plot()` and `expect_equivalent_images()` to control the style of the diff image to print. Plot with "old", "new", and "diff" facets.

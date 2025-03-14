@@ -11,6 +11,7 @@ expect_equivalent_images(
   metric = getOption("tinysnapshot_metric", default = "AE"),
   fuzz = getOption("tinysnapshot_fuzz", default = 0),
   style = getOption("tinysnapshot_plot_diff_style", default = c("old", "new", "diff")),
+  review = getOption("tinysnapshot_plot_review", default = TRUE),
   diffpath = NULL
 )
 }
@@ -26,6 +27,8 @@ expect_equivalent_images(
 \item{fuzz}{relative color distance between 0 and 100 to be considered similar.}
 
 \item{style}{A character vector to control the panels of the diff image saved to file. The order and number of entries controls the side-by-side panels. Allowable values are: "old", "new", "diff".}
+
+\item{review}{logical. TRUE if a a diff plot should be saved to file for review when the expectation fails.}
 
 \item{diffpath}{path where to save an image which shows the differences between \code{current} and \code{target}. \code{NULL} means that the diff image is not saved.}
 }

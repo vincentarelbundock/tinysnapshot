@@ -2,20 +2,22 @@
 #'
 #' @description
 #' This expectation can be used with `tinytest` to check if the new plot matches
-#' a target plot. 
-#' 
+#' a target plot.
+#'
 #' When the expectation is checked for the first time, the expectation fails and
 #' a reference text file is saved to the `inst/tinytest/_tinysnapshot` folder.
-#' 
+#'
 #' To update a snapshot, delete the reference file from the `_tinysnapshot`
 #' folder and run the test suite again.
-#' 
+#'
 #' See the package README file or website for detailed examples.
-#' 
+#'
 #' @param current an object which returns text to the console when calling `print(x`)`
 #' @param mode "unified", "sidebyside", "context", or "auto". See `?diffobj::diffPrint`
 #' @param format "raw", "ansi8", "ansi256", "html", or "auto". See `?diffobj::diffPrint`
 #' @param ignore_white_space `TRUE` to ignore horizontal white space and empty lines.
+#' @param fn_current A function to apply to the current output before comparison.
+#' @param fn_target A function to apply to the target output before comparison.
 #' @inheritParams expect_snapshot_plot
 #' @param ... Additional arguments are passed to `diffobj::diffPrint()`
 #' @return A `tinytest` object. A `tinytest` object is a `logical` with attributes holding information about the test that was run
@@ -25,8 +27,9 @@ expect_snapshot_print <- function(current,
                                   mode = getOption("tinysnapshot_mode", default = "unified"),
                                   format = getOption("tinysnapshot_format", default = "ansi256"),
                                   ignore_white_space = getOption("tinysnapshot_ignore_white_space", default = FALSE),
+                                  fn_current = getOption("tinysnapshot_fn_current", default = identity),
+                                  fn_target = getOption("tinysnapshot_fn_target", default = identity),
                                   ...) {
-
     # defaults
     snapshot <- snapshot_label(label)
     snapshot_fn <- file.path("_tinysnapshot", snapshot)
@@ -37,6 +40,9 @@ expect_snapshot_print <- function(current,
     diff <- info <- NA_character_
     fail <- FALSE
 
+    stopifnot(is.function(fn_current))
+    stopifnot(is.function(fn_target))
+
     # if snapshot missing, copy current to snapshot, and return failure immediately
     if (!isTRUE(ts_check_file_exists(snapshot_fn))) {
         if (isTRUE(tinytest::at_home())) {
@@ -46,8 +52,8 @@ expect_snapshot_print <- function(current,
             sink()
             info <- paste("Creating snapshot:", snapshot_fn)
         } else {
-             # stop() otherwise source("test-file.R") fails silently
-            info <- 'Snapshot missing: %s. Make sure you execute commands in the right directory, or use one of the `tinytest` runners to generate new snapshots: `run_test_dir()` or `run_test_file()`.'
+            # stop() otherwise source("test-file.R") fails silently
+            info <- "Snapshot missing: %s. Make sure you execute commands in the right directory, or use one of the `tinytest` runners to generate new snapshots: `run_test_dir()` or `run_test_file()`."
             info <- sprintf(info, snapshot_fn)
             stop(info, call. = FALSE)
         }
@@ -71,17 +77,21 @@ expect_snapshot_print <- function(current,
         current <- strip(current)
     }
 
+    target <- fn_target(target)
+    current <- fn_current(current)
+
     class(target) <- c("tinysnapshotprint", class(target))
     class(current) <- c("tinysnapshotprint", class(current))
 
-    diff_args <- c(list(
-        current = current,
-        target = target,
-        mode = mode,
-        format = format,
-        guides = FALSE,
-        sgr.supported = TRUE,
-        strip.sgr = FALSE),
+    diff_args <- c(
+        list(
+            current = current,
+            target = target,
+            mode = mode,
+            format = format,
+            guides = FALSE,
+            sgr.supported = TRUE,
+            strip.sgr = FALSE),
         list(...))
     diff_args[["ignore.white.space"]] <- ignore_white_space
     do <- suppressWarnings(do.call(diffobj::diffPrint, diff_args))

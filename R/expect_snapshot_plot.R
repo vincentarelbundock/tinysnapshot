@@ -25,6 +25,7 @@
 #' @param metric string with a metric from `magick::metric_types()` such as `"AE"` or `"phash"`.
 #' @param fuzz relative color distance between 0 and 100 to be considered similar.
 #' @param style A character vector to control the panels of the diff image saved to file. The order and number of entries controls the side-by-side panels. Allowable values are: "old", "new", "diff".
+#' @param review logical. TRUE if a a diff plot should be saved to file for review when the expectation fails.
 #' @param os character vector of operating systems on which the test should be run (e.g., "Windows", "Linux", "Darwin"). Tests are skipped when no element of the vector matches the output of: `Sys.info()["sysname"]`
 #' @return A `tinytest` object. A `tinytest` object is a `logical` with attributes holding information about the test that was run
 #'
@@ -39,6 +40,7 @@ expect_snapshot_plot <- function(current,
                                  device = getOption("tinysnapshot_device", default = "svg"),
                                  device_args = getOption("tinysnapshot_device_args", default = list()),
                                  style = getOption("tinysnapshot_plot_diff_style", default = c("old", "new", "diff")),
+                                 review = getOption("tinysnapshot_plot_review", default = TRUE),
                                  os = getOption("tinysnapshot_os", default = Sys.info()["sysname"])) {
     ts_assert_choice(device, c("ragg", "png", "svg", "svglite"))
 
@@ -123,6 +125,7 @@ expect_snapshot_plot <- function(current,
         metric = metric,
         fuzz = fuzz,
         style = style,
+        review = review,
         diffpath = file.path("_tinysnapshot_review", paste0(basename(snapshot), ".png"))
     )
     attr(out, "call") <- cal
@@ -145,6 +148,7 @@ expect_equivalent_images <- function(current,
                                      metric = getOption("tinysnapshot_metric", default = "AE"),
                                      fuzz = getOption("tinysnapshot_fuzz", default = 0),
                                      style = getOption("tinysnapshot_plot_diff_style", default = c("old", "new", "diff")),
+                                     review = getOption("tinysnapshot_plot_review", default = TRUE),
                                      diffpath = NULL) {
     # default values
     cal <- sys.call(sys.parent(1))
@@ -184,7 +188,7 @@ expect_equivalent_images <- function(current,
     if (dis > tol) fail <- TRUE
 
     # diff plot
-    if (isTRUE(fail) && !is.null(diffpath)) {
+    if (isTRUE(review) && isTRUE(fail) && !is.null(diffpath)) {
         diffplot <- magick::image_compare(file_current, file_target, metric = metric, fuzz = fuzz)
 
         images <- list(

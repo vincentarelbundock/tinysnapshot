@@ -17,7 +17,7 @@ p2 <- function() plot(mtcars$hp, mtcars$wt)
 expect_snapshot_plot(p1, "png-base")
 
 # bad plot always fails
-expect_false(ignore(expect_snapshot_plot)(p2, "png-base"))
+expect_false(ignore(expect_snapshot_plot)(p2, "png-base", review = FALSE))
 
 ###### ggplot2
 suppressPackageStartupMessages(library("ggplot2"))
@@ -28,7 +28,7 @@ expect_snapshot_plot(p1, "png-ggplot2_variable")
 
 p2 <- ggplot(mtcars, aes(mpg, wt)) +
     geom_point()
-expect_false(ignore(expect_snapshot_plot)(p2, "png-ggplot2_variable"))
+expect_false(ignore(expect_snapshot_plot)(p2, "png-ggplot2_variable", review = FALSE))
 
 # test expect_equivalent_images ever so briefly
 pf1 <- tempfile(fileext = ".png")
@@ -46,9 +46,9 @@ with(D, plot(x, y, type = "l", main = "Plot Two", xlab = "Foo"))
 dev.off()
 
 # plots differ so expect false result
-expect_false(ignore(expect_equivalent_images)(pf1, pf2, diffpath = pf3))
-expect_false(ignore(expect_equivalent_images)(pf1, pf2, diffpath = pf3, style = "diff"))
-expect_false(ignore(expect_equivalent_images)(pf1, pf2, diffpath = pf3, style = c("old", "new", "diff")))
+expect_false(ignore(expect_equivalent_images)(pf1, pf2, diffpath = pf3, review = FALSE))
+expect_false(ignore(expect_equivalent_images)(pf1, pf2, diffpath = pf3, style = "diff", review = FALSE))
+expect_false(ignore(expect_equivalent_images)(pf1, pf2, diffpath = pf3, style = c("old", "new", "diff"), review = FALSE))
 
 # wrong arguments
 expect_error(expect_equivalent_images(pf1, pf2, diffpath = pf3, style = "multiple"))
