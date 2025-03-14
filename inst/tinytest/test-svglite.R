@@ -17,20 +17,23 @@ expect_snapshot_plot(p1, "svglite-base")
 
 # bad plot always fails
 if (Sys.info()["sysname"] %in% getOption("tinysnapshot_os", default = Sys.info()["sysname"])) {
-    expect_false(ignore(expect_snapshot_plot)(p2, "svglite-base"))
+    expect_false(ignore(expect_snapshot_plot)(p2, "svglite-base", review = FALSE))
 }
 
 ###### ggplot2
 suppressPackageStartupMessages(library("ggplot2"))
 
-p1 <- ggplot(mtcars, aes(mpg, hp)) + geom_point()
+p1 <- ggplot(mtcars, aes(mpg, hp)) +
+    geom_point()
 expect_snapshot_plot(p1, "svglite-ggplot2_variable")
 
 if (Sys.info()["sysname"] %in% getOption("tinysnapshot_os", default = Sys.info()["sysname"])) {
-    p2 <- ggplot(mtcars, aes(mpg, wt)) + geom_point()
-    expect_false(ignore(expect_snapshot_plot)(p2, "svglite-ggplot2_variable"))
+    p2 <- ggplot(mtcars, aes(mpg, wt)) +
+        geom_point()
+    expect_false(ignore(expect_snapshot_plot)(p2, "svglite-ggplot2_variable", review = FALSE))
 }
 
 
 
 options(tinysnapshot_device = NULL)
+
