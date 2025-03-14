@@ -1,5 +1,5 @@
 options(width = 10000)
-options(tinysnapshot_os = c("Linux", "Darwin"))
+options(tinysnapshot_os = c("Linux")) # , "Darwin"))
 
 options(tinysnapshot_plot_review = TRUE)
 ON_CRAN <- !identical(Sys.getenv("R_NOT_CRAN"), "true")
