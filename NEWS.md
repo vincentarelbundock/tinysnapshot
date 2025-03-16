@@ -1,4 +1,4 @@
-# Development
+# 0.1.0
 
 New arguments to `expect_snapshot_print()`:
 
