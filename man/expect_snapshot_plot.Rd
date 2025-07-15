@@ -16,7 +16,9 @@ expect_snapshot_plot(
   device_args = getOption("tinysnapshot_device_args", default = list()),
   style = getOption("tinysnapshot_plot_diff_style", default = c("old", "new", "diff")),
   review = getOption("tinysnapshot_plot_review", default = TRUE),
-  os = getOption("tinysnapshot_os", default = Sys.info()["sysname"])
+  os = getOption("tinysnapshot_os", default = Sys.info()["sysname"]),
+  skip = getOption("tinysnapshot_plot_skip", default = !interactive() &&
+    !identical(Sys.getenv("NOT_CRAN"), "true"))
 )
 }
 \arguments{
@@ -43,6 +45,8 @@ expect_snapshot_plot(
 \item{review}{logical. TRUE if a a diff plot should be saved to file for review when the expectation fails.}
 
 \item{os}{character vector of operating systems on which the test should be run (e.g., "Windows", "Linux", "Darwin"). Tests are skipped when no element of the vector matches the output of: \code{Sys.info()["sysname"]}}
+
+\item{skip}{logical. If TRUE, the test is skipped. Default: TRUE when not interactive and NOT_CRAN environment variable is not "true".}
 }
 \value{
 A \code{tinytest} object. A \code{tinytest} object is a \code{logical} with attributes holding information about the test that was run

@@ -1,3 +1,9 @@
+# 0.2.0
+
+* Plot tests are skipped by default on CRAN, that is, when either of these conditions is false:
+    - `interactive()` is `FALSE`
+    - The `NOT_CRAN` environment variable is not `true`
+
 # 0.1.0
 
 New arguments to `expect_snapshot_print()`:

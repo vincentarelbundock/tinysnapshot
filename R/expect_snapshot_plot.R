@@ -27,6 +27,7 @@
 #' @param style A character vector to control the panels of the diff image saved to file. The order and number of entries controls the side-by-side panels. Allowable values are: "old", "new", "diff".
 #' @param review logical. TRUE if a a diff plot should be saved to file for review when the expectation fails.
 #' @param os character vector of operating systems on which the test should be run (e.g., "Windows", "Linux", "Darwin"). Tests are skipped when no element of the vector matches the output of: `Sys.info()["sysname"]`
+#' @param skip logical. If TRUE, the test is skipped. Default: TRUE when not interactive and NOT_CRAN environment variable is not "true".
 #' @return A `tinytest` object. A `tinytest` object is a `logical` with attributes holding information about the test that was run
 #'
 #' @export
@@ -41,7 +42,8 @@ expect_snapshot_plot <- function(current,
                                  device_args = getOption("tinysnapshot_device_args", default = list()),
                                  style = getOption("tinysnapshot_plot_diff_style", default = c("old", "new", "diff")),
                                  review = getOption("tinysnapshot_plot_review", default = TRUE),
-                                 os = getOption("tinysnapshot_os", default = Sys.info()["sysname"])) {
+                                 os = getOption("tinysnapshot_os", default = Sys.info()["sysname"]),
+                                 skip = getOption("tinysnapshot_plot_skip", default = !interactive() && !identical(Sys.getenv("NOT_CRAN"), "true"))) {
     ts_assert_choice(device, c("ragg", "png", "svg", "svglite"))
 
     if (!isTRUE(is.vector(os)) || !isTRUE(is.character(os))) {
