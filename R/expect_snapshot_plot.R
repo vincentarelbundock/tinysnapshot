@@ -46,11 +46,16 @@ expect_snapshot_plot <- function(current,
                                  skip = getOption("tinysnapshot_plot_skip", default = !interactive() && !identical(Sys.getenv("NOT_CRAN"), "true"))) {
     ts_assert_choice(device, c("ragg", "png", "svg", "svglite"))
 
+
     if (!isTRUE(is.vector(os)) || !isTRUE(is.character(os))) {
-        stop("`os` must be a character vector.")
+        stop("`os` must be a character vector.", call. = FALSE)
     }
 
-    if (!Sys.info()["sysname"] %in% os) {
+    if (!isTRUE(skip) && !isFALSE(skip)) {
+        stop("`skip` must be `TRUE` or `FALSE`.", call. = FALSE)
+    }
+
+    if (!Sys.info()["sysname"] %in% os || isTRUE(skip)) {
         return(invisible(NULL))
     }
 
