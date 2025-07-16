@@ -52,6 +52,8 @@ expect_snapshot_plot <- function(
     )) {
   ts_assert_choice(device, c("ragg", "png", "svg", "svglite"))
 
+  cal <- sys.call(sys.parent(1))
+
   if (!isTRUE(is.vector(os)) || !isTRUE(is.character(os))) {
     stop("`os` must be a character vector.", call. = FALSE)
   }
@@ -60,9 +62,7 @@ expect_snapshot_plot <- function(
     stop("`skip` must be `TRUE` or `FALSE`.", call. = FALSE)
   }
 
-  skip <- isTRUE(skip) || !Sys.info()["sysname"] %in% os
-
-  if (skip) {
+  if (!Sys.info()["sysname"] %in% os || skip) {
     return(invisible(NULL))
   }
 

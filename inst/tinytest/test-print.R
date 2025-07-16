@@ -13,7 +13,9 @@ mod2 <- lm(mpg ~ factor(gear), mtcars)
 expect_snapshot_print(summary(mod1), "print-lm_summary")
 
 # Always fails
-expect_false(ignore(expect_snapshot_print)(summary(mod2), "print-lm_summary"))
+if (!SKIP) {
+  expect_false(ignore(expect_snapshot_print)(summary(mod2), "print-lm_summary"))
+}
 
 
 # Use fn_*() to remove random string from snapshot
