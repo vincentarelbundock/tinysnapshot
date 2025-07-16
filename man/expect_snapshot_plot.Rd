@@ -41,6 +41,8 @@ expect_snapshot_plot(
 
 \item{device_args}{list of arguments to pass to the device call (e.g., \code{user_fonts} for \code{svglite} device).}
 
+\item{par_args}{named list of arguments to pass to \code{graphics::par()} for setting graphical parameters. Only used when \code{device} is "png" or "ragg". Default is \code{NULL}.}
+
 \item{style}{A character vector to control the panels of the diff image saved to file. The order and number of entries controls the side-by-side panels. Allowable values are: "old", "new", "diff".}
 
 \item{review}{logical. TRUE if a a diff plot should be saved to file for review when the expectation fails.}
