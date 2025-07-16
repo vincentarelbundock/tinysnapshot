@@ -21,6 +21,7 @@
 #' @param height of the snapshot. PNG default: 480 pixels. SVG default: 7 inches.
 #' @param device "svg", "png", "ragg" or "svglite"
 #' @param device_args list of arguments to pass to the device call (e.g., `user_fonts` for `svglite` device).
+#' @param par_args named list of arguments to pass to `graphics::par()` for setting graphical parameters. Only used when `device` is "png" or "ragg". Default is `NULL`.
 #' @param tol distance estimates larger than this threshold will trigger a test failure. Scale depends on the `metric` argument. With the default `metric="AE"` (absolute error), the `tolerance` corresponds roughly to the number of pixels of difference between the plot and the reference image.
 #' @param metric string with a metric from `magick::metric_types()` such as `"AE"` or `"phash"`.
 #' @param fuzz relative color distance between 0 and 100 to be considered similar.
@@ -32,26 +33,23 @@
 #'
 #' @export
 expect_snapshot_plot <- function(
-  current,
-  label,
-  width = getOption("tinysnapshot_width", default = NULL),
-  height = getOption("tinysnapshot_height", default = NULL),
-  tol = getOption("tinysnapshot_tol", default = 0),
-  metric = getOption("tinysnapshot_metric", default = "AE"),
-  fuzz = getOption("tinysnapshot_fuzz", default = 0),
-  device = getOption("tinysnapshot_device", default = "svg"),
-  device_args = getOption("tinysnapshot_device_args", default = list()),
-  style = getOption(
-    "tinysnapshot_plot_diff_style",
-    default = c("old", "new", "diff")
-  ),
-  review = getOption("tinysnapshot_plot_review", default = TRUE),
-  os = getOption("tinysnapshot_os", default = Sys.info()["sysname"]),
-  skip = getOption(
-    "tinysnapshot_plot_skip",
-    default = !interactive() && !identical(Sys.getenv("NOT_CRAN"), "true")
-  )
-) {
+    current,
+    label,
+    width = getOption("tinysnapshot_width", default = NULL),
+    height = getOption("tinysnapshot_height", default = NULL),
+    tol = getOption("tinysnapshot_tol", default = 0),
+    metric = getOption("tinysnapshot_metric", default = "AE"),
+    fuzz = getOption("tinysnapshot_fuzz", default = 0),
+    device = getOption("tinysnapshot_device", default = "svg"),
+    device_args = getOption("tinysnapshot_device_args", default = list()),
+    par_args = getOption("tinysnapshot_par_args", default = NULL),
+    style = getOption("tinysnapshot_plot_diff_style", default = c("old", "new", "diff")),
+    review = getOption("tinysnapshot_plot_review", default = TRUE),
+    os = getOption("tinysnapshot_os", default = Sys.info()["sysname"]),
+    skip = getOption(
+      "tinysnapshot_plot_skip",
+      default = !interactive() && !identical(Sys.getenv("NOT_CRAN"), "true")
+    )) {
   ts_assert_choice(device, c("ragg", "png", "svg", "svglite"))
 
   if (!isTRUE(is.vector(os)) || !isTRUE(is.character(os))) {
@@ -112,6 +110,12 @@ expect_snapshot_plot <- function(
     ts_assert_package("rsvg")
     do.call(grDevices::svg, device_args)
   }
+
+  ts_assert_named_list(par_args, null.ok = TRUE)
+  if (length(par_args) > 0 && device %in% c("png", "ragg")) {
+    do.call(graphics::par, par_args)
+  }
+
   if (inherits(current, "ggplot")) {
     ts_assert_package("ggplot2")
     print(current + ggplot2::theme_test())
@@ -164,18 +168,17 @@ expect_snapshot_plot <- function(
 #' @return A `tinytest` object. A `tinytest` object is a `logical` with attributes holding information about the test that was run
 #' @export
 expect_equivalent_images <- function(
-  current,
-  target,
-  tol = getOption("tinysnapshot_tol", default = 0),
-  metric = getOption("tinysnapshot_metric", default = "AE"),
-  fuzz = getOption("tinysnapshot_fuzz", default = 0),
-  style = getOption(
-    "tinysnapshot_plot_diff_style",
-    default = c("old", "new", "diff")
-  ),
-  review = getOption("tinysnapshot_plot_review", default = TRUE),
-  diffpath = NULL
-) {
+    current,
+    target,
+    tol = getOption("tinysnapshot_tol", default = 0),
+    metric = getOption("tinysnapshot_metric", default = "AE"),
+    fuzz = getOption("tinysnapshot_fuzz", default = 0),
+    style = getOption(
+      "tinysnapshot_plot_diff_style",
+      default = c("old", "new", "diff")
+    ),
+    review = getOption("tinysnapshot_plot_review", default = TRUE),
+    diffpath = NULL) {
   # default values
   cal <- sys.call(sys.parent(1))
   info <- diff <- NA_character_

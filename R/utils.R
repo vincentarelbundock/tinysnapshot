@@ -51,6 +51,15 @@ ts_assert_file_exists <- function(x) {
   }
 }
 
+ts_assert_named_list <- function(x, null.ok = FALSE) {
+  if (is.null(x) && null.ok) {
+    return(invisible(NULL))
+  }
+  if (!is.list(x) || is.null(names(x))) {
+    stop("Must be a named list.", call. = FALSE)
+  }
+}
+
 ts_check_file_exists <- function(x) {
   if (!is.character(x) || length(x) != 1 || !file.exists(x)) {
     FALSE

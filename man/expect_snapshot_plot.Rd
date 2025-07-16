@@ -14,6 +14,7 @@ expect_snapshot_plot(
   fuzz = getOption("tinysnapshot_fuzz", default = 0),
   device = getOption("tinysnapshot_device", default = "svg"),
   device_args = getOption("tinysnapshot_device_args", default = list()),
+  par_args = getOption("tinysnapshot_par_args", default = NULL),
   style = getOption("tinysnapshot_plot_diff_style", default = c("old", "new", "diff")),
   review = getOption("tinysnapshot_plot_review", default = TRUE),
   os = getOption("tinysnapshot_os", default = Sys.info()["sysname"]),
