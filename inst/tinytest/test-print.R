@@ -21,8 +21,9 @@ expect_false(ignore(expect_snapshot_print)(summary(mod2), "print-lm_summary"))
 set.seed(NULL)
 x <- paste0("blah_", sample(1:1e6, 1))
 fn <- function(x) sub("_.*", "", x)
-expect_snapshot_print(x,
-    label = "print-sub_label_fn",
-    fn_current = fn,
-    fn_target = fn)
-
+expect_snapshot_print(
+  x,
+  label = "print-sub_label_fn",
+  fn_current = fn,
+  fn_target = fn
+)

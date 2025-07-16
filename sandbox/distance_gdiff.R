@@ -1,9 +1,5 @@
 # We do not need this because it yields exactly the same results as "Absolute Error":
-# magick::image_compare(metric = "AE") 
-
-
-
-
+# magick::image_compare(metric = "AE")
 
 # distance_gdiff <- function(x,
 #                            path,

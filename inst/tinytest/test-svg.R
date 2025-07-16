@@ -1,5 +1,4 @@
 source("helpers.R")
-if (ON_CI) exit_file("CI") # works locally but not on Github actions
 
 # 1st run: These tests fail 6 times and generate 3 reference plots
 # 2nd run: These tests fail 3 times
@@ -23,13 +22,16 @@ expect_false(ignore(expect_snapshot_plot)(p2, "svg-base", review = FALSE))
 suppressPackageStartupMessages(library("ggplot2"))
 
 p1 <- ggplot(mtcars, aes(mpg, hp)) +
-    geom_point()
+  geom_point()
 expect_snapshot_plot(p1, "svg-ggplot2_variable")
 
 p2 <- ggplot(mtcars, aes(mpg, wt)) +
-    geom_point()
-expect_false(ignore(expect_snapshot_plot)(p2, "svg-ggplot2_variable", review = FALSE))
+  geom_point()
+expect_false(ignore(expect_snapshot_plot)(
+  p2,
+  "svg-ggplot2_variable",
+  review = FALSE
+))
 
 
 options(tinysnapshot_device = NULL)
-
