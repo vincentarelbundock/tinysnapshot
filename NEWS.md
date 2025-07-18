@@ -1,5 +1,11 @@
 # 0.2.0
 
+Breaking change:
+
+* Tests are automatically skipped by default unless the test suite is run interactively or the `NOT_CRAN` environment variable is set to `true`. This means that the `skip` argument in `expect_snapshot_print()` and `expect_snapshot_plot()` is no longer needed for skipping tests on CRAN.
+
+New features:
+
 * New `skip` argument in `expect_snapshot_plot()` to skip the test if the condition is not met. Plot tests are skipped by default on CRAN, that is, when either of these conditions is false:
     - `interactive()` is `FALSE`
     - The `NOT_CRAN` environment variable is not `true`
