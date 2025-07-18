@@ -5,4 +5,5 @@ options(tinysnapshot_os = OSes)
 options(tinysnapshot_tol = 100)
 
 ON_CRAN <- !identical(Sys.getenv("NOT_CRAN"), "true")
-SKIP <- ON_CRAN
+BAD_OS <- Sys.info()[["sysname"]] %in% OSes
+SKIP <- ON_CRAN || BAD_OS
