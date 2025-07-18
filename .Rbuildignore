@@ -13,3 +13,4 @@ Makefile
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
+CLAUDE.md
