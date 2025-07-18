@@ -1,6 +1,7 @@
 rm(list = ls())
+OSes <- c("Linux", "Darwin")
 options(width = 10000)
-options(tinysnapshot_os = c("Linux")) # , "Darwin"))
+options(tinysnapshot_os = OSes)
 
-SKIP = !identical(Sys.getenv("NOT_CRAN"), "true") ||
-  !Sys.info()[["sysname"]] %in% c("Linux")
+ON_CRAN <- !identical(Sys.getenv("NOT_CRAN"), "true")
+SKIP <- ON_CRAN
