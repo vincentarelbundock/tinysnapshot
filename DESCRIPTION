@@ -1,7 +1,7 @@
 Package: tinysnapshot
 Type: Package
 Title: Snapshots for Unit Tests using the 'tinytest' Framework
-Version: 0.2.0
+Version: 0.2.0.1
 Authors@R:
     c(person(given = "Vincent",
              family = "Arel-Bundock",
