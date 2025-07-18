@@ -1,5 +1,6 @@
 # 0.2.0
 
+* New `skip` argument in `expect_snapshot_plot()` to skip the test if the condition is not met.
 * New `par_args` argument in `expect_snapshot_plot()` to pass graphical parameters to `graphics::par()` for PNG and ragg devices.
 * Plot tests are skipped by default on CRAN, that is, when either of these conditions is false:
     - `interactive()` is `FALSE`
