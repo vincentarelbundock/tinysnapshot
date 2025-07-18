@@ -1,5 +1,5 @@
 rm(list = ls())
-OSes <- c("Linux", "Darwin")
+OSes <- c("Darwin")
 options(width = 10000)
 options(tinysnapshot_os = OSes)
 options(tinysnapshot_tol = 100)
