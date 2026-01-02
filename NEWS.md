@@ -1,5 +1,7 @@
 # Development
 
+* `expect_snapshot_plot()` gains a `theme` argument so callers can override or remove the automatic application of `ggplot2::theme_test()`.
+
 # 0.2.0
 
 Breaking change:
