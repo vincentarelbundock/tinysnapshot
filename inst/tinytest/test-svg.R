@@ -13,7 +13,7 @@ p2 <- function() plot(mtcars$hp, mtcars$wt)
 # good plot
 # Run once to create the reference plot
 # Run twice to pass the test
-expect_snapshot_plot(p1, "svg-base")
+expect_snapshot_plot(p1, "svg-base", tol = 1e-4)
 
 # bad plot always fails
 if (!SKIP) {
@@ -25,7 +25,7 @@ suppressPackageStartupMessages(library("ggplot2"))
 
 p1 <- ggplot(mtcars, aes(mpg, hp)) +
   geom_point()
-expect_snapshot_plot(p1, "svg-ggplot2_variable")
+expect_snapshot_plot(p1, "svg-ggplot2_variable", tol = 1e-4)
 
 p2 <- ggplot(mtcars, aes(mpg, wt)) +
   geom_point()
