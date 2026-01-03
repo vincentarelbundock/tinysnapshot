@@ -22,6 +22,7 @@
 #' @param device "svg", "png", "ragg" or "svglite"
 #' @param device_args list of arguments to pass to the device call (e.g., `user_fonts` for `svglite` device).
 #' @param par_args named list of arguments to pass to `graphics::par()` for setting graphical parameters. Only used when `device` is "png" or "ragg". Default is `NULL`.
+#' @param theme a `ggplot2` theme function. `NULL` (default) uses `ggplot2::theme_test()`.
 #' @param tol distance estimates larger than this threshold will trigger a test failure. Scale depends on the `metric` argument. With the default `metric="AE"` (absolute error), the `tolerance` corresponds roughly to the number of pixels of difference between the plot and the reference image.
 #' @param metric string with a metric from `magick::metric_types()` such as `"AE"` or `"phash"`.
 #' @param fuzz relative color distance between 0 and 100 to be considered similar.
@@ -43,6 +44,7 @@ expect_snapshot_plot <- function(
     device = getOption("tinysnapshot_device", default = "svg"),
     device_args = getOption("tinysnapshot_device_args", default = list()),
     par_args = getOption("tinysnapshot_par_args", default = NULL),
+    theme = getOption("tinysnapshot_theme", default = NULL),
     style = getOption("tinysnapshot_plot_diff_style", default = c("old", "new", "diff")),
     review = getOption("tinysnapshot_plot_review", default = TRUE),
     os = getOption("tinysnapshot_os", default = Sys.info()["sysname"]),
@@ -51,6 +53,9 @@ expect_snapshot_plot <- function(
       default = !interactive() && !identical(Sys.getenv("NOT_CRAN"), "true")
     )) {
   ts_assert_choice(device, c("ragg", "png", "svg", "svglite"))
+  if (!is.null(theme) && !is.function(theme)) {
+    stop("`theme` must be NULL or an unevaluated function.", call. = FALSE)
+  }
 
   cal <- sys.call(sys.parent(1))
 
@@ -118,7 +123,12 @@ expect_snapshot_plot <- function(
 
   if (inherits(current, "ggplot")) {
     ts_assert_package("ggplot2")
-    print(current + ggplot2::theme_test())
+    if (is.null(theme)) {
+      print(current + ggplot2::theme_test())
+    } else if (is.function(theme)) {
+      print(current + theme())
+    } else {
+    }
   } else {
     current()
   }

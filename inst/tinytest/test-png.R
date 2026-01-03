@@ -37,6 +37,14 @@ if (!SKIP) {
   ))
 }
 
+p3 <- ggplot(mtcars, aes(mpg, hp)) +
+  geom_point()
+expect_snapshot_plot(
+  p3,
+  "png-ggplot2_theme_dark",
+  theme = ggplot2::theme_dark
+)
+
 # test expect_equivalent_images ever so briefly
 pf1 <- tempfile(fileext = ".png")
 pf2 <- tempfile(fileext = ".png")

@@ -15,6 +15,7 @@ expect_snapshot_plot(
   device = getOption("tinysnapshot_device", default = "svg"),
   device_args = getOption("tinysnapshot_device_args", default = list()),
   par_args = getOption("tinysnapshot_par_args", default = NULL),
+  theme = getOption("tinysnapshot_theme", default = NULL),
   style = getOption("tinysnapshot_plot_diff_style", default = c("old", "new", "diff")),
   review = getOption("tinysnapshot_plot_review", default = TRUE),
   os = getOption("tinysnapshot_os", default = Sys.info()["sysname"]),
@@ -42,6 +43,8 @@ expect_snapshot_plot(
 \item{device_args}{list of arguments to pass to the device call (e.g., \code{user_fonts} for \code{svglite} device).}
 
 \item{par_args}{named list of arguments to pass to \code{graphics::par()} for setting graphical parameters. Only used when \code{device} is "png" or "ragg". Default is \code{NULL}.}
+
+\item{theme}{a \code{ggplot2} theme function. \code{NULL} (default) uses \code{ggplot2::theme_test()}.}
 
 \item{style}{A character vector to control the panels of the diff image saved to file. The order and number of entries controls the side-by-side panels. Allowable values are: "old", "new", "diff".}
 
