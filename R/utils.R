@@ -68,6 +68,12 @@ ts_check_file_exists <- function(x) {
   }
 }
 
+ts_prepend_info <- function(user_info, internal_info) {
+  if (is.null(user_info)) return(internal_info)
+  if (is.na(internal_info)) return(user_info)
+  paste(user_info, internal_info, sep = "\n")
+}
+
 ts_assert_path_for_output <- function(x) {
   if (!is.character(x) || length(x) != 1) {
     stop("Invalid path.", call. = FALSE)

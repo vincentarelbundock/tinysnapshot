@@ -7,6 +7,7 @@
 expect_snapshot_print(
   current,
   label,
+  info = NULL,
   mode = getOption("tinysnapshot_mode", default = "unified"),
   format = getOption("tinysnapshot_format", default = "ansi256"),
   ignore_white_space = getOption("tinysnapshot_ignore_white_space", default = FALSE),
@@ -19,6 +20,8 @@ expect_snapshot_print(
 \item{current}{an object which returns text to the console when calling \verb{print(x})`}
 
 \item{label}{a string to identify the snapshot (alpha-numeric, hyphens, or underscores). Each plot in the test suite must have a unique label.}
+
+\item{info}{a string with user-supplied context shown when the test fails, prepended to the internal message.}
 
 \item{mode}{"unified", "sidebyside", "context", or "auto". See \code{?diffobj::diffPrint}}
 

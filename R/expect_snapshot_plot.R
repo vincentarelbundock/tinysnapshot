@@ -30,6 +30,7 @@
 #' @param review logical. TRUE if a a diff plot should be saved to file for review when the expectation fails.
 #' @param os character vector of operating systems on which the test should be run (e.g., "Windows", "Linux", "Darwin"). Tests are skipped when no element of the vector matches the output of: `Sys.info()["sysname"]`
 #' @param skip logical. If TRUE, the test is skipped. Default: TRUE when not interactive and NOT_CRAN environment variable is not "true".
+#' @param info a string with user-supplied context shown when the test fails, prepended to the internal message.
 #' @return A `tinytest` object. A `tinytest` object is a `logical` with attributes holding information about the test that was run
 #'
 #' @export
@@ -51,7 +52,8 @@ expect_snapshot_plot <- function(
     skip = getOption(
       "tinysnapshot_plot_skip",
       default = !interactive() && !identical(Sys.getenv("NOT_CRAN"), "true")
-    )) {
+    ),
+    info = NULL) {
   ts_assert_choice(device, c("ragg", "png", "svg", "svglite"))
   if (!is.null(theme) && !is.function(theme)) {
     stop("`theme` must be NULL or an unevaluated function.", call. = FALSE)
@@ -91,8 +93,8 @@ expect_snapshot_plot <- function(
   snapshot_fn <- file.path("_tinysnapshot", paste0(snapshot, ext))
 
   if (!is.function(current) && !inherits(current, "ggplot")) {
-    info <- "`current` must be a `ggplot2` object or a function which returns a base `R` plot."
-    return(tinytest::tinytest(FALSE, call = cal, info = info))
+    msg <- "`current` must be a `ggplot2` object or a function which returns a base `R` plot."
+    return(tinytest::tinytest(FALSE, call = cal, info = ts_prepend_info(info, msg)))
   }
 
   device_args[["filename"]] <- current_fn
@@ -139,14 +141,14 @@ expect_snapshot_plot <- function(
     if (isTRUE(tinytest::at_home())) {
       dir.create(dirname(snapshot_fn), recursive = TRUE, showWarnings = FALSE)
       file.copy(from = current_fn, to = snapshot_fn)
-      info <- paste("Creating snapshot:", snapshot_fn)
+      msg <- paste("Creating snapshot:", snapshot_fn)
     } else {
       # stop() otherwise source("test-file.R") fails silently
-      info <- "Snapshot missing: %s. Make sure you execute commands in the right directory, or use one of the `tinytest` runners to generate new snapshots: `run_test_dir()` or `run_test_file()`."
-      info <- sprintf(info, snapshot_fn)
-      stop(info, call. = FALSE)
+      msg <- "Snapshot missing: %s. Make sure you execute commands in the right directory, or use one of the `tinytest` runners to generate new snapshots: `run_test_dir()` or `run_test_file()`."
+      msg <- sprintf(msg, snapshot_fn)
+      stop(msg, call. = FALSE)
     }
-    return(tinytest::tinytest(FALSE, call = cal, info = info))
+    return(tinytest::tinytest(FALSE, call = cal, info = ts_prepend_info(info, msg)))
   }
 
   # if snapshot present -> compare images and save diff plot
@@ -165,6 +167,9 @@ expect_snapshot_plot <- function(
     )
   )
   attr(out, "call") <- cal
+  if (!is.null(info)) {
+    attr(out, "info") <- ts_prepend_info(info, attr(out, "info"))
+  }
   return(out)
 }
 

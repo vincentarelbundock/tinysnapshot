@@ -13,6 +13,7 @@
 #' See the package README file or website for detailed examples.
 #'
 #' @param current an object which returns text to the console when calling `print(x`)`
+#' @param info a string with user-supplied context shown when the test fails, prepended to the internal message.
 #' @param mode "unified", "sidebyside", "context", or "auto". See `?diffobj::diffPrint`
 #' @param format "raw", "ansi8", "ansi256", "html", or "auto". See `?diffobj::diffPrint`
 #' @param ignore_white_space `TRUE` to ignore horizontal white space and empty lines.
@@ -25,6 +26,7 @@
 expect_snapshot_print <- function(
   current,
   label,
+  info = NULL,
   mode = getOption("tinysnapshot_mode", default = "unified"),
   format = getOption("tinysnapshot_format", default = "ansi256"),
   ignore_white_space = getOption(
@@ -42,7 +44,7 @@ expect_snapshot_print <- function(
     snapshot_fn <- paste0(snapshot_fn, ".txt")
   }
   cal <- sys.call(sys.parent(1))
-  diff <- info <- NA_character_
+  diff <- msg <- NA_character_
   fail <- FALSE
 
   stopifnot(is.function(fn_current))
@@ -55,14 +57,14 @@ expect_snapshot_print <- function(
       sink(snapshot_fn)
       print(current)
       sink()
-      info <- paste("Creating snapshot:", snapshot_fn)
+      msg <- paste("Creating snapshot:", snapshot_fn)
     } else {
       # stop() otherwise source("test-file.R") fails silently
-      info <- "Snapshot missing: %s. Make sure you execute commands in the right directory, or use one of the `tinytest` runners to generate new snapshots: `run_test_dir()` or `run_test_file()`."
-      info <- sprintf(info, snapshot_fn)
-      stop(info, call. = FALSE)
+      msg <- "Snapshot missing: %s. Make sure you execute commands in the right directory, or use one of the `tinytest` runners to generate new snapshots: `run_test_dir()` or `run_test_file()`."
+      msg <- sprintf(msg, snapshot_fn)
+      stop(msg, call. = FALSE)
     }
-    return(tinytest::tinytest(FALSE, call = cal, info = info))
+    return(tinytest::tinytest(FALSE, call = cal, info = ts_prepend_info(info, msg)))
   }
 
   # snapshot exists -> diff
@@ -106,13 +108,13 @@ expect_snapshot_print <- function(
   if (suppressWarnings(any(do))) {
     fail <- TRUE
     diff <- paste(as.character(do), collapse = "\n")
-    info <- paste("Snapshot:", snapshot_fn)
+    msg <- paste("Snapshot:", snapshot_fn)
   }
 
   tinytest::tinytest(
     result = !fail,
     call = cal,
-    info = info,
+    info = ts_prepend_info(info, msg),
     diff = diff
   )
 }

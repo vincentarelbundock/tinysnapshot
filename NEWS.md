@@ -1,6 +1,7 @@
 # Development
 
 * `expect_snapshot_plot()` gains a `theme` argument so callers can override or remove the automatic application of `ggplot2::theme_test()`.
+* `expect_snapshot_print()` and `expect_snapshot_plot()` gain an `info` argument to pass user-supplied context through to the `tinytest` result, shown when a diff occurs. Thanks to @katrinabrock for the feature request (#30).
 
 # 0.2.0
 
