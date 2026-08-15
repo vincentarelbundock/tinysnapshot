@@ -20,7 +20,8 @@ expect_snapshot_plot(
   review = getOption("tinysnapshot_plot_review", default = TRUE),
   os = getOption("tinysnapshot_os", default = Sys.info()["sysname"]),
   skip = getOption("tinysnapshot_plot_skip", default = !interactive() &&
-    !identical(Sys.getenv("NOT_CRAN"), "true")),
+    !identical(Sys.getenv("NOT_CRAN"), "true") && !identical(Sys.getenv("R_COVR"),
+    "true")),
   info = NULL
 )
 }
@@ -53,7 +54,7 @@ expect_snapshot_plot(
 
 \item{os}{character vector of operating systems on which the test should be run (e.g., "Windows", "Linux", "Darwin"). Tests are skipped when no element of the vector matches the output of: \code{Sys.info()["sysname"]}}
 
-\item{skip}{logical. If TRUE, the test is skipped. Default: TRUE when not interactive and NOT_CRAN environment variable is not "true".}
+\item{skip}{logical. If TRUE, the test is skipped (with a message). Default: TRUE when the session is not interactive and neither the \code{NOT_CRAN} nor the \code{R_COVR} environment variable is set to "true".}
 
 \item{info}{a string with user-supplied context shown when the test fails, prepended to the internal message.}
 }

@@ -1,5 +1,8 @@
 # Development
 
+* `expect_snapshot_plot()` no longer skips tests under `covr` (detected via the `R_COVR` environment variable), so code exercised by snapshot tests is now counted in coverage reports. Thanks to @katrinabrock for the report (#29).
+* `expect_snapshot_plot()` now emits a message when a test is skipped, instead of skipping silently. Thanks to @katrinabrock for the report (#29).
+
 * `expect_snapshot_plot()` gains a `theme` argument so callers can override or remove the automatic application of `ggplot2::theme_test()`.
 * `expect_snapshot_print()` and `expect_snapshot_plot()` gain an `info` argument to pass user-supplied context through to the `tinytest` result, shown when a diff occurs. Thanks to @katrinabrock for the feature request (#30).
 

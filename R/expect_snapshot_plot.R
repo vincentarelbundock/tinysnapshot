@@ -29,7 +29,7 @@
 #' @param style A character vector to control the panels of the diff image saved to file. The order and number of entries controls the side-by-side panels. Allowable values are: "old", "new", "diff".
 #' @param review logical. TRUE if a a diff plot should be saved to file for review when the expectation fails.
 #' @param os character vector of operating systems on which the test should be run (e.g., "Windows", "Linux", "Darwin"). Tests are skipped when no element of the vector matches the output of: `Sys.info()["sysname"]`
-#' @param skip logical. If TRUE, the test is skipped. Default: TRUE when not interactive and NOT_CRAN environment variable is not "true".
+#' @param skip logical. If TRUE, the test is skipped (with a message). Default: TRUE when the session is not interactive and neither the `NOT_CRAN` nor the `R_COVR` environment variable is set to "true".
 #' @param info a string with user-supplied context shown when the test fails, prepended to the internal message.
 #' @return A `tinytest` object. A `tinytest` object is a `logical` with attributes holding information about the test that was run
 #'
@@ -51,7 +51,9 @@ expect_snapshot_plot <- function(
     os = getOption("tinysnapshot_os", default = Sys.info()["sysname"]),
     skip = getOption(
       "tinysnapshot_plot_skip",
-      default = !interactive() && !identical(Sys.getenv("NOT_CRAN"), "true")
+      default = !interactive() &&
+        !identical(Sys.getenv("NOT_CRAN"), "true") &&
+        !identical(Sys.getenv("R_COVR"), "true")
     ),
     info = NULL) {
   ts_assert_choice(device, c("ragg", "png", "svg", "svglite"))
@@ -70,6 +72,12 @@ expect_snapshot_plot <- function(
   }
 
   if (!Sys.info()["sysname"] %in% os || skip) {
+    if (skip) {
+      msg <- "Skipping snapshot test `%s`: the session is not interactive and neither the `NOT_CRAN` nor the `R_COVR` environment variable is set to \"true\". Set `options(tinysnapshot_plot_skip = FALSE)` or the `skip` argument to force the test to run."
+    } else {
+      msg <- "Skipping snapshot test `%s`: the operating system does not match the `os` argument."
+    }
+    message(sprintf(msg, label))
     return(invisible(NULL))
   }
 
