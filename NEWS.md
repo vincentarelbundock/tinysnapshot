@@ -1,4 +1,4 @@
-# Development
+# 0.3.0
 
 * `expect_snapshot_plot()` no longer skips tests under `covr` (detected via the `R_COVR` environment variable), so code exercised by snapshot tests is now counted in coverage reports. Thanks to @katrinabrock for the report (#29).
 * `expect_snapshot_plot()` now emits a message when a test is skipped, instead of skipping silently. Thanks to @katrinabrock for the report (#29).
